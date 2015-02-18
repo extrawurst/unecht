@@ -1,15 +1,16 @@
 
 import unecht;
 
+//TODO: this needs to be gone out of sight, nice objects to hide stuff like that from the user
 void debugRender(double _time)
 {
 	import derelict.opengl3.gl;
 	import derelict.opengl3.deprecatedFunctions;
 	import derelict.opengl3.deprecatedConstants;
 
-	float ratio = ue.windowSettings.width / cast(float) ue.windowSettings.height;
+	float ratio = ue.application.mainWindow.size.width / cast(float)  ue.application.mainWindow.size.height;
 	
-	glViewport(0, 0, ue.windowSettings.width, ue.windowSettings.height);
+	glViewport(0, 0, ue.windowSettings.size.width, ue.windowSettings.size.height);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -27,10 +28,34 @@ void debugRender(double _time)
 	glEnd();
 };
 
+final class TestComponent : Component {
+
+	override void onCreate() {
+		super.onCreate;
+
+		registerEvent(EventType.Key, &OnKeyEvent);
+	}
+
+	void OnKeyEvent(Event _ev)
+	{
+		import std.stdio;
+
+		writefln("key: %s",_ev.keyEvent);
+
+		if(_ev.keyEvent.action == Event.KeyEvent.Action.Down &&
+			_ev.keyEvent.code == 1)
+			ue.application.terminate();
+	}
+}
+
 shared static this()
 {
 	ue.debugTick ~= &debugRender;
-	ue.windowSettings.width = 640;
-	ue.windowSettings.height = 320;
+
+	ue.windowSettings.size.width = 640;
+	ue.windowSettings.size.height = 320;
 	ue.windowSettings.title = "unecht - hello world sample";
+
+	import std.traits;
+	ue.startComponent = fullyQualifiedName!TestComponent;
 }
