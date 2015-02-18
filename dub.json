@@ -1,0 +1,15 @@
+{
+	"name": "unecht",
+	"description": "Game Engine Framework for the D programming language.",
+	"copyright": "Copyright © 2015, Stephan Dilly",
+	"authors": ["Stephan Dilly"],
+	"license": "MIT",
+	"targetType": "library",
+	"mainSourceFile": "source/unecht/appmain.d",
+	"dependencies": 
+	{
+		"derelict-glfw3": "~>1.1.0",
+		"derelict-gl3": "~>1.0.12",
+		"gl3n": "~>1.0.1"
+	}
+}

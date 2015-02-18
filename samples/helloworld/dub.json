@@ -1,0 +1,9 @@
+{
+	"name": "helloworld",
+	"description": "",
+	"copyright": "Copyright © 2015, Stephan Dilly",
+	"authors": ["Stephan Dilly"],
+	"dependencies": {
+		"unecht" : {"version": "~master", "path": "../../"}
+	}
+}
