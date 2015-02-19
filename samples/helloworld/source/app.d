@@ -34,6 +34,15 @@ final class TestComponent : Component {
 		super.onCreate;
 
 		registerEvent(EventType.Key, &OnKeyEvent);
+
+		entity.addComponent!Renderer();
+	}
+
+	override void onUpdate() {
+		super.onUpdate;
+
+		//TODO:
+		//transform.Rotate();
 	}
 
 	void OnKeyEvent(Event _ev)

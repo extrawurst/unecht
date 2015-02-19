@@ -3,3 +3,8 @@ docs.json
 __dummy.html
 *.o
 *.obj
+dub.userprefs
+libunecht.a
+samples/helloworld/dub.selections.json
+samples/helloworld/dub.userprefs
+samples/helloworld/helloworld

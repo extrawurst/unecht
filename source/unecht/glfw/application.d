@@ -47,6 +47,8 @@ struct Application
 
 		while (!mainWindow.shouldClose)
 		{
+			events.cleanUp();
+
 			foreach(f; ue.debugTick)
 				f(glfwGetTime());
 
