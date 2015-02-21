@@ -1,10 +1,12 @@
 
 import unecht;
 
+import imgui;
+
 //TODO: this needs to be gone out of sight, nice objects to hide stuff like that from the user
 void debugRender(double _time)
 {
-	import derelict.opengl3.gl;
+	/+import derelict.opengl3.gl;
 	import derelict.opengl3.deprecatedFunctions;
 	import derelict.opengl3.deprecatedConstants;
 
@@ -25,7 +27,10 @@ void debugRender(double _time)
 	glVertex3f(0.6f, -0.4f, 0.0f);
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.6f, 0.0f);
-	glEnd();
+	glEnd();+/
+
+	imguiDrawText(10, 10, TextAlign.left, "Free text", RGBA(32, 192, 32, 192));
+	imguiRender(ue.application.mainWindow.size.width, ue.application.mainWindow.size.height);
 };
 
 final class TestComponent : Component {
@@ -36,6 +41,14 @@ final class TestComponent : Component {
 		registerEvent(EventType.Key, &OnKeyEvent);
 
 		entity.addComponent!Renderer();
+
+		import std.file;
+		import std.path;
+		import std.exception;
+		
+		string fontPath = thisExePath().dirName().buildPath(".").buildPath("DroidSans.ttf");
+		
+		enforce(imguiInit(fontPath));
 	}
 
 	override void onUpdate() {

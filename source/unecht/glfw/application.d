@@ -3,7 +3,7 @@ module unecht.glfw.application;
 import std.stdio;
 
 import derelict.glfw3.glfw3;
-import derelict.opengl3.gl;
+import derelict.opengl3.gl3;
 
 import unecht.glfw.window;
 import unecht.core.types;
@@ -28,7 +28,7 @@ struct Application
 	/// contains the game loop is run in main function
 	int run()
 	{
-		DerelictGL.load();
+		DerelictGL3.load();
 		DerelictGLFW3.load();
 
 		if(!initGLFW())
@@ -41,13 +41,20 @@ struct Application
 
 		scope(exit) mainWindow.destroy();
 			
-		DerelictGL.reload();
+		DerelictGL3.reload();
 
 		startEngine();
+
+		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
 
 		while (!mainWindow.shouldClose)
 		{
 			events.cleanUp();
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			foreach(f; ue.debugTick)
 				f(glfwGetTime());
