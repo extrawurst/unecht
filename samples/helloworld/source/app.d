@@ -35,14 +35,14 @@ void debugRender(double _time)
 	imguiRender(ue.application.mainWindow.size.width, ue.application.mainWindow.size.height);
 };
 
-final class TestComponent : Component {
+final class TestComponent : UEComponent {
 
 	override void onCreate() {
 		super.onCreate;
 
-		registerEvent(EventType.key, &OnKeyEvent);
+		registerEvent(UEEventType.key, &OnKeyEvent);
 
-		entity.addComponent!Renderer();
+		entity.addComponent!UERenderer();
 
 		import std.file;
 		import std.path;
@@ -60,13 +60,13 @@ final class TestComponent : Component {
 		//transform.Rotate();
 	}
 
-	void OnKeyEvent(Event _ev)
+	void OnKeyEvent(UEEvent _ev)
 	{
 		import std.stdio;
 
 		writefln("key: %s",_ev.keyEvent);
 
-		if(_ev.keyEvent.action == Event.KeyEvent.Action.Down &&
+		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
 			_ev.keyEvent.key == UEKey.esc)
 			ue.application.terminate();
 	}

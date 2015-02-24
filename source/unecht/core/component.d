@@ -5,7 +5,7 @@ import unecht.core.entity;
 import unecht;
 
 ///
-class Component
+class UEComponent
 {
 	//void OnEnable() {}
 	void onUpdate() {}
@@ -14,19 +14,19 @@ class Component
 	void onCreate() {}
 	
 	///
-	@property Entity entity() {return m_entity;}
+	@property UEEntity entity() {return m_entity;}
 	///
 	//@property Transform transform() {return m_entity;}
 	
 	/// helper
-	void registerEvent(EventType _type, EventCallback _callback)
+	void registerEvent(UEEventType _type, UEEventCallback _callback)
 	{
-		ue.events.register(EventReceiver(this,_type,_callback));
+		ue.events.register(UEEventReceiver(this,_type,_callback));
 	}
 
 package:
-	void setEntity(Entity _entity) { m_entity = _entity; }
+	void setEntity(UEEntity _entity) { m_entity = _entity; }
 
 private:
-	Entity m_entity;
+	UEEntity m_entity;
 }

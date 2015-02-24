@@ -10,10 +10,10 @@ import unecht.core.types;
 import unecht;
 
 ///
-struct Window
+struct UEWindow
 {
-	Size size;
-	Pos pos;
+	UESize size;
+	UEPos pos;
 
 package:
 	
@@ -21,7 +21,7 @@ package:
 	@property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
 	
 	///
-	bool create(Size _size, string _title)
+	bool create(UESize _size, string _title)
 	{
 		import std.string:toStringz;
 

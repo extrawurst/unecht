@@ -12,20 +12,11 @@ public import unecht.glfw.types;
 
 import unecht;
 
-extern(C) void error_callback(int error, const(char)* description) nothrow
-{
-	try {
-		import std.conv;
-		writefln("glfw err: %s '%s'", error, to!string(description));
-	}
-	catch{}
-}
-
 ///
-struct Application
+struct UEApplication
 {
-	Window mainWindow;
-	EventsSystem events;
+	UEWindow mainWindow;
+	UEEventsSystem events;
 
 	/// contains the game loop is run in main function
 	int run()
@@ -78,23 +69,23 @@ struct Application
 package:
 	void glfwOnKey(int key, int scancode, int action, int mods)
 	{
-		Event ev;
-		ev.eventType = EventType.key;
+		UEEvent ev;
+		ev.eventType = UEEventType.key;
 		ev.keyEvent.key = cast(UEKey)key;
-		ev.keyEvent.action = Event.KeyEvent.Action.Down;
+		ev.keyEvent.action = UEEvent.KeyEvent.Action.Down;
 
 		if(action == GLFW_RELEASE)
-			ev.keyEvent.action = Event.KeyEvent.Action.Up;
+			ev.keyEvent.action = UEEvent.KeyEvent.Action.Up;
 		else if(action == GLFW_REPEAT)
-			ev.keyEvent.action = Event.KeyEvent.Action.Repeat;
+			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
 
 		events.trigger(ev);
 	}
 
 	void glfwOnChar(uint codepoint)
 	{
-		Event ev;
-		ev.eventType = EventType.text;
+		UEEvent ev;
+		ev.eventType = UEEventType.text;
 		ev.textEvent.character = cast(dchar)codepoint;
 
 		events.trigger(ev);
@@ -102,26 +93,26 @@ package:
 
 	void glfwOnWndSize(int width, int height)
 	{
-		Event ev;
-		ev.eventType = EventType.windowSize;
-		ev.windowSizeEvent.size = Size(width,height);
+		UEEvent ev;
+		ev.eventType = UEEventType.windowSize;
+		ev.windowSizeEvent.size = UESize(width,height);
 
 		events.trigger(ev);
 	}
 
 	void glfwOnFramebufferSize(int width, int height)
 	{
-		Event ev;
-		ev.eventType = EventType.framebufferSize;
-		ev.framebufferSizeEvent.size = Size(width,height);
+		UEEvent ev;
+		ev.eventType = UEEventType.framebufferSize;
+		ev.framebufferSizeEvent.size = UESize(width,height);
 		
 		events.trigger(ev);
 	}
 
 	void glfwOnWindowFocus(bool gainedFocus)
 	{
-		Event ev;
-		ev.eventType = EventType.windowFocus;
+		UEEvent ev;
+		ev.eventType = UEEventType.windowFocus;
 		ev.focusEvent.gainedFocus = gainedFocus;
 		
 		events.trigger(ev);
@@ -138,12 +129,21 @@ private:
 
 	void startEngine()
 	{
-		events = new EventsSystem();
+		events = new UEEventsSystem();
 		
 		ue.events = events;
 
-		ue.currentScene = Entity.create();
+		ue.currentScene = UEEntity.create();
 
 		ue.currentScene.addComponent(ue.startComponent);
 	}
+}
+
+private nothrow extern(C) void error_callback(int error, const(char)* description)
+{
+	try {
+		import std.conv;
+		writefln("glfw err: %s '%s'", error, to!string(description));
+	}
+	catch{}
 }

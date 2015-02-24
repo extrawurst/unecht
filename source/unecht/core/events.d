@@ -3,7 +3,7 @@ module unecht.core.events;
 import unecht;
 
 ///
-enum EventType
+enum UEEventType
 {
 	key,
 	text,
@@ -13,9 +13,9 @@ enum EventType
 }
 
 ///
-struct Event
+struct UEEvent
 {
-	EventType eventType;
+	UEEventType eventType;
 	struct KeyEvent
 	{
 		enum Action
@@ -39,7 +39,7 @@ struct Event
 
 	struct SizeEvent
 	{
-		Size size;
+		UESize size;
 	}
 	SizeEvent windowSizeEvent;
 	SizeEvent framebufferSizeEvent;
@@ -52,40 +52,40 @@ struct Event
 }
 
 ///
-alias EventCallback = void delegate (Event);
+alias UEEventCallback = void delegate (UEEvent);
 
 ///
-struct EventReceiver
+struct UEEventReceiver
 {
-	Component component;
-	EventType eventType;
-	EventCallback eventFunc;
+	UEComponent component;
+	UEEventType eventType;
+	UEEventCallback eventFunc;
 
 	private bool removed=false;
 }
 
 ///
-interface Events
+interface UEEvents
 {
 	///
-	void register(EventReceiver);
+	void register(UEEventReceiver);
 	///
-	void unRegister(EventReceiver);
+	void unRegister(UEEventReceiver);
 	///
-	void removeComponent(Component);
+	void removeComponent(UEComponent);
 }
 
 ///
-class EventsSystem : Events
+class UEEventsSystem : UEEvents
 {
 	///
-	override void register(EventReceiver _receiver)
+	override void register(UEEventReceiver _receiver)
 	{
 		receiver ~= _receiver;
 	}
 
 	///
-	override void unRegister(EventReceiver _receiver)
+	override void unRegister(UEEventReceiver _receiver)
 	{
 		foreach(ref r; receiver)
 		{
@@ -98,7 +98,7 @@ class EventsSystem : Events
 	}
 
 	///
-	override void removeComponent(Component _comp)
+	override void removeComponent(UEComponent _comp)
 	{
 		foreach(ref r; receiver)
 		{
@@ -110,11 +110,11 @@ class EventsSystem : Events
 		}
 	}
 
-	EventReceiver[] receiver;
+	UEEventReceiver[] receiver;
 	bool dirty=false;
 
 	///
-	void trigger(Event _ev)
+	void trigger(UEEvent _ev)
 	{
 		foreach(r; receiver)
 		{

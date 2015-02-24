@@ -4,7 +4,7 @@ import gl3n.linalg:vec3;
 
 import unecht;
 
-class Entity
+class UEEntity
 {
 	vec3 position;
 	vec3 scale;
@@ -19,7 +19,7 @@ class Entity
 	
 	void addComponent(string _type)
 	{
-		auto newcomp = cast(Component)Object.factory(_type);
+		auto newcomp = cast(UEComponent)Object.factory(_type);
 		assert(newcomp);
 		
 		newcomp.setEntity(this);
@@ -31,12 +31,12 @@ class Entity
 	
 	static auto create()
 	{
-		return new Entity();
+		return new UEEntity();
 	}
 	
 private:
-	Entity parent;
-	Entity[] children;
+	UEEntity parent;
+	UEEntity[] children;
 	
-	Component[] components;
+	UEComponent[] components;
 }

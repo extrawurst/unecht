@@ -18,7 +18,7 @@ class UnechtException : Exception
 alias DebugTickFunc = void function (double);
 
 ///
-class Renderer : Component {
+class UERenderer : UEComponent {
 	
 	override void onCreate() {
 		super.onCreate;
@@ -34,12 +34,12 @@ class Renderer : Component {
 
 struct Unecht
 {
-	WindowSettings windowSettings;
+	UEWindowSettings windowSettings;
 	DebugTickFunc[] debugTick;
-	Entity currentScene;
+	UEEntity currentScene;
 	string startComponent;
-	Application application;
-	Events events;
+	UEApplication application;
+	UEEvents events;
 }
 
 __gshared Unecht ue;

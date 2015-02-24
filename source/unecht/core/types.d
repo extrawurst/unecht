@@ -1,22 +1,22 @@
 module unecht.core.types;
 
 ///
-struct Pos
+struct UEPos
 {
 	int left;
 	int top;
 }
 
 ///
-struct Size
+struct UESize
 {
 	int width;
 	int height;
 }
 
 ///
-struct WindowSettings
+struct UEWindowSettings
 {
-	Size size = Size(128,128);
+	UESize size = UESize(128,128);
 	string title = "unecht";
 }
