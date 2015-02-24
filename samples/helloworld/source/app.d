@@ -1,7 +1,9 @@
+module app;
 
 import unecht;
 
 import imgui;
+
 
 //TODO: this needs to be gone out of sight, nice objects to hide stuff like that from the user
 void debugRender(double _time)
@@ -65,7 +67,7 @@ final class TestComponent : Component {
 		writefln("key: %s",_ev.keyEvent);
 
 		if(_ev.keyEvent.action == Event.KeyEvent.Action.Down &&
-			_ev.keyEvent.code == 1)
+			_ev.keyEvent.glfwKey == UEKey.esc)
 			ue.application.terminate();
 	}
 }

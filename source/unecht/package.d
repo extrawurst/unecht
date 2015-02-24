@@ -5,7 +5,7 @@ public import unecht.core.events;
 public import unecht.core.entity;
 public import unecht.core.component;
 
-import unecht.glfw.application;
+public import unecht.glfw.application;
 
 class UnechtException : Exception
 {

@@ -8,6 +8,8 @@ import derelict.opengl3.gl3;
 import unecht.glfw.window;
 import unecht.core.types;
 
+public import unecht.glfw.types;
+
 import unecht;
 
 extern(C) void error_callback(int error, const(char)* description) nothrow
@@ -78,7 +80,7 @@ package:
 	{
 		Event ev;
 		ev.eventType = EventType.Key;
-		ev.keyEvent.code = scancode;
+		ev.keyEvent.key = cast(UEKey)key;
 		ev.keyEvent.action = Event.KeyEvent.Action.Down;
 
 		if(action == GLFW_RELEASE)

@@ -2,11 +2,13 @@ module unecht.core.events;
 
 import unecht;
 
+///
 enum EventType
 {
 	Key,
 }
 
+///
 struct Event
 {
 	EventType eventType;
@@ -19,15 +21,17 @@ struct Event
 			Repeat,
 		}
 
-		int code;
+		UEKey key;
 		Action action;
 		//bool shift;
 	}
 	KeyEvent keyEvent;
 }
 
+///
 alias EventCallback = void delegate (Event);
 
+///
 struct EventReceiver
 {
 	Component component;
@@ -37,13 +41,18 @@ struct EventReceiver
 	private bool removed=false;
 }
 
+///
 interface Events
 {
+	///
 	void register(EventReceiver);
+	///
 	void unRegister(EventReceiver);
+	///
 	void removeComponent(Component);
 }
 
+///
 class EventsSystem : Events
 {
 	///
