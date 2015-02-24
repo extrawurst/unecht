@@ -40,7 +40,7 @@ final class TestComponent : Component {
 	override void onCreate() {
 		super.onCreate;
 
-		registerEvent(EventType.Key, &OnKeyEvent);
+		registerEvent(EventType.key, &OnKeyEvent);
 
 		entity.addComponent!Renderer();
 

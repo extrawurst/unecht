@@ -45,6 +45,7 @@ package:
 		
 		glfwSetKeyCallback(glfwWindow, &key_callback);
 		glfwSetWindowSizeCallback(glfwWindow, &wnd_size_callback);
+		glfwSetCharCallback(glfwWindow, &character_callback);
 		
 		return true;
 	}
@@ -75,6 +76,14 @@ package:
 
 private:
 	GLFWwindow* glfwWindow;
+}
+
+private:
+
+extern(C) void character_callback(GLFWwindow* window, uint codepoint) nothrow
+{
+	try ue.application.glfwOnChar(codepoint);
+	catch{}
 }
 
 extern(C) void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) nothrow

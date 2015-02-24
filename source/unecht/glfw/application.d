@@ -79,7 +79,7 @@ package:
 	void glfwOnKey(int key, int scancode, int action, int mods)
 	{
 		Event ev;
-		ev.eventType = EventType.Key;
+		ev.eventType = EventType.key;
 		ev.keyEvent.key = cast(UEKey)key;
 		ev.keyEvent.action = Event.KeyEvent.Action.Down;
 
@@ -87,6 +87,15 @@ package:
 			ev.keyEvent.action = Event.KeyEvent.Action.Up;
 		else if(action == GLFW_REPEAT)
 			ev.keyEvent.action = Event.KeyEvent.Action.Repeat;
+
+		events.trigger(ev);
+	}
+
+	void glfwOnChar(uint codepoint)
+	{
+		Event ev;
+		ev.eventType = EventType.text;
+		ev.textEvent.character = cast(dchar)codepoint;
 
 		events.trigger(ev);
 	}

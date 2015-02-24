@@ -5,7 +5,8 @@ import unecht;
 ///
 enum EventType
 {
-	Key,
+	key,
+	text,
 }
 
 ///
@@ -26,6 +27,12 @@ struct Event
 		//bool shift;
 	}
 	KeyEvent keyEvent;
+
+	struct TextEvent
+	{
+		dchar character;
+	}
+	TextEvent textEvent;
 }
 
 ///
