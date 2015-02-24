@@ -67,7 +67,7 @@ final class TestComponent : Component {
 		writefln("key: %s",_ev.keyEvent);
 
 		if(_ev.keyEvent.action == Event.KeyEvent.Action.Down &&
-			_ev.keyEvent.glfwKey == UEKey.esc)
+			_ev.keyEvent.key == UEKey.esc)
 			ue.application.terminate();
 	}
 }
