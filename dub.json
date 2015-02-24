@@ -8,11 +8,11 @@
 	"mainSourceFile": "source/unecht/appmain.d",
 	"dependencies": 
 	{
+		"artemisd": {"version":"~master", "path": "artemisd/"},
+		"tharsis-dimgui": {"version":"~master", "path": "tharsis-dimgui/"},
 		"derelict-glfw3": "~>1.1.0",
 		"derelict-gl3": "~>1.0.12",
 		"gl3n": "~>1.0.1",
-		"artemisd": {"version":"~master", "path": "artemisd/"},
-		"tharsis-dimgui": {"version":"~master", "path": "tharsis-dimgui/"},
 		"cerealed": "~>0.5.0"
 	},
 
