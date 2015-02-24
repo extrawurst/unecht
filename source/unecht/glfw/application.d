@@ -100,9 +100,31 @@ package:
 		events.trigger(ev);
 	}
 
-	void glfwOnWndSize()
+	void glfwOnWndSize(int width, int height)
 	{
+		Event ev;
+		ev.eventType = EventType.windowSize;
+		ev.windowSizeEvent.size = Size(width,height);
 
+		events.trigger(ev);
+	}
+
+	void glfwOnFramebufferSize(int width, int height)
+	{
+		Event ev;
+		ev.eventType = EventType.framebufferSize;
+		ev.framebufferSizeEvent.size = Size(width,height);
+		
+		events.trigger(ev);
+	}
+
+	void glfwOnWindowFocus(bool gainedFocus)
+	{
+		Event ev;
+		ev.eventType = EventType.windowFocus;
+		ev.focusEvent.gainedFocus = gainedFocus;
+		
+		events.trigger(ev);
 	}
 
 private:

@@ -46,6 +46,8 @@ package:
 		glfwSetKeyCallback(glfwWindow, &key_callback);
 		glfwSetWindowSizeCallback(glfwWindow, &wnd_size_callback);
 		glfwSetCharCallback(glfwWindow, &character_callback);
+		glfwSetFramebufferSizeCallback(glfwWindow, &framebuffer_size_callback);
+		glfwSetWindowFocusCallback(glfwWindow, &window_focus_callback);
 		
 		return true;
 	}
@@ -78,25 +80,38 @@ private:
 	GLFWwindow* glfwWindow;
 }
 
-private:
-
-extern(C) void character_callback(GLFWwindow* window, uint codepoint) nothrow
+private nothrow extern(C) 
 {
-	try ue.application.glfwOnChar(codepoint);
-	catch{}
-}
+	void character_callback(GLFWwindow* window, uint codepoint)
+	{
+		try ue.application.glfwOnChar(codepoint);
+		catch{}
+	}
 
-extern(C) void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) nothrow
-{
-	try ue.application.glfwOnKey(key,scancode,action,mods);
-	catch{}
-}
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		try ue.application.glfwOnKey(key,scancode,action,mods);
+		catch{}
+	}
 
-extern(C) void wnd_size_callback(GLFWwindow* window, int width, int height) nothrow
-{
-	ue.application.mainWindow.size.width = width;
-	ue.application.mainWindow.size.height = height;
+	void wnd_size_callback(GLFWwindow* window, int width, int height) nothrow
+	{
+		ue.application.mainWindow.size.width = width;
+		ue.application.mainWindow.size.height = height;
 
-	try ue.application.glfwOnWndSize();
-	catch{}
+		try ue.application.glfwOnWndSize(width,height);
+		catch{}
+	}
+
+	void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+	{
+		try ue.application.glfwOnFramebufferSize(width,height);
+		catch{}
+	}
+
+	void window_focus_callback(GLFWwindow* window, int gainedFocus)
+	{
+		try ue.application.glfwOnWindowFocus(gainedFocus!=0);
+		catch{}
+	}
 }

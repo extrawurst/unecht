@@ -7,6 +7,9 @@ enum EventType
 {
 	key,
 	text,
+	windowSize,
+	framebufferSize,
+	windowFocus,
 }
 
 ///
@@ -33,6 +36,19 @@ struct Event
 		dchar character;
 	}
 	TextEvent textEvent;
+
+	struct SizeEvent
+	{
+		Size size;
+	}
+	SizeEvent windowSizeEvent;
+	SizeEvent framebufferSizeEvent;
+
+	struct FocusEvent
+	{
+		bool gainedFocus;
+	}
+	FocusEvent focusEvent;
 }
 
 ///
