@@ -10,3 +10,4 @@ samples/helloworld/dub.userprefs
 samples/helloworld/helloworld
 samples/helloworld/helloworld.exe
 unecht.lib
+__test__library__
