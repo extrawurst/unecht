@@ -3,109 +3,88 @@
 import gl3n.linalg;
 
 ///
-struct Transform
+final class UESceneNode
 {
+public:
 	mat4 matrixWorld = mat4.identity;
 	mat4 matrixLocal = mat4.identity;
 	bool invalidated = true;
 
-	Transform*[] children;
+	UESceneNode[] children;
 
-	private Transform* parent;
-}
-
-///
-final class Scenegraph
-{
-	Transform[] transforms;
-
-	this()
-	{
-		transforms.length = 1;
-	}
-
-	void insert(Transform* _parent, ref Transform _node)
-	{
-		assert(_node.children.length == 0);
-
-		transforms.length = transforms.length+1;
-
-		auto idxPos = findTransform(_parent);
-
-		auto ixLast = idxPos+1+countChildren(_parent);
-
-		if(_parent.children.length > 0)
-		{
-			if(ixLast < transforms.length)
-			{
-				transforms[ixLast+1..$] = transforms[ixLast..$];
-			}
-		}
-
-		transforms[ixLast+1] = _node;
-
-		updateNode(&transforms[ixLast+1]);
-	}
-
-	void update()
-	{
-		foreach(ref t; transforms)
-		{
-			if(t.invalidated)
-			{
-				updateNode(&t);
-			}
-		}
-	}
+	///
+	@property const(UESceneNode) parent() const { return _parent; }
+	///
+	@property void parent(UESceneNode _parent) { setParent(_parent); }
 
 private:
 
-	size_t countChildren(Transform* _t)
+	void setParent(UESceneNode _node)
 	{
-		size_t res = _t.children.length;
+		assert(_node, "null parent not allowed");
 
-		foreach(t; _t.children)
-			res+=countChildren(_t);
-
-		return res;
-	}
-
-	size_t findTransform(Transform* _t)
-	{
-		foreach(i; 0..transforms.length)
-			if(&transforms[i] is _t)
-				return i;
-
-		throw new Exception("transform not found in graph");
-	}
-
-	void updateNode(Transform* _t)
-	{
-		_t.invalidated = false;
-
-		if(_t.parent)
-			_t.matrixWorld = _t.parent.matrixWorld * _t.matrixLocal;
-
-		foreach(ref c; _t.children)
+		if(this._parent)
 		{
-			updateNode(c);
+			this._parent.detachChild(this);
 		}
+
+		this._parent = _node;
+
+		this._parent.attachChild(this);
 	}
+
+	void detachChild(UESceneNode _node)
+	{
+		import unecht.core.stdex;
+		children = children.removeElement(_node);
+	}
+
+	void attachChild(UESceneNode _node)
+	{
+		children ~= _node;
+	}
+
+private:
+	UESceneNode _parent;
+}
+
+///
+final class UEScenegraph
+{
+public:
+
+	///
+	@property UESceneNode root() {return _root;}
+
+	///
+	void update()
+	{
+		updateNode(_root);
+	}
+
+	private void updateNode(UESceneNode _node)
+	{
+		if(!_node)
+			return;
+
+		if(_node.parent && _node.invalidated)
+		{
+			//TODO: update matrix
+
+			_node.invalidated = false;
+		}
+
+		foreach(node; _node.children)
+			updateNode(node);
+	}
+
+private:
+	UESceneNode _root = new UESceneNode();
 }
 
 unittest
 {
-	Scenegraph sg = new Scenegraph();
-
-	Transform t;
-
-	assert(sg.transforms.length == 1);
-
-	sg.insert(&sg.transforms[0], t);
-
-	//assert(sg.transforms.length == 2);
-
-	//sg.insert(&sg.transforms[0], t);
-
-	//assert(sg.transforms.length == 3);
+	//TODO:
+	import std.stdio;
+	writefln("TODO: write tests for scenegraph");
 }

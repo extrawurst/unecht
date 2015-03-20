@@ -3,10 +3,12 @@ module unecht;
 public import unecht.core.types;
 public import unecht.core.events;
 public import unecht.core.entity;
+public import unecht.core.scenegraph;
 public import unecht.core.component;
 
 public import unecht.glfw.application;
 
+///
 class UnechtException : Exception
 {
 	this(string _str)
@@ -15,31 +17,20 @@ class UnechtException : Exception
 	}
 }
 
+///
 alias DebugTickFunc = void function (double);
+///
+alias ActionFunc = void function ();
 
 ///
-class UERenderer : UEComponent {
-	
-	override void onCreate() {
-		super.onCreate;
-		
-
-	}
-
-	override void onUpdate() {
-
-		
-	}
-}
-
 struct Unecht
 {
 	UEWindowSettings windowSettings;
 	DebugTickFunc[] debugTick;
-	UEEntity currentScene;
-	string startComponent;
+	UEScenegraph scene;
 	UEApplication application;
 	UEEvents events;
+	ActionFunc hookStartup;
 }
 
 __gshared Unecht ue;

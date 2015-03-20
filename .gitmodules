@@ -1,6 +1,3 @@
-[submodule "artemisd"]
-	path = artemisd
-	url = https://github.com/Extrawurst/artemisd.git
 [submodule "tharsis-dimgui"]
 	path = tharsis-dimgui
 	url = https://github.com/Extrawurst/tharsis-dimgui.git

@@ -3,40 +3,60 @@ module unecht.core.entity;
 import gl3n.linalg:vec3;
 
 import unecht;
+import unecht.core.scenegraph;
 
+/// 
 class UEEntity
 {
-	vec3 position;
-	vec3 scale;
-	
-	void addComponent(T)()
+	///
+	auto addComponent(T : UEComponent)()
 	{
-		auto newt = new T();
-		newt.setEntity(this);
-		
-		components ~= newt;
+		auto newT = new T();
+		auto newcomp = cast(UEComponent)newT;
+
+		addComponent(newcomp);
+
+		return newT;
 	}
-	
-	void addComponent(string _type)
+
+	///
+	UEComponent addComponent(string _type)
 	{
 		auto newcomp = cast(UEComponent)Object.factory(_type);
 		assert(newcomp);
-		
-		newcomp.setEntity(this);
-		
-		newcomp.onCreate();
-		
-		components ~= newcomp;
+
+		addComponent(newcomp);
+
+		return newcomp;
 	}
-	
+
+	/// factory method
 	static auto create()
 	{
-		return new UEEntity();
+		return new UEEntity(ue.scene.root);
+	}
+
+private:
+
+	this(UESceneNode _parent)
+	{
+		this.sceneNode = new UESceneNode();
+		this.sceneNode.parent = _parent;
+	}
+
+	void addComponent(UEComponent _comp)
+	{
+		_comp.setEntity(this);
+		
+		_comp.onCreate();
+		
+		components ~= _comp;
 	}
 	
 private:
-	UEEntity parent;
-	UEEntity[] children;
+	string name = "entity";
+
+	UESceneNode sceneNode;
 	
 	UEComponent[] components;
 }

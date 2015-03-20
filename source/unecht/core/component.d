@@ -2,9 +2,10 @@ module unecht.core.component;
 
 import unecht.core.events;
 import unecht.core.entity;
+import unecht.core.scenegraph;
 import unecht;
 
-///
+/// binding component between an GameEntity and a SceneNode
 class UEComponent
 {
 	//void OnEnable() {}
@@ -14,9 +15,9 @@ class UEComponent
 	void onCreate() {}
 	
 	///
-	@property UEEntity entity() {return m_entity;}
+	@property UEEntity entity() {return _entity;}
 	///
-	//@property Transform transform() {return m_entity;}
+	@property UESceneNode sceneNode() {return _sceneNode;}
 	
 	/// helper
 	void registerEvent(UEEventType _type, UEEventCallback _callback)
@@ -25,8 +26,9 @@ class UEComponent
 	}
 
 package:
-	void setEntity(UEEntity _entity) { m_entity = _entity; }
+	void setEntity(UEEntity _entity) { this._entity = _entity; }
 
 private:
-	UEEntity m_entity;
+	UEEntity _entity;
+	UESceneNode _sceneNode;
 }

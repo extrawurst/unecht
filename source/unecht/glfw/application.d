@@ -38,7 +38,7 @@ struct UEApplication
 
 		startEngine();
 
-		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+		//glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
@@ -133,9 +133,10 @@ private:
 		
 		ue.events = events;
 
-		ue.currentScene = UEEntity.create();
+		ue.scene = new UEScenegraph();
 
-		ue.currentScene.addComponent(ue.startComponent);
+		if(ue.hookStartup)
+			ue.hookStartup();
 	}
 }
 

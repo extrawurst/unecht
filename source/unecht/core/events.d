@@ -76,7 +76,7 @@ interface UEEvents
 }
 
 ///
-class UEEventsSystem : UEEvents
+final class UEEventsSystem : UEEvents
 {
 	///
 	override void register(UEEventReceiver _receiver)
