@@ -2,8 +2,10 @@
 
 import gl3n.linalg;
 
+import unecht;
+
 ///
-final class UESceneNode
+final class UESceneNode : UEComponent
 {
 public:
 	mat4 matrixWorld = mat4.identity;
@@ -16,6 +18,10 @@ public:
 	@property const(UESceneNode) parent() const { return _parent; }
 	///
 	@property void parent(UESceneNode _parent) { setParent(_parent); }
+	///
+	@property void position(vec3 _pos) { _position = _pos; }
+	///
+	@property vec3 position() const { return _position; }
 
 private:
 
@@ -46,6 +52,7 @@ private:
 
 private:
 	UESceneNode _parent;
+	vec3 _position;
 }
 
 ///

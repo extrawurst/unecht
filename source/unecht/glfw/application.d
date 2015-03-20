@@ -17,6 +17,7 @@ struct UEApplication
 {
 	UEWindow mainWindow;
 	UEEventsSystem events;
+	UEEntity rootEntity;
 
 	/// contains the game loop is run in main function
 	int run()
@@ -38,7 +39,6 @@ struct UEApplication
 
 		startEngine();
 
-		//glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
@@ -51,6 +51,12 @@ struct UEApplication
 
 			foreach(f; ue.debugTick)
 				f(glfwGetTime());
+
+			version(UEIncludeEditor)
+			{
+				import unecht.core.components.editor;
+				EditorComponent.renderEditor();
+			}
 
 			mainWindow.swapBuffers();
 
@@ -135,8 +141,21 @@ private:
 
 		ue.scene = new UEScenegraph();
 
+		version(UEIncludeEditor)
+		{
+			insertEditorEntity();
+		}
+
 		if(ue.hookStartup)
 			ue.hookStartup();
+	}
+
+	void insertEditorEntity()
+	{
+		auto newE = UEEntity.create("editor");
+
+		import unecht.core.components.editor;
+		newE.addComponent!EditorComponent;
 	}
 }
 

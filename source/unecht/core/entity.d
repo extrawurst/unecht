@@ -6,8 +6,14 @@ import unecht;
 import unecht.core.scenegraph;
 
 /// 
-class UEEntity
+final class UEEntity
 {
+	bool hideInEditor;
+	///
+	@property UESceneNode sceneNode() { return _sceneNode; } 
+	///
+	@property string name() { return _name; } 
+
 	///
 	auto addComponent(T : UEComponent)()
 	{
@@ -31,17 +37,22 @@ class UEEntity
 	}
 
 	/// factory method
-	static auto create()
+	static auto create(string _name = null)
 	{
-		return new UEEntity(ue.scene.root);
+		return new UEEntity(ue.scene.root, _name);
 	}
 
 private:
 
-	this(UESceneNode _parent)
+	this(UESceneNode _parent, string _name)
 	{
-		this.sceneNode = new UESceneNode();
-		this.sceneNode.parent = _parent;
+		if(_name)
+			this._name = _name;
+
+		this._sceneNode = new UESceneNode();
+		this._sceneNode.parent = _parent;
+
+		addComponent(this._sceneNode);
 	}
 
 	void addComponent(UEComponent _comp)
@@ -50,13 +61,13 @@ private:
 		
 		_comp.onCreate();
 		
-		components ~= _comp;
+		_components ~= _comp;
 	}
 	
 private:
-	string name = "entity";
+	string _name = "entity";
 
-	UESceneNode sceneNode;
+	UESceneNode _sceneNode;
 	
-	UEComponent[] components;
+	UEComponent[] _components;
 }
