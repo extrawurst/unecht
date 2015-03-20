@@ -27,20 +27,38 @@ final class EditorComponent : UEComponent {
 			enforce(imguiInit(fontPath));
 		}
 
+		// hide the whole entity with its hirarchie
 		this.entity.hideInEditor = true;
 	}
-	
-	void OnKeyEvent(UEEvent _ev)
+
+	private void OnKeyEvent(UEEvent _ev)
 	{
-		import std.stdio;
-		
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
 			_ev.keyEvent.key == UEKey.f1 &&
 			_ev.keyEvent.isModShift)
 			_editorVisible = !_editorVisible;
 	}
-	
+
 	static void renderEditor()
+	{
+		renderEditorGUI();
+
+		renderGrid();
+
+		renderEntities();
+	}
+
+	static void renderGrid()
+	{
+
+	}
+
+	static void renderEntities()
+	{
+
+	}
+
+	static void renderEditorGUI()
 	{
 		int cursorX, cursorY;
 		ubyte mouseButtons;
