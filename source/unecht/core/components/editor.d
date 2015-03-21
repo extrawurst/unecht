@@ -3,7 +3,7 @@
 import unecht;
 
 import unecht.core.component;
-import unecht.core.shader;
+import unecht.gl.vertexBuffer;
 
 import imgui;
 
@@ -61,7 +61,11 @@ final class EditorComponent : UEComponent {
 
 	static void renderEntities()
 	{
-		gismo.render();
+		import std.math:sinf;
+		auto time = ue.tickTime;
+		auto foo = mat4.translation(sinf(time), 0, 1.0f);
+
+		gismo.render(foo);
 	}
 
 	static void renderEditorGUI()

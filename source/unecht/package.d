@@ -8,6 +8,8 @@ public import unecht.core.component;
 
 public import unecht.glfw.application;
 
+public import gl3n.linalg;
+
 ///
 class UnechtException : Exception
 {
@@ -31,6 +33,7 @@ struct Unecht
 	UEApplication application;
 	UEEvents events;
 	ActionFunc hookStartup;
+	float tickTime;
 }
 
 __gshared Unecht ue;

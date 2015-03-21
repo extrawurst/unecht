@@ -46,6 +46,7 @@ struct UEApplication
 		while (!mainWindow.shouldClose)
 		{
 			events.cleanUp();
+			ue.tickTime = glfwGetTime();
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

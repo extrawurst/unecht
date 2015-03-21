@@ -18,4 +18,6 @@
 	"subConfigurations": {
     	"tharsis-dimgui": "derelict-gl-library",
 	},
+
+	"stringImportPaths": ["imp"]
 }
