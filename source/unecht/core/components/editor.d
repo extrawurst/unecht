@@ -3,6 +3,7 @@
 import unecht;
 
 import unecht.core.component;
+import unecht.core.shader;
 
 import imgui;
 
@@ -10,6 +11,7 @@ import imgui;
 final class EditorComponent : UEComponent {
 
 	private static bool _editorVisible;
+	private static GLVertexBuffer gismo;
 	
 	override void onCreate() {
 		super.onCreate;
@@ -29,6 +31,10 @@ final class EditorComponent : UEComponent {
 
 		// hide the whole entity with its hirarchie
 		this.entity.hideInEditor = true;
+
+		gismo = new GLVertexBuffer();
+		gismo.vertices = [vec3(0,0,0)];
+		gismo.init();
 	}
 
 	private void OnKeyEvent(UEEvent _ev)
@@ -55,7 +61,7 @@ final class EditorComponent : UEComponent {
 
 	static void renderEntities()
 	{
-
+		gismo.render();
 	}
 
 	static void renderEditorGUI()
