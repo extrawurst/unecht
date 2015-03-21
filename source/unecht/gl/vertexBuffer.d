@@ -9,21 +9,27 @@ import gl3n.linalg;
 ///
 final class GLVertexBuffer
 {
-	vec3[] vertices;
+private:
 	GLuint vbo;
+	GLuint ibo;
 	GLuint vao;
+	//TODO: remove shader hardwiring
 	GLProgram program;
 	GLShader vshader;
 	GLShader fshader;
-
+	
 	static const string simpleVShader = cast(string)import("simplevs.glsl");
 	static const string simpleFShader = cast(string)import("simplefs.glsl");
+
+public:
+	vec3[] vertices;
+	uint[] indices;
 	
 	void init()
 	{
 		vshader = new GLShader();
 		fshader = new GLShader();
-		
+
 		vshader.init(ShaderType.vertex, simpleVShader);
 		fshader.init(ShaderType.fragment, simpleFShader);
 		
@@ -31,34 +37,47 @@ final class GLVertexBuffer
 		program.init(vshader,fshader);
 
 		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
 		
 		glGenBuffers(1, &vbo);
-		
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		
-		glBufferData(GL_ARRAY_BUFFER, vertices.sizeof, vertices.ptr, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.length * vec3.sizeof, vertices.ptr, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glGenBuffers(1, &ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length * uint.sizeof, indices.ptr, GL_STATIC_DRAW);
 		
 		checkGLError();
 	}
 	
 	void render(const ref mat4 _mat)
 	{
-		glEnableVertexAttribArray(0);
-		
+		import unecht;
+		glViewport(0, 0, ue.application.mainWindow.size.width,ue.application.mainWindow.size.height);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		import std.string:toStringz;
+		auto posLoc = glGetAttribLocation(program.program, toStringz("Position"));
+		assert(posLoc != -1);
+		//import std.stdio;
+		//writefln("Debug: attrib location: %s", posLoc);
+
 		glBindVertexArray(vao);
-		
+		glEnableVertexAttribArray(posLoc);
+
+		program.validate();
 		program.bind();
 
 		program.setUniformMatrix("matWorld", _mat);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, null);
-		glDrawArrays(GL_POINTS, 0, cast(int)vertices.length);
+		glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, 0, null);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glDrawElements(GL_TRIANGLES, cast(int)indices.length, GL_UNSIGNED_INT, null);
 		
 		program.unbind();
 		
-		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(posLoc);
 		
 		checkGLError();
 	}

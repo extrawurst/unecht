@@ -107,7 +107,7 @@ final class GLProgram
 		else
 			loc = *locPtr;
 
-		glUniformMatrix4fv(loc, 1, GL_TRUE, _mat[0].ptr);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, _mat[0].ptr);
 	}
 
 	void bind()
@@ -118,6 +118,17 @@ final class GLProgram
 	void validate()
 	{
 		glValidateProgram(program);
+
+		GLint success;
+		glGetProgramiv(program, GL_VALIDATE_STATUS, &success);
+		if (!success) {
+			GLchar[1024] log;
+			GLsizei logLen;
+			glGetProgramInfoLog(program, log.sizeof, &logLen, log.ptr);
+			import std.stdio;
+			import std.conv;
+			writefln("Error validating program: '%s'", to!string(log[0..logLen-1]));
+		}
 	}
 
 	void unbind()

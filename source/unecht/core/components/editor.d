@@ -33,7 +33,12 @@ final class EditorComponent : UEComponent {
 		this.entity.hideInEditor = true;
 
 		gismo = new GLVertexBuffer();
-		gismo.vertices = [vec3(0,0,0)];
+		gismo.vertices = [
+			vec3(-0.5,0.5,0),
+			vec3(0,-0.5,1),
+			vec3(0.5,0.5,0),
+			];
+		gismo.indices = [0,1,2];
 		gismo.init();
 	}
 
@@ -47,11 +52,11 @@ final class EditorComponent : UEComponent {
 
 	static void renderEditor()
 	{
-		renderEditorGUI();
-
 		renderGrid();
 
 		renderEntities();
+
+		renderEditorGUI();
 	}
 
 	static void renderGrid()
@@ -64,6 +69,7 @@ final class EditorComponent : UEComponent {
 		import std.math:sinf;
 		auto time = ue.tickTime;
 		auto foo = mat4.translation(sinf(time), 0, 1.0f);
+		//foo = mat4.identity;
 
 		gismo.render(foo);
 	}
