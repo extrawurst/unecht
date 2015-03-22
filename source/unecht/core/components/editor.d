@@ -3,7 +3,10 @@
 import unecht;
 
 import unecht.core.component;
+import unecht.core.components.camera;
 import unecht.gl.vertexBuffer;
+
+import derelict.opengl3.gl3;
 
 import imgui;
 
@@ -12,6 +15,7 @@ final class EditorComponent : UEComponent {
 
 	private static bool _editorVisible;
 	private static GLVertexBuffer gismo;
+	private static Camera cam;
 	
 	override void onCreate() {
 		super.onCreate;
@@ -40,6 +44,9 @@ final class EditorComponent : UEComponent {
 			];
 		gismo.indices = [0,1,2];
 		gismo.init();
+
+		cam = new Camera();
+		cam.pos = vec3(0,0,-100);
 	}
 
 	private void OnKeyEvent(UEEvent _ev)
@@ -48,6 +55,23 @@ final class EditorComponent : UEComponent {
 			_ev.keyEvent.key == UEKey.f1 &&
 			_ev.keyEvent.isModShift)
 			_editorVisible = !_editorVisible;
+
+		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Repeat ||
+			_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
+		{
+			if(_ev.keyEvent.key == UEKey.up)
+				cam.pos += vec3(0,0,1);
+			else if(_ev.keyEvent.key == UEKey.down)
+				cam.pos += vec3(0,0,-1);
+
+			if(_ev.keyEvent.key == UEKey.left)
+				cam.pos += vec3(-1,0,0);
+			else if(_ev.keyEvent.key == UEKey.right)
+				cam.pos += vec3(1,0,0);
+
+			import std.stdio;
+			writefln("cam: %s",cam.pos);
+		}
 	}
 
 	static void renderEditor()
@@ -66,9 +90,13 @@ final class EditorComponent : UEComponent {
 
 	static void renderEntities()
 	{
-		import std.math:sinf;
+		import std.math:sinf,PI;
+
+		cam.updateProjection();
+		cam.updateLook();
+
 		auto time = ue.tickTime;
-		auto foo = mat4.translation(sinf(time), 0, 1.0f);
+		auto foo =  cam.matProjection * cam.matLook * mat4.translation(sinf(time), 0, 0);
 		//foo = mat4.identity;
 
 		gismo.render(foo);

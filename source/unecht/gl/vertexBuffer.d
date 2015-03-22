@@ -52,10 +52,6 @@ public:
 	
 	void render(const ref mat4 _mat)
 	{
-		import unecht;
-		glViewport(0, 0, ue.application.mainWindow.size.width,ue.application.mainWindow.size.height);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
 		import std.string:toStringz;
 		auto posLoc = glGetAttribLocation(program.program, toStringz("Position"));
 		assert(posLoc != -1);

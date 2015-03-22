@@ -107,7 +107,7 @@ final class GLProgram
 		else
 			loc = *locPtr;
 
-		glUniformMatrix4fv(loc, 1, GL_FALSE, _mat[0].ptr);
+		glUniformMatrix4fv(loc, 1, GL_TRUE, _mat[0].ptr);
 	}
 
 	void bind()
