@@ -43,17 +43,26 @@ final class EditorComponent : UEComponent {
 	private void OnKeyEvent(UEEvent _ev)
 	{
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
-			_ev.keyEvent.key == UEKey.f1 &&
-			_ev.keyEvent.isModShift)
+			_ev.keyEvent.key == UEKey.f1)
 			_editorVisible = !_editorVisible;
 
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Repeat ||
 			_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
 		{
-			if(_ev.keyEvent.key == UEKey.up)
-				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,1);
-			else if(_ev.keyEvent.key == UEKey.down)
-				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,-1);
+			if(_ev.keyEvent.isModShift)
+			{
+				if(_ev.keyEvent.key == UEKey.up)
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,1,0);
+				else if(_ev.keyEvent.key == UEKey.down)
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,-1,0);
+			}
+			else
+			{
+				if(_ev.keyEvent.key == UEKey.up)
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,1);
+				else if(_ev.keyEvent.key == UEKey.down)
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,-1);
+			}
 
 			if(_ev.keyEvent.key == UEKey.left)
 				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(-1,0,0);

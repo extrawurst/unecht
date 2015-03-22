@@ -27,11 +27,11 @@ struct UEEvent
 
 		UEKey key;
 		Action action;
-		//bool shift;
+		bool shift;
 
 		//TODO: impl
 		/// is shift mod set
-		@property bool isModShift() { return true; }
+		@property bool isModShift() { return shift; }
 	}
 	KeyEvent keyEvent;
 

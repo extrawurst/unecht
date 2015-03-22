@@ -90,6 +90,9 @@ package:
 		else if(action == GLFW_REPEAT)
 			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
 
+		if( (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT)
+			ev.keyEvent.shift = true;
+
 		events.trigger(ev);
 	}
 
