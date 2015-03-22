@@ -15,7 +15,7 @@ final class EditorComponent : UEComponent {
 
 	private static bool _editorVisible;
 	private static GLVertexBuffer gismo;
-	private static Camera cam;
+	private static UECamera _editorCam;
 	
 	override void onCreate() {
 		super.onCreate;
@@ -45,8 +45,8 @@ final class EditorComponent : UEComponent {
 		gismo.indices = [0,1,2];
 		gismo.init();
 
-		cam = new Camera();
-		cam.pos = vec3(0,0,-100);
+		_editorCam = entity.addComponent!UECamera;
+		_editorCam.sceneNode.position = vec3(0,0,-100);
 	}
 
 	private void OnKeyEvent(UEEvent _ev)
@@ -60,17 +60,17 @@ final class EditorComponent : UEComponent {
 			_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
 		{
 			if(_ev.keyEvent.key == UEKey.up)
-				cam.pos += vec3(0,0,1);
+				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,1);
 			else if(_ev.keyEvent.key == UEKey.down)
-				cam.pos += vec3(0,0,-1);
+				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,-1);
 
 			if(_ev.keyEvent.key == UEKey.left)
-				cam.pos += vec3(-1,0,0);
+				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(-1,0,0);
 			else if(_ev.keyEvent.key == UEKey.right)
-				cam.pos += vec3(1,0,0);
+				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(1,0,0);
 
 			import std.stdio;
-			writefln("cam: %s",cam.pos);
+			writefln("cam: %s",_editorCam.sceneNode.position);
 		}
 	}
 
@@ -90,14 +90,13 @@ final class EditorComponent : UEComponent {
 
 	static void renderEntities()
 	{
-		import std.math:sinf,PI;
+		import std.math:sinf;
 
-		cam.updateProjection();
-		cam.updateLook();
+		_editorCam.updateProjection();
+		_editorCam.updateLook();
 
 		auto time = ue.tickTime;
-		auto foo =  cam.matProjection * cam.matLook * mat4.translation(sinf(time), 0, 0);
-		//foo = mat4.identity;
+		auto foo =  _editorCam.matProjection * _editorCam.matLook * mat4.translation(sinf(time), 0, 0);
 
 		gismo.render(foo);
 	}

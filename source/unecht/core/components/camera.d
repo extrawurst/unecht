@@ -3,29 +3,28 @@
 import unecht.core.component;
 
 import gl3n.linalg;
-import std.math;
+import std.math:PI_4;
 
-//TODO: make component
+//TODO: add properties and make matrix updates implicit
 /// 
-final class Camera
+final class UECamera : UEComponent
 {
-	vec3 pos;
 	vec3 dir = vec3(0,0,1);
 	vec3 up = vec3(0,1,0);
 
 	mat4 matProjection;
 	mat4 matLook;
 
-	float fieldOfView = PI / 4;
+	float fieldOfView = PI_4;
 	float clipNear = 1;
 	float clipFar = 1000;
 
 	void updateLook()
 	{
-		auto target = pos + dir;
+		auto target = entity.sceneNode.position + dir;
 
 		matLook = mat4.look_at(
-			pos,
+			entity.sceneNode.position,
 			target,
 			up);
 	}

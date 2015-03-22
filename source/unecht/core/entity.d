@@ -58,10 +58,10 @@ private:
 	void addComponent(UEComponent _comp)
 	{
 		_comp.setEntity(this);
-		
-		_comp.onCreate();
-		
+
 		_components ~= _comp;
+
+		_comp.onCreate();
 	}
 	
 private:

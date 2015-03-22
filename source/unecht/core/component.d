@@ -17,7 +17,7 @@ class UEComponent
 	///
 	@property UEEntity entity() {return _entity;}
 	///
-	@property UESceneNode sceneNode() {return _sceneNode;}
+	@property UESceneNode sceneNode() {return _entity.sceneNode;}
 	
 	/// helper
 	void registerEvent(UEEventType _type, UEEventCallback _callback)
@@ -30,5 +30,4 @@ package:
 
 private:
 	UEEntity _entity;
-	UESceneNode _sceneNode;
 }
