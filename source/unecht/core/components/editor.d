@@ -77,7 +77,17 @@ final class EditorComponent : UEComponent {
 	static void renderEditor()
 	{
 		if(_editorVisible)
+		{
 			_editorCam.render();
+			//TODO: support wireframe shader
+			//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+			//_editorCam.clearBitColor = false;
+			//_editorCam.clearBitDepth = false;
+			//_editorCam.render();
+			//glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+			//_editorCam.clearBitColor = true;
+			//_editorCam.clearBitDepth = true;
+		}
 
 		renderGrid();
 
