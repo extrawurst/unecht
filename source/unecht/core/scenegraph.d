@@ -69,6 +69,29 @@ public:
 		updateNode(_root);
 	}
 
+	auto gatherAllComponents(T : UEComponent)()
+	{
+		T[] res;
+		gatherAllComponentsInNode!T(_root,res);
+		return res;
+	}
+
+	private void gatherAllComponentsInNode(T : UEComponent)(UESceneNode _node, ref T[] _result)
+	{
+		if(_node.entity)
+		{
+			foreach(c; _node.entity.components)
+			{
+				auto componentAsT = cast(T)c;
+				if(componentAsT)
+					_result ~= componentAsT;
+			}
+		}
+
+		foreach(child; _node.children)
+			gatherAllComponentsInNode!T(child,_result);
+	}
+
 	private void updateNode(UESceneNode _node)
 	{
 		if(!_node)

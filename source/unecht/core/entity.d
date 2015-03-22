@@ -13,6 +13,8 @@ final class UEEntity
 	@property UESceneNode sceneNode() { return _sceneNode; } 
 	///
 	@property string name() { return _name; } 
+	///
+	@property UEComponent[] components() { return _components; } 
 
 	///
 	auto addComponent(T : UEComponent)()

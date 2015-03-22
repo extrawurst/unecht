@@ -15,6 +15,13 @@ struct UESize
 }
 
 ///
+struct UERect
+{
+	UEPos pos;
+	UESize size;
+}
+
+///
 struct UEWindowSettings
 {
 	UESize size = UESize(128,128);

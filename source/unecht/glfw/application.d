@@ -11,6 +11,8 @@ import unecht.core.types;
 public import unecht.glfw.types;
 
 import unecht;
+import unecht.core.components.camera;
+import unecht.core.components.misc;
 
 ///
 struct UEApplication
@@ -48,7 +50,9 @@ struct UEApplication
 			events.cleanUp();
 			ue.tickTime = glfwGetTime();
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			ue.scene.update();
+
+			render();
 
 			foreach(f; ue.debugTick)
 				f(glfwGetTime());
@@ -157,6 +161,14 @@ private:
 
 		import unecht.core.components.editor;
 		newE.addComponent!EditorComponent;
+	}
+
+	void render()
+	{
+		auto cams = ue.scene.gatherAllComponents!UECamera;
+
+		foreach(cam; cams)
+			cam.render();
 	}
 }
 

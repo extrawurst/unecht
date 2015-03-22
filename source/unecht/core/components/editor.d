@@ -14,7 +14,7 @@ import imgui;
 final class EditorComponent : UEComponent {
 
 	private static bool _editorVisible;
-	private static GLVertexBuffer gismo;
+	//private static GLVertexBuffer gismo;
 	private static UECamera _editorCam;
 	
 	override void onCreate() {
@@ -35,15 +35,6 @@ final class EditorComponent : UEComponent {
 
 		// hide the whole entity with its hirarchie
 		this.entity.hideInEditor = true;
-
-		gismo = new GLVertexBuffer();
-		gismo.vertices = [
-			vec3(-0.5,0.5,0),
-			vec3(0,-0.5,1),
-			vec3(0.5,0.5,0),
-			];
-		gismo.indices = [0,1,2];
-		gismo.init();
 
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.sceneNode.position = vec3(0,0,-100);
@@ -76,6 +67,9 @@ final class EditorComponent : UEComponent {
 
 	static void renderEditor()
 	{
+		if(_editorVisible)
+			_editorCam.render();
+
 		renderGrid();
 
 		renderEntities();
@@ -90,15 +84,7 @@ final class EditorComponent : UEComponent {
 
 	static void renderEntities()
 	{
-		import std.math:sinf;
 
-		_editorCam.updateProjection();
-		_editorCam.updateLook();
-
-		auto time = ue.tickTime;
-		auto foo =  _editorCam.matProjection * _editorCam.matLook * mat4.translation(sinf(time), 0, 0);
-
-		gismo.render(foo);
 	}
 
 	static void renderEditorGUI()
