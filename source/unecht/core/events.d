@@ -122,7 +122,7 @@ final class UEEventsSystem : UEEvents
 	{
 		foreach(r; receiver)
 		{
-			if(r.removed)
+			if(r.removed || !r.component.enabled)
 				continue;
 
 			if(r.eventType == _ev.eventType)

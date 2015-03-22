@@ -15,9 +15,13 @@ class UEComponent
 	void onCreate() {}
 	
 	///
-	@property UEEntity entity() {return _entity;}
+	@property bool enabled() const { return _enabled; }
 	///
-	@property UESceneNode sceneNode() {return _entity.sceneNode;}
+	@property void enabled(bool _value) { _enabled = _value; }
+	///
+	@property UEEntity entity() { return _entity; }
+	///
+	@property UESceneNode sceneNode() { return _entity.sceneNode; }
 	
 	/// helper
 	void registerEvent(UEEventType _type, UEEventCallback _callback)
@@ -30,4 +34,6 @@ package:
 
 private:
 	UEEntity _entity;
+	//TODO: disabled by default
+	bool _enabled = true;
 }

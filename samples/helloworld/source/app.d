@@ -35,7 +35,7 @@ final class TestComponent : UEComponent {
 	{
 		import std.stdio;
 
-		writefln("key: %s",_ev.keyEvent);
+		//writefln("key: %s",_ev.keyEvent);
 
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
 			_ev.keyEvent.key == UEKey.esc)
@@ -54,7 +54,7 @@ shared static this()
 		newE.addComponent!TestComponent;
 
 		auto newE2 = UEEntity.create("app test entity 2");
-		newE2.sceneNode.position = vec3(0,0,-100);
+		newE2.sceneNode.position = vec3(0,1,-100);
 
 		import unecht.core.components.camera;
 		auto cam = newE2.addComponent!UECamera;

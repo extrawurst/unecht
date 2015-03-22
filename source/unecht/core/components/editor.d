@@ -11,6 +11,32 @@ import derelict.opengl3.gl3;
 import imgui;
 
 ///
+final class UEEditorgridComponent : UEComponent {
+
+	override void onCreate() {
+		super.onCreate;
+
+		import unecht.core.components.misc;
+		import unecht.gl.vertexBuffer;
+		
+		auto renderer = this.entity.addComponent!UERenderer;
+		auto mesh = this.entity.addComponent!UEMesh;
+		
+		renderer.mesh = mesh;
+		
+		mesh.vertexBuffer = new GLVertexBuffer();
+		mesh.vertexBuffer.vertices = [
+			vec3(-10,0,-10),
+			vec3(10,0,-10),
+			vec3(10,0,10),
+			vec3(-10,0,10),
+		];
+		mesh.vertexBuffer.indices = [0,1,2, 0,2,3];
+		mesh.vertexBuffer.init();
+	}
+}
+
+///
 final class EditorComponent : UEComponent {
 
 	private static bool _editorVisible;
@@ -38,6 +64,8 @@ final class EditorComponent : UEComponent {
 
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.sceneNode.position = vec3(0,0,-100);
+
+		entity.addComponent!UEEditorgridComponent;
 	}
 
 	private void OnKeyEvent(UEEvent _ev)
@@ -69,8 +97,8 @@ final class EditorComponent : UEComponent {
 			else if(_ev.keyEvent.key == UEKey.right)
 				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(1,0,0);
 
-			import std.stdio;
-			writefln("cam: %s",_editorCam.sceneNode.position);
+			//import std.stdio;
+			//writefln("cam: %s",_editorCam.sceneNode.position);
 		}
 	}
 

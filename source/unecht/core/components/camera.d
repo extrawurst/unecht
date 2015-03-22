@@ -69,6 +69,9 @@ final class UECamera : UEComponent
 		glViewport(viewport.pos.left,viewport.pos.top,viewport.size.width,viewport.size.height);
 		
 		foreach(r; renderers)
-			r.render(this);
+		{
+			if(r.enabled)
+				r.render(this);
+		}
 	}
 }
