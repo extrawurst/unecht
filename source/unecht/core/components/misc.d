@@ -45,6 +45,7 @@ final class UEMaterial : UEComponent
 		setProgram(vs_flat,fs_flat, "flat");
 	}
 
+	///
 	void setProgram(string _vs, string _fs, string _name)
 	{
 		auto vshader = scoped!GLShader();
@@ -58,6 +59,7 @@ final class UEMaterial : UEComponent
 		program.create(vshader,fshader, _name);
 	}
 
+	///
 	void preRender()
 	{
 		glPolygonMode( GL_FRONT_AND_BACK, polygonFill ? GL_FILL : GL_LINE );
@@ -68,6 +70,7 @@ final class UEMaterial : UEComponent
 		program.bind();
 	}
 
+	///
 	void postRender()
 	{
 		program.unbind();
@@ -87,6 +90,7 @@ final class UERenderer : UEComponent
 	UEMaterial material;
 	UEMesh mesh;
 
+	///
 	void render(UECamera _cam)
 	{
 		auto mat = _cam.matProjection * _cam.matLook;

@@ -37,6 +37,12 @@ public:
 		this.create(_vertexData,false,ElementType.float_,_static);
 	}
 
+	/// create uv buffer
+	this(vec2[] _uvData, bool _static=true)
+	{
+		this.create(_uvData,false,ElementType.float_,_static);
+	}
+
 	/// create index buffer
 	this(uint[] _indexData, bool _static=true)
 	{
@@ -68,11 +74,13 @@ public:
 		checkGLError();
 	}
 
+	///
 	void destroy()
 	{
 		//TODO: destroy vbo and vao
 	}
 
+	///
 	void bind(GLuint _index)
 	{
 		if(_elementType != ElementType.none)
@@ -92,6 +100,7 @@ public:
 		checkGLError();
 	}
 
+	///
 	void unbind()
 	{
 		if(_elementType != ElementType.none)
@@ -106,6 +115,7 @@ public:
 		checkGLError();
 	}
 
+	///
 	void renderIndexed()
 	{
 		glDrawElements(GL_TRIANGLES, _elementCount, GL_UNSIGNED_INT, null);
@@ -114,6 +124,7 @@ public:
 	}
 }
 
+///
 static void checkGLError()
 {
 	int i;
@@ -131,6 +142,7 @@ static void checkGLError()
 	}
 }
 
+///
 private static string getGLErrorAsString(int _err)
 {
 	switch(_err)

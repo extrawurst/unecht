@@ -43,6 +43,7 @@ final class UEEditorgridComponent : UEComponent {
 	}
 }
 
+///
 final class UEEditorComponent : UEComponent {
 
 	mixin(UERegisterComponent!());
@@ -55,6 +56,7 @@ final class UEEditorComponent : UEComponent {
 		entity.addComponent!UEEditorgridComponent;
 	}
 
+	///
 	private void OnKeyEvent(UEEvent _ev)
 	{
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Repeat ||
@@ -146,6 +148,7 @@ final class EditorRootComponent : UEComponent {
 		editorComponent.sceneNode.enabled = false;
 	}
 
+	///
 	private void OnKeyEvent(UEEvent _ev)
 	{
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
@@ -156,6 +159,7 @@ final class EditorRootComponent : UEComponent {
 		}
 	}
 
+	///
 	static void renderEditor()
 	{
 		if(_editorVisible)
@@ -176,11 +180,13 @@ final class EditorRootComponent : UEComponent {
 		renderEditorGUI();
 	}
 
+	///
 	static void renderEntities()
 	{
 
 	}
 
+	///
 	static void renderEditorGUI()
 	{
 		ubyte mouseButtons = ue.mouseDown?MouseButton.left:0;
@@ -202,6 +208,7 @@ final class EditorRootComponent : UEComponent {
 		imguiRender(ue.application.mainWindow.size.width,ue.application.mainWindow.size.height);
 	}
 
+	///
 	private static void renderScene()
 	{
 		static int scroll;
@@ -215,6 +222,7 @@ final class EditorRootComponent : UEComponent {
 		imguiEndScrollArea();
 	}
 
+	///
 	private static void renderInspector()
 	{
 		if(!_currentEntity)
@@ -237,6 +245,7 @@ final class EditorRootComponent : UEComponent {
 		imguiEndScrollArea();
 	}
 
+	///
 	private static void renderSceneNode(UESceneNode _node)
 	{
 		if(_node.entity.hideInEditor)
