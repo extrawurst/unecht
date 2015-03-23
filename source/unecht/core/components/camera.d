@@ -5,7 +5,6 @@ import unecht.core.component;
 import unecht.core.types;
 
 import gl3n.linalg;
-import std.math:PI_2;
 
 //TODO: separate module
 ///
@@ -36,6 +35,7 @@ final class UECamera : UEComponent
 			import imgui;
 			import std.format;
 			imguiLabel(format("pos: %s",thisT.entity.sceneNode.position));
+			imguiLabel(format("rot: %s",thisT.rotation));
 			imguiLabel(format("dir: %s",thisT.dir));
 			imguiLabel(format("up: %s",thisT.up));
 		}
@@ -45,13 +45,17 @@ final class UECamera : UEComponent
 		UEComponentsManager.editors["UECamera"] = new UECameraInspector();
 	}
 
-	vec3 dir = vec3(0,0,1);
-	vec3 up = vec3(0,1,0);
+	vec3 rotation = vec3(0,0,0);
+	private vec3 dir;
+	private vec3 up;
+
+	static const vec3 ORIG_DIR = vec3(0,0,1);
+	static const vec3 ORIG_UP = vec3(0,1,0);
 
 	mat4 matProjection;
 	mat4 matLook;
 
-	float fieldOfView = PI_2;
+	float fieldOfView = 60;
 	float clipNear = 1;
 	float clipFar = 1000;
 
@@ -70,6 +74,17 @@ final class UECamera : UEComponent
 
 	void updateLook()
 	{
+		import std.math:PI;
+
+		dir = ORIG_DIR;
+		dir = dir * quat.xrotation(rotation.x * (PI/180.0f));
+		dir = dir * quat.yrotation(rotation.y * (PI/180.0f));
+
+		up = ORIG_UP;
+		up = up * quat.zrotation(rotation.z * (PI/180.0f));
+		up = up * quat.xrotation(rotation.x * (PI/180.0f));
+		up = up * quat.yrotation(rotation.y * (PI/180.0f));
+
 		auto target = entity.sceneNode.position + dir;
 
 		matLook = mat4.look_at(

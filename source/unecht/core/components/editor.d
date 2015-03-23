@@ -70,8 +70,7 @@ final class EditorComponent : UEComponent {
 		//this.entity.hideInEditor = true;
 
 		_editorCam = entity.addComponent!UECamera;
-		_editorCam.sceneNode.position = vec3(0,500,0);
-		_editorCam.dir = vec3(0,-1,-0.01);
+		_editorCam.sceneNode.position = vec3(0,5,-20);
 
 		entity.addComponent!UEEditorgridComponent;
 	}
@@ -107,27 +106,24 @@ final class EditorComponent : UEComponent {
 			else if(_ev.keyEvent.key == UEKey.right)
 				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(speed,0,0);
 				
-			enum rotSpeed = 0.01f;
+			enum rotSpeed = 1.0f;
 			if(_ev.keyEvent.key == UEKey.w ||
 				_ev.keyEvent.key == UEKey.s)
 			{
 				bool inc = _ev.keyEvent.key == UEKey.w;
-				_editorCam.dir = quat.xrotation(rotSpeed * (inc?1:-1)) * _editorCam.dir;
-				_editorCam.dir.normalize();
+				_editorCam.rotation = _editorCam.rotation + vec3(rotSpeed * (inc?1.0f:-1.0f),0,0);
 			}
 			if(_ev.keyEvent.key == UEKey.a ||
 				_ev.keyEvent.key == UEKey.d)
 			{
 				bool inc = _ev.keyEvent.key == UEKey.a;
-				_editorCam.dir = quat.yrotation(rotSpeed * (inc?1:-1)) * _editorCam.dir;
-				_editorCam.dir.normalize();
+				_editorCam.rotation = _editorCam.rotation + vec3(0,rotSpeed * (inc?1.0f:-1.0f),0);
 			}
 			if(_ev.keyEvent.key == UEKey.q ||
 				_ev.keyEvent.key == UEKey.e)
 			{
 				bool inc = _ev.keyEvent.key == UEKey.q;
-				_editorCam.dir = quat.zrotation(rotSpeed * (inc?1:-1)) * _editorCam.dir;
-				_editorCam.dir.normalize();
+				_editorCam.rotation = _editorCam.rotation + vec3(0,0,rotSpeed * (inc?1.0f:-1.0f));
 			}
 		}
 	}
