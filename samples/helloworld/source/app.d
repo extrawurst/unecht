@@ -13,6 +13,7 @@ final class TestComponent : UEComponent {
 
 		import unecht.core.components.misc;
 		import unecht.gl.vertexBufferObject;
+		import unecht.gl.vertexArrayObject;
 
 		auto renderer = this.entity.addComponent!UERenderer;
 		auto mesh = this.entity.addComponent!UEMesh;
@@ -20,14 +21,23 @@ final class TestComponent : UEComponent {
 		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.mesh = mesh;
 
-		mesh.vertexBuffer = new GLVertexBufferObject();
-		mesh.vertexBuffer.vertices = [
-			vec3(-0.5,0.5,0),
-			vec3(0,-0.5,0),
-			vec3(0.5,0.5,0),
-		];
-		mesh.vertexBuffer.indices = [0,1,2];
-		mesh.vertexBuffer.create();
+		mesh.vertexArrayObject = new GLVertexArrayObject();
+		mesh.vertexArrayObject.bind();
+
+		mesh.vertexBuffer = new GLVertexBufferObject([
+				vec3(-0.5,0.5,0),
+				vec3(0,-0.5,0),
+				vec3(0.5,0.5,0),
+			]);
+
+		mesh.normalBuffer = new GLVertexBufferObject([
+				vec3(0,0,1),
+				vec3(0,0,1),
+				vec3(0,0,1),
+			]);
+
+		mesh.indexBuffer = new GLVertexBufferObject([0,1,2]);
+		mesh.vertexArrayObject.unbind();
 	}
 
 	override void onUpdate() {

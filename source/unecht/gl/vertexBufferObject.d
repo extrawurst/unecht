@@ -11,65 +11,104 @@ final class GLVertexBufferObject
 {
 private:
 	GLuint vbo;
-	GLuint ibo;
-	GLuint vao;
-
-public:
-	vec3[] vertices;
-	uint[] indices;
 	GLuint boundToIndex = GLuint.max;
 
+	int _elementCount;
+	int _elementSize;
+	uint _elementBufferType;
+	ElementType _elementType;
+
+	enum ElementType
+	{
+		none,
+		float_,
+	}
+
+public:
+
+	///
+	@property int elementSize() const { return _elementSize; }
+	///
+	@property int elementCount() const { return _elementCount; }
+
+	/// create vertex buffer
+	this(vec3[] _vertexData, bool _static=true)
+	{
+		this.create(_vertexData,false,ElementType.float_,_static);
+	}
+
+	/// create index buffer
+	this(uint[] _indexData, bool _static=true)
+	{
+		this.create(_indexData,true,ElementType.none,_static);
+	}
+
+	///
 	~this()
 	{
 		//TODO: ensure teardown
 	}
 
-	void create()
+	///
+	private void create(T)(T[] _data, bool _elementBuffer, ElementType _elementType, bool _static)
 	{
-		glGenVertexArrays(1, &vao);
-		
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertices.length * vec3.sizeof, vertices.ptr, GL_STATIC_DRAW);
+		this._elementBufferType = _elementBuffer?GL_ELEMENT_ARRAY_BUFFER:GL_ARRAY_BUFFER;
+		this._elementType = _elementType;
+		this._elementCount = cast(int)_data.length;
 
-		glGenBuffers(1, &ibo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length * uint.sizeof, indices.ptr, GL_STATIC_DRAW);
+		glGenBuffers(1, &vbo);
+		glBindBuffer(_elementBufferType, vbo);
+		glBufferData(_elementBufferType, _data.length * T.sizeof, _data.ptr, GL_STATIC_DRAW);
+
+		if(_elementType != ElementType.none)
+		{
+			this._elementSize = cast(int)(T.sizeof / float.sizeof);
+		}
 		
 		checkGLError();
 	}
 
 	void destroy()
 	{
-
+		//TODO: destroy vbo and vao
 	}
 
 	void bind(GLuint _index)
 	{
-		assert(boundToIndex == GLuint.max);
-		boundToIndex = _index;
+		if(_elementType != ElementType.none)
+		{
+			assert(boundToIndex == GLuint.max);
+			boundToIndex = _index;
 
-		glBindVertexArray(vao);
-		glEnableVertexAttribArray(boundToIndex);
+			glEnableVertexAttribArray(boundToIndex);
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(boundToIndex, 3, GL_FLOAT, GL_FALSE, 0, null);
+			glBindBuffer(_elementBufferType, vbo);
+			assert(_elementType == ElementType.float_, "only float supported right now");
+			glVertexAttribPointer(boundToIndex, _elementSize, GL_FLOAT, GL_FALSE, 0, null);
+		}
+		else
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		checkGLError();
 	}
 
 	void unbind()
 	{
-		assert(boundToIndex != GLuint.max);
+		if(_elementType != ElementType.none)
+		{
+			assert(boundToIndex != GLuint.max);
 
-		glDisableVertexAttribArray(boundToIndex);
+			glDisableVertexAttribArray(boundToIndex);
 
-		boundToIndex = GLuint.max;
+			boundToIndex = GLuint.max;
+		}
+
+		checkGLError();
 	}
 
 	void renderIndexed()
 	{
-		glDrawElements(GL_TRIANGLES, cast(int)indices.length, GL_UNSIGNED_INT, null);
+		glDrawElements(GL_TRIANGLES, _elementCount, GL_UNSIGNED_INT, null);
 		
 		checkGLError();
 	}

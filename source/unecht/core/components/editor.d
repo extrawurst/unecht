@@ -5,6 +5,7 @@ import unecht;
 import unecht.core.component;
 import unecht.core.components.camera;
 import unecht.gl.vertexBufferObject;
+import unecht.gl.vertexArrayObject;
 
 import derelict.opengl3.gl3;
 
@@ -27,15 +28,25 @@ final class UEEditorgridComponent : UEComponent {
 		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.material.polygonFill = false;
 
-		mesh.vertexBuffer = new GLVertexBufferObject();
-		mesh.vertexBuffer.vertices = [
-			vec3(-10,0,-10),
-			vec3(10,0,-10),
-			vec3(10,0,10),
-			vec3(-10,0,10),
-		];
-		mesh.vertexBuffer.indices = [0,1,2, 0,2,3];
-		mesh.vertexBuffer.create();
+		mesh.vertexArrayObject = new GLVertexArrayObject();
+		mesh.vertexArrayObject.bind();
+
+		mesh.vertexBuffer = new GLVertexBufferObject([
+				vec3(-10,0,-10),
+				vec3(10,0,-10),
+				vec3(10,0,10),
+				vec3(-10,0,10),
+			]);
+
+		mesh.normalBuffer = new GLVertexBufferObject([
+				vec3(0,1,0),
+				vec3(0,1,0),
+				vec3(0,1,0),
+				vec3(0,1,0),
+			],true);
+
+		mesh.indexBuffer = new GLVertexBufferObject([0,1,2, 0,2,3]);
+		mesh.vertexArrayObject.unbind();
 	}
 }
 

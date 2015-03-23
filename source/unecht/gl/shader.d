@@ -105,6 +105,21 @@ final class GLProgram
 		}
 	}
 
+	///
+	void setUniformVec3(string _name, in vec3 _val)
+	{
+		auto locPtr = _name in uniforms;
+		GLint loc;
+		
+		if(!locPtr)
+			loc = addUniform(_name);
+		else
+			loc = *locPtr;
+		
+		glUniform3fv(loc, 1, _val.vector.ptr);
+	}
+
+	///
 	void setUniformMatrix(string _name, const ref mat4 _mat)
 	{
 		auto locPtr = _name in uniforms;

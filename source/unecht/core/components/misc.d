@@ -5,6 +5,7 @@ import unecht.core.component;
 import unecht.core.components.camera;
 
 import unecht.gl.vertexBufferObject;
+import unecht.gl.vertexArrayObject;
 import unecht.gl.shader;
 import derelict.opengl3.gl3;
 
@@ -13,7 +14,10 @@ final class UEMesh : UEComponent
 {
 	mixin(UERegisterComponent!());
 
+	GLVertexArrayObject vertexArrayObject;
 	GLVertexBufferObject vertexBuffer;
+	GLVertexBufferObject indexBuffer;
+	GLVertexBufferObject normalBuffer;
 }
 
 /// 
@@ -48,7 +52,6 @@ final class UEMaterial : UEComponent
 	{
 		glPolygonMode( GL_FRONT_AND_BACK, polygonFill ? GL_FILL : GL_LINE );
 
-		program.validate();
 		program.bind();
 	}
 
@@ -78,13 +81,24 @@ final class UERenderer : UEComponent
 		import std.string:toStringz;
 		auto posLoc = glGetAttribLocation(material.program.program, toStringz("Position"));
 		assert(posLoc != -1);
+		auto normLoc = glGetAttribLocation(material.program.program, toStringz("Normal"));
+		assert(normLoc != -1);
 		
 		material.program.setUniformMatrix("matWorld", mat);
+		material.program.setUniformVec3("v3ViewDir", _cam.direction);
+		//material.program.setUniformVec3("v3Ambient", );
 
+		mesh.vertexArrayObject.bind();
+		scope(exit) mesh.vertexArrayObject.unbind();
 		mesh.vertexBuffer.bind(posLoc);
 		scope(exit) mesh.vertexBuffer.unbind();
+		mesh.normalBuffer.bind(normLoc);
+		scope(exit) mesh.normalBuffer.unbind();
+		mesh.indexBuffer.bind(0);
+		scope(exit) mesh.indexBuffer.unbind();
 
-		mesh.vertexBuffer.renderIndexed();
+		material.program.validate();
+		mesh.indexBuffer.renderIndexed();
 
 		if(material)
 			material.postRender();

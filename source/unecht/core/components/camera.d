@@ -45,6 +45,8 @@ final class UECamera : UEComponent
 		UEComponentsManager.editors["UECamera"] = new UECameraInspector();
 	}
 
+	@property auto direction() const { return dir; }
+
 	vec3 rotation = vec3(0,0,0);
 	private vec3 dir;
 	private vec3 up;
