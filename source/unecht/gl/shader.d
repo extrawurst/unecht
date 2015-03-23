@@ -21,7 +21,7 @@ final class GLShader
 	string errors;
 	bool success;
 
-	void init(ShaderType _type, string _src)
+	void setup(ShaderType _type, string _src)
 	{
 		shaderType = _type;
 
@@ -45,6 +45,14 @@ final class GLShader
 			import std.stdio;
 			writefln("Error compiling shader: '%s'", errors);
 		}
+	}
+
+	///
+	void destroy()
+	{
+		glDeleteShader(shader);
+		success = false;
+		errors = null;
 	}
 }
 

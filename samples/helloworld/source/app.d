@@ -17,12 +17,13 @@ final class TestComponent : UEComponent {
 		auto renderer = this.entity.addComponent!UERenderer;
 		auto mesh = this.entity.addComponent!UEMesh;
 	
+		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.mesh = mesh;
 
 		mesh.vertexBuffer = new GLVertexBuffer();
 		mesh.vertexBuffer.vertices = [
 			vec3(-0.5,0.5,0),
-			vec3(0,-0.5,1),
+			vec3(0,-0.5,0),
 			vec3(0.5,0.5,0),
 		];
 		mesh.vertexBuffer.indices = [0,1,2];

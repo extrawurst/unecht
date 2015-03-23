@@ -25,7 +25,7 @@ final class UEEditorgridComponent : UEComponent {
 		auto mesh = this.entity.addComponent!UEMesh;
 		
 		renderer.mesh = mesh;
-		renderer.material = new UEMaterial();
+		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.material.polygonFill = false;
 		
 		mesh.vertexBuffer = new GLVertexBuffer();
