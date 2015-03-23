@@ -161,16 +161,13 @@ private:
 
 		ue.scene = new UEScenegraph();
 
-		version(UEIncludeEditor)
-		{
-			insertEditorEntity();
-		}
+		version(UEIncludeEditor)insertEditorEntity();
 
 		if(ue.hookStartup)
 			ue.hookStartup();
 	}
 
-	void insertEditorEntity()
+	version(UEIncludeEditor)void insertEditorEntity()
 	{
 		auto newE = UEEntity.create("editor");
 		import unecht.core.components.editor;

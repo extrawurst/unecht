@@ -9,7 +9,7 @@ import unecht;
 template UERegisterComponent()
 {
 	enum UERegisterComponent = q{
-		override @property string name() { return typeof(this).stringof; }
+		version(UEIncludeEditor)override @property string name() { return typeof(this).stringof; }
 	};
 }
 
@@ -17,7 +17,7 @@ template UERegisterComponent()
 abstract class UEComponent
 {
 	///
-	@property string name();
+	version(UEIncludeEditor)@property string name();
 
 	//void OnEnable() {}
 	void onUpdate() {}

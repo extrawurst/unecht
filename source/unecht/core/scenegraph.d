@@ -3,6 +3,29 @@
 import gl3n.linalg;
 
 import unecht;
+import unecht.core.componentManager;
+
+//TODO: create mixin
+version(UEIncludeEditor)
+{
+static class UESceneNodeInspector : IComponentEditor
+{
+	override void render(UEComponent _component)
+	{
+		auto thisT = cast(UESceneNode)_component;
+		
+		import imgui;
+		import std.format;
+
+		imguiLabel(format("pos: %s",thisT.position));
+	}
+
+	shared static this()
+	{
+		UEComponentsManager.editors["UESceneNode"] = new UESceneNodeInspector();
+	}
+}
+}
 
 ///
 final class UESceneNode : UEComponent
@@ -54,7 +77,7 @@ private:
 
 private:
 	UESceneNode _parent;
-	vec3 _position;
+	vec3 _position = vec3(0);
 }
 
 ///

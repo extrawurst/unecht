@@ -11,6 +11,8 @@ import derelict.opengl3.gl3;
 
 import imgui;
 
+version(UEIncludeEditor):
+
 ///
 final class UEEditorgridComponent : UEComponent {
 
@@ -160,7 +162,7 @@ final class EditorRootComponent : UEComponent {
 	}
 
 	///
-	static void renderEditor()
+	version(UEIncludeEditor)static void renderEditor()
 	{
 		if(_editorVisible)
 		{
@@ -187,7 +189,7 @@ final class EditorRootComponent : UEComponent {
 	}
 
 	///
-	static void renderEditorGUI()
+	version(UEIncludeEditor)static void renderEditorGUI()
 	{
 		ubyte mouseButtons = ue.mouseDown?MouseButton.left:0;
 		int mouseScroll;
@@ -223,7 +225,7 @@ final class EditorRootComponent : UEComponent {
 	}
 
 	///
-	private static void renderInspector()
+	version(UEIncludeEditor)private static void renderInspector()
 	{
 		if(!_currentEntity)
 			return;
@@ -234,6 +236,7 @@ final class EditorRootComponent : UEComponent {
 		foreach(c; _currentEntity.components)
 		{
 			imguiLabel(c.name);
+			import unecht.core.componentManager;
 			if(auto renderer = c.name in UEComponentsManager.editors)
 			{
 				imguiIndent();

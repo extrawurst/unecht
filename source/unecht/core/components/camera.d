@@ -1,23 +1,12 @@
 ﻿module unecht.core.components.camera;
 
 import unecht.core.component;
+import unecht.core.componentManager;
 
 import unecht.core.types;
 
 import gl3n.linalg;
 
-//TODO: separate module
-///
-interface IComponentEditor
-{	
-	void render(UEComponent _component);
-}
-
-///
-static struct UEComponentsManager
-{
-	static IComponentEditor[string] editors;
-}
 
 //TODO: add properties and make matrix updates implicit
 /// 
@@ -26,6 +15,7 @@ final class UECamera : UEComponent
 	mixin(UERegisterComponent!());
 
 	//TODO: create mixin
+	version(UEIncludeEditor)
 	static class UECameraInspector : IComponentEditor
 	{
 		override void render(UEComponent _component)
@@ -34,34 +24,36 @@ final class UECamera : UEComponent
 
 			import imgui;
 			import std.format;
-			imguiLabel(format("pos: %s",thisT.entity.sceneNode.position));
+
 			imguiLabel(format("rot: %s",thisT.rotation));
 			imguiLabel(format("dir: %s",thisT.dir));
 			imguiLabel(format("up: %s",thisT.up));
+			imguiLabel(format("fov: %s",thisT.fieldOfView));
 		}
-	}
-	shared static this()
-	{
-		UEComponentsManager.editors["UECamera"] = new UECameraInspector();
+
+		shared static this()
+		{
+			UEComponentsManager.editors["UECamera"] = new UECameraInspector();
+		}
 	}
 
 	@property auto direction() const { return dir; }
 
 	vec3 rotation = vec3(0,0,0);
-	private vec3 dir;
-	private vec3 up;
+	private vec3 dir = vec3(0);
+	private vec3 up = vec3(0);
 
 	static const vec3 ORIG_DIR = vec3(0,0,1);
 	static const vec3 ORIG_UP = vec3(0,1,0);
 
-	mat4 matProjection;
-	mat4 matLook;
+	mat4 matProjection = mat4.identity;
+	mat4 matLook = mat4.identity;
 
 	float fieldOfView = 60;
 	float clipNear = 1;
 	float clipFar = 1000;
 
-	vec4 clearColor;
+	vec4 clearColor = vec4(0,0,0,1);
 	bool clearBitColor = true;
 	bool clearBitDepth = true;
 
