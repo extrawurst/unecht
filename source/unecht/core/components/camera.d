@@ -59,13 +59,6 @@ final class UECamera : UEComponent
 
 	UERect viewport;
 
-	override void onCreate() {
-		super.onCreate;
-
-		import unecht;
-		viewport.size = ue.application.mainWindow.size;
-	}
-
 	void updateLook()
 	{
 		import std.math:PI;
@@ -109,7 +102,11 @@ final class UECamera : UEComponent
 		
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		glClear(clearBits);
-		glViewport(viewport.pos.left,viewport.pos.top,viewport.size.width,viewport.size.height);
+
+		UESize viewportSize = UESize(
+			cast(int)(viewport.size.x * ue.application.mainWindow.size.width),
+			cast(int)(viewport.size.y * ue.application.mainWindow.size.height));
+		glViewport(viewport.pos.left,viewport.pos.top,viewportSize.width,viewportSize.height);
 		
 		foreach(r; renderers)
 		{

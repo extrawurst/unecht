@@ -123,6 +123,8 @@ package:
 		ev.eventType = UEEventType.windowSize;
 		ev.windowSizeEvent.size = UESize(width,height);
 
+		ue.application.mainWindow.size = ev.windowSizeEvent.size;
+
 		events.trigger(ev);
 	}
 

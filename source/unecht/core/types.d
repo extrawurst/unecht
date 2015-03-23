@@ -1,5 +1,7 @@
 module unecht.core.types;
 
+import unecht;
+
 ///
 struct UEPos
 {
@@ -18,7 +20,7 @@ struct UESize
 struct UERect
 {
 	UEPos pos;
-	UESize size;
+	vec2 size = vec2(1);
 }
 
 ///
