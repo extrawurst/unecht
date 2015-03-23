@@ -86,7 +86,6 @@ final class UERenderer : UEComponent
 		
 		material.program.setUniformMatrix("matWorld", mat);
 		material.program.setUniformVec3("v3ViewDir", _cam.direction);
-		//material.program.setUniformVec3("v3Ambient", );
 
 		mesh.vertexArrayObject.bind();
 		scope(exit) mesh.vertexArrayObject.unbind();

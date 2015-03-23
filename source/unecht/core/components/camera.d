@@ -121,7 +121,7 @@ final class UECamera : UEComponent
 		
 		foreach(r; renderers)
 		{
-			if(r.enabled)
+			if(r.enabled && r.sceneNode.enabled)
 				r.render(this);
 		}
 	}

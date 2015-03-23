@@ -67,7 +67,7 @@ shared static this()
 		newE.addComponent!TestComponent;
 
 		auto newE2 = UEEntity.create("app test entity 2");
-		newE2.sceneNode.position = vec3(0,1,-100);
+		newE2.sceneNode.position = vec3(0,2,-10);
 
 		import unecht.core.components.camera;
 		auto cam = newE2.addComponent!UECamera;

@@ -60,7 +60,7 @@ struct UEApplication
 			version(UEIncludeEditor)
 			{
 				import unecht.core.components.editor;
-				EditorComponent.renderEditor();
+				EditorRootComponent.renderEditor();
 			}
 
 			mainWindow.swapBuffers();
@@ -173,9 +173,8 @@ private:
 	void insertEditorEntity()
 	{
 		auto newE = UEEntity.create("editor");
-
 		import unecht.core.components.editor;
-		newE.addComponent!EditorComponent;
+		newE.addComponent!EditorRootComponent;
 	}
 
 	void render()
@@ -183,7 +182,10 @@ private:
 		auto cams = ue.scene.gatherAllComponents!UECamera;
 
 		foreach(cam; cams)
-			cam.render();
+		{
+			if(cam.enabled)
+				cam.render();
+		}
 	}
 }
 
