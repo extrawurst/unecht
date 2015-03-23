@@ -61,9 +61,12 @@ final class GLProgram
 {
 	GLuint program;
 	GLint[string] uniforms;
+	private string _name;
 
-	void init(GLShader _vshader, GLShader _fshader)
+	void create(GLShader _vshader, GLShader _fshader, string _name="<unknown>")
 	{
+		this._name = _name;
+
 		program = glCreateProgram();
 
 		glAttachShader(program, _vshader.shader);
@@ -79,8 +82,14 @@ final class GLProgram
 			glGetProgramInfoLog(program, log.sizeof, &logLen, log.ptr);
 			import std.stdio;
 			import std.conv;
-			writefln("Error linking program: '%s'", to!string(log[0..logLen-1]));
+			writefln("Error: linking program: '%s': %s", _name, to!string(log[0..logLen-1]));
 		}
+	}
+
+	//TODO:
+	void destroy()
+	{
+
 	}
 
 	private GLint addUniform(string _name)
@@ -100,7 +109,7 @@ final class GLProgram
 		}
 		else
 		{
-			writefln("Error locating uniform: '%s'", _name);
+			writefln("Error: could not locate uniform: '%s' in '%s'", _name, this._name);
 			return -1;
 		}
 	}

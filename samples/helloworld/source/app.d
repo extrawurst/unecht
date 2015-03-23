@@ -19,6 +19,7 @@ final class TestComponent : UEComponent {
 		auto mesh = this.entity.addComponent!UEMesh;
 	
 		renderer.material = this.entity.addComponent!UEMaterial;
+		renderer.material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
 		renderer.material.depthTest = true;
 		renderer.mesh = mesh;
 

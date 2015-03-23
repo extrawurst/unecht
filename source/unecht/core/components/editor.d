@@ -38,13 +38,6 @@ final class UEEditorgridComponent : UEComponent {
 				vec3(-10,0,10),
 			]);
 
-		mesh.normalBuffer = new GLVertexBufferObject([
-				vec3(0,1,0),
-				vec3(0,1,0),
-				vec3(0,1,0),
-				vec3(0,1,0),
-			],true);
-
 		mesh.indexBuffer = new GLVertexBufferObject([0,1,2, 0,2,3]);
 		mesh.vertexArrayObject.unbind();
 	}
