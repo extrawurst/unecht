@@ -4,7 +4,7 @@ import unecht;
 import unecht.core.component;
 import unecht.core.components.camera;
 
-import unecht.gl.vertexBuffer;
+import unecht.gl.vertexBufferObject;
 import unecht.gl.shader;
 import derelict.opengl3.gl3;
 
@@ -13,7 +13,7 @@ final class UEMesh : UEComponent
 {
 	mixin(UERegisterComponent!());
 
-	GLVertexBuffer vertexBuffer;
+	GLVertexBufferObject vertexBuffer;
 }
 
 /// 

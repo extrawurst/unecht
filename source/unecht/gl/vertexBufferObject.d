@@ -1,4 +1,4 @@
-﻿module unecht.gl.vertexBuffer;
+﻿module unecht.gl.vertexBufferObject;
 
 import unecht.gl.shader;
 
@@ -7,7 +7,7 @@ import derelict.opengl3.gl3;
 import gl3n.linalg;
 
 ///
-final class GLVertexBuffer
+final class GLVertexBufferObject
 {
 private:
 	GLuint vbo;

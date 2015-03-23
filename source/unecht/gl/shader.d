@@ -4,7 +4,7 @@ import derelict.opengl3.gl3;
 
 import gl3n.linalg;
 
-import unecht.gl.vertexBuffer:checkGLError;
+import unecht.gl.vertexBufferObject:checkGLError;
 
 ///
 enum ShaderType

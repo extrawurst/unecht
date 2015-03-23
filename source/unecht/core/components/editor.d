@@ -4,7 +4,7 @@ import unecht;
 
 import unecht.core.component;
 import unecht.core.components.camera;
-import unecht.gl.vertexBuffer;
+import unecht.gl.vertexBufferObject;
 
 import derelict.opengl3.gl3;
 
@@ -19,7 +19,6 @@ final class UEEditorgridComponent : UEComponent {
 		super.onCreate;
 
 		import unecht.core.components.misc;
-		import unecht.gl.vertexBuffer;
 		
 		auto renderer = this.entity.addComponent!UERenderer;
 		auto mesh = this.entity.addComponent!UEMesh;
@@ -28,7 +27,7 @@ final class UEEditorgridComponent : UEComponent {
 		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.material.polygonFill = false;
 		
-		mesh.vertexBuffer = new GLVertexBuffer();
+		mesh.vertexBuffer = new GLVertexBufferObject();
 		mesh.vertexBuffer.vertices = [
 			vec3(-10,0,-10),
 			vec3(10,0,-10),
