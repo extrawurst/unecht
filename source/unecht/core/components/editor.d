@@ -23,6 +23,8 @@ final class UEEditorgridComponent : UEComponent {
 		auto mesh = this.entity.addComponent!UEMesh;
 		
 		renderer.mesh = mesh;
+		renderer.material = new UEMaterial();
+		renderer.material.polygonFill = false;
 		
 		mesh.vertexBuffer = new GLVertexBuffer();
 		mesh.vertexBuffer.vertices = [
@@ -63,7 +65,8 @@ final class EditorComponent : UEComponent {
 		this.entity.hideInEditor = true;
 
 		_editorCam = entity.addComponent!UECamera;
-		_editorCam.sceneNode.position = vec3(0,0,-100);
+		_editorCam.sceneNode.position = vec3(0,500,0);
+		_editorCam.dir = vec3(0,-1,-0.01);
 
 		entity.addComponent!UEEditorgridComponent;
 	}
@@ -77,28 +80,53 @@ final class EditorComponent : UEComponent {
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Repeat ||
 			_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
 		{
+			enum speed = 0.5f;
+
 			if(_ev.keyEvent.isModShift)
 			{
 				if(_ev.keyEvent.key == UEKey.up)
-					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,1,0);
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,speed,0);
 				else if(_ev.keyEvent.key == UEKey.down)
-					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,-1,0);
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,-speed,0);
 			}
 			else
 			{
 				if(_ev.keyEvent.key == UEKey.up)
-					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,1);
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,speed);
 				else if(_ev.keyEvent.key == UEKey.down)
-					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,-1);
+					_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(0,0,-speed);
 			}
 
 			if(_ev.keyEvent.key == UEKey.left)
-				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(-1,0,0);
+				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(-speed,0,0);
 			else if(_ev.keyEvent.key == UEKey.right)
-				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(1,0,0);
+				_editorCam.sceneNode.position = _editorCam.sceneNode.position + vec3(speed,0,0);
+				
+			enum rotSpeed = 0.01f;
+			if(_ev.keyEvent.key == UEKey.w ||
+				_ev.keyEvent.key == UEKey.s)
+			{
+				bool inc = _ev.keyEvent.key == UEKey.w;
+				_editorCam.dir = quat.xrotation(rotSpeed * (inc?1:-1)) * _editorCam.dir;
+				_editorCam.dir.normalize();
+			}
+			if(_ev.keyEvent.key == UEKey.a ||
+				_ev.keyEvent.key == UEKey.d)
+			{
+				bool inc = _ev.keyEvent.key == UEKey.a;
+				_editorCam.dir = quat.yrotation(rotSpeed * (inc?1:-1)) * _editorCam.dir;
+				_editorCam.dir.normalize();
+			}
+			if(_ev.keyEvent.key == UEKey.q ||
+				_ev.keyEvent.key == UEKey.e)
+			{
+				bool inc = _ev.keyEvent.key == UEKey.q;
+				_editorCam.dir = quat.zrotation(rotSpeed * (inc?1:-1)) * _editorCam.dir;
+				_editorCam.dir.normalize();
+			}
 
-			//import std.stdio;
-			//writefln("cam: %s",_editorCam.sceneNode.position);
+			import std.stdio;
+			writefln("cam: %s - %s",_editorCam.sceneNode.position, _editorCam.dir);
 		}
 	}
 

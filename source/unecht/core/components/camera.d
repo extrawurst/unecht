@@ -5,7 +5,7 @@ import unecht.core.component;
 import unecht.core.types;
 
 import gl3n.linalg;
-import std.math:PI_4;
+import std.math:PI_2;
 
 //TODO: add properties and make matrix updates implicit
 /// 
@@ -17,7 +17,7 @@ final class UECamera : UEComponent
 	mat4 matProjection;
 	mat4 matLook;
 
-	float fieldOfView = PI_4;
+	float fieldOfView = PI_2;
 	float clipNear = 1;
 	float clipFar = 1000;
 
