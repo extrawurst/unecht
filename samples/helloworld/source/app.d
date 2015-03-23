@@ -4,6 +4,8 @@ import unecht;
 
 final class TestComponent : UEComponent {
 
+	mixin(UERegisterComponent!());
+
 	override void onCreate() {
 		super.onCreate;
 

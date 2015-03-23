@@ -7,10 +7,44 @@ import unecht.core.types;
 import gl3n.linalg;
 import std.math:PI_2;
 
+//TODO: separate module
+///
+interface IComponentEditor
+{	
+	void render(UEComponent _component);
+}
+
+///
+static struct UEComponentsManager
+{
+	static IComponentEditor[string] editors;
+}
+
 //TODO: add properties and make matrix updates implicit
 /// 
 final class UECamera : UEComponent
 {
+	mixin(UERegisterComponent!());
+
+	//TODO: create mixin
+	static class UECameraInspector : IComponentEditor
+	{
+		override void render(UEComponent _component)
+		{
+			auto thisT = cast(UECamera)_component;
+
+			import imgui;
+			import std.format;
+			imguiLabel(format("pos: %s",thisT.entity.sceneNode.position));
+			imguiLabel(format("dir: %s",thisT.dir));
+			imguiLabel(format("up: %s",thisT.up));
+		}
+	}
+	shared static this()
+	{
+		UEComponentsManager.editors["UECamera"] = new UECameraInspector();
+	}
+
 	vec3 dir = vec3(0,0,1);
 	vec3 up = vec3(0,1,0);
 

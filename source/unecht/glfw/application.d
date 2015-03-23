@@ -96,6 +96,18 @@ package:
 		events.trigger(ev);
 	}
 
+	void glfwOnMouseMove(double x, double y)
+	{
+		//TODO: impl events
+		ue.mousePos = vec2(x,y);
+	}
+
+	void glfwOnMouseButton(int button, int action, int mods)
+	{
+		//TODO: impl events
+		ue.mouseDown = action == GLFW_PRESS;
+	}
+
 	void glfwOnChar(uint codepoint)
 	{
 		UEEvent ev;

@@ -13,6 +13,8 @@ import imgui;
 ///
 final class UEEditorgridComponent : UEComponent {
 
+	mixin(UERegisterComponent!());
+
 	override void onCreate() {
 		super.onCreate;
 
@@ -41,10 +43,13 @@ final class UEEditorgridComponent : UEComponent {
 ///
 final class EditorComponent : UEComponent {
 
+	mixin(UERegisterComponent!());
+
 	private static bool _editorVisible;
 	//private static GLVertexBuffer gismo;
 	private static UECamera _editorCam;
-	
+	private static UEEntity _currentEntity;
+
 	override void onCreate() {
 		super.onCreate;
 		
@@ -62,7 +67,7 @@ final class EditorComponent : UEComponent {
 		}
 
 		// hide the whole entity with its hirarchie
-		this.entity.hideInEditor = true;
+		//this.entity.hideInEditor = true;
 
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.sceneNode.position = vec3(0,500,0);
@@ -124,9 +129,6 @@ final class EditorComponent : UEComponent {
 				_editorCam.dir = quat.zrotation(rotSpeed * (inc?1:-1)) * _editorCam.dir;
 				_editorCam.dir.normalize();
 			}
-
-			import std.stdio;
-			writefln("cam: %s - %s",_editorCam.sceneNode.position, _editorCam.dir);
 		}
 	}
 
@@ -164,15 +166,16 @@ final class EditorComponent : UEComponent {
 
 	static void renderEditorGUI()
 	{
-		int cursorX, cursorY;
-		ubyte mouseButtons;
+		ubyte mouseButtons = ue.mouseDown?MouseButton.left:0;
 		int mouseScroll;
 
-		imguiBeginFrame(cursorX, cursorY, mouseButtons, mouseScroll);
+		//TODO: push correct values here
+		imguiBeginFrame(cast(int)ue.mousePos.x, ue.application.mainWindow.size.height - cast(int)ue.mousePos.y, mouseButtons, mouseScroll);
 
 		if(_editorVisible)
 		{
 			renderScene();
+			renderInspector();
 			imguiDrawText(0, 2, TextAlign.left, "EditorMode (hide with F1)", RGBA(255, 255, 255));
 		}
 		else
@@ -195,12 +198,35 @@ final class EditorComponent : UEComponent {
 		imguiEndScrollArea();
 	}
 
+	private static void renderInspector()
+	{
+		if(!_currentEntity)
+			return;
+
+		static int scroll;
+		imguiBeginScrollArea("inspector: "~_currentEntity.name,200,0,300,ue.application.mainWindow.size.height,&scroll);
+		
+		foreach(c; _currentEntity.components)
+		{
+			imguiLabel(c.name);
+			if(auto renderer = c.name in UEComponentsManager.editors)
+			{
+				imguiIndent();
+				renderer.render(c);
+				imguiUnindent();
+			}
+		}
+		
+		imguiEndScrollArea();
+	}
+
 	private static void renderSceneNode(UESceneNode _node)
 	{
 		if(_node.entity.hideInEditor)
 			return;
 
-		imguiLabel(_node.entity.name);
+		if(imguiButton(_node.entity.name))
+			_currentEntity = _node.entity;
 
 		imguiIndent();
 		foreach(n; _node.children)

@@ -7,6 +7,8 @@ import unecht;
 ///
 final class UESceneNode : UEComponent
 {
+	mixin(UERegisterComponent!());
+
 public:
 	mat4 matrixWorld = mat4.identity;
 	mat4 matrixLocal = mat4.identity;

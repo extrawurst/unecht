@@ -10,12 +10,16 @@ import derelict.opengl3.gl3;
 /// 
 final class UEMesh : UEComponent
 {
+	mixin(UERegisterComponent!());
+
 	GLVertexBuffer vertexBuffer;
 }
 
 /// 
 final class UEMaterial : UEComponent
 {
+	mixin(UERegisterComponent!());
+
 	//GLProgram program;
 	bool polygonFill = true;
 
@@ -33,6 +37,8 @@ final class UEMaterial : UEComponent
 /// 
 final class UERenderer : UEComponent
 {
+	mixin(UERegisterComponent!());
+
 	UEMaterial material;
 	UEMesh mesh;
 

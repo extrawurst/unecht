@@ -42,7 +42,9 @@ package:
 		
 		glfwMakeContextCurrent(glfwWindow);
 		glfwSwapInterval(1);
-		
+
+		glfwSetCursorPosCallback(glfwWindow, &cursor_pos_callback);
+		glfwSetMouseButtonCallback(glfwWindow, &mouse_button_callback);
 		glfwSetKeyCallback(glfwWindow, &key_callback);
 		glfwSetWindowSizeCallback(glfwWindow, &wnd_size_callback);
 		glfwSetCharCallback(glfwWindow, &character_callback);
@@ -85,6 +87,18 @@ private nothrow extern(C)
 	void character_callback(GLFWwindow* window, uint codepoint)
 	{
 		try ue.application.glfwOnChar(codepoint);
+		catch{}
+	}
+
+	void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
+	{
+		try ue.application.glfwOnMouseMove(xpos, ypos);
+		catch{}
+	}
+
+	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+	{
+		try ue.application.glfwOnMouseButton(button, action, mods);
 		catch{}
 	}
 

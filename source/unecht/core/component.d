@@ -5,9 +5,20 @@ import unecht.core.entity;
 import unecht.core.scenegraph;
 import unecht;
 
-/// binding component between an GameEntity and a SceneNode
-class UEComponent
+///
+template UERegisterComponent()
 {
+	enum UERegisterComponent = q{
+		override @property string name() { return typeof(this).stringof; }
+	};
+}
+
+/// binding component between an GameEntity and a SceneNode
+abstract class UEComponent
+{
+	///
+	@property string name();
+
 	//void OnEnable() {}
 	void onUpdate() {}
 	//void OnDisable() {}
