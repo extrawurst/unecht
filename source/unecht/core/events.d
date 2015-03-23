@@ -122,6 +122,7 @@ final class UEEventsSystem : UEEvents
 	{
 		foreach(r; receiver)
 		{
+			//TODO: support correct recursive enabled/disabled values 
 			if(r.removed || (!r.component.enabled) || (!r.component.sceneNode.enabled))
 				continue;
 

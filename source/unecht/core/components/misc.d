@@ -32,6 +32,7 @@ final class UEMaterial : UEComponent
 	GLProgram program;
 
 	bool polygonFill = true;
+	bool depthTest = false;
 
 	override void onCreate() {
 		super.onCreate;
@@ -52,12 +53,18 @@ final class UEMaterial : UEComponent
 	{
 		glPolygonMode( GL_FRONT_AND_BACK, polygonFill ? GL_FILL : GL_LINE );
 
+		if(depthTest)
+			glEnable(GL_DEPTH_TEST);
+
 		program.bind();
 	}
 
 	void postRender()
 	{
 		program.unbind();
+
+		if(depthTest)
+			glDisable(GL_DEPTH_TEST);
 
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}

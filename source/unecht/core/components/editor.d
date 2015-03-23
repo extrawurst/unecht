@@ -50,7 +50,7 @@ final class UEEditorgridComponent : UEComponent {
 	}
 }
 
-final class EditorComponent : UEComponent {
+final class UEEditorComponent : UEComponent {
 
 	mixin(UERegisterComponent!());
 
@@ -149,7 +149,7 @@ final class EditorRootComponent : UEComponent {
 
 		editorComponent = UEEntity.create("subeditor");
 		editorComponent.sceneNode.parent = this.sceneNode;
-		editorComponent.addComponent!EditorComponent;
+		editorComponent.addComponent!UEEditorComponent;
 		editorComponent.sceneNode.enabled = false;
 	}
 
@@ -250,7 +250,12 @@ final class EditorRootComponent : UEComponent {
 			return;
 
 		if(imguiButton(_node.entity.name))
-			_currentEntity = _node.entity;
+		{
+			if(_currentEntity is _node.entity)
+				_currentEntity = null;
+			else
+				_currentEntity = _node.entity;
+		}
 
 		imguiIndent();
 		foreach(n; _node.children)
