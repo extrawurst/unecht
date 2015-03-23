@@ -10,7 +10,7 @@ public import unecht.glfw.application;
 
 public import gl3n.linalg;
 
-public import std.typecons:scoped;
+public import std.typecons:scoped,Unique;
 
 ///
 class UnechtException : Exception

@@ -27,7 +27,7 @@ final class TestComponent : UEComponent {
 			vec3(0.5,0.5,0),
 		];
 		mesh.vertexBuffer.indices = [0,1,2];
-		mesh.vertexBuffer.init();
+		mesh.vertexBuffer.create();
 	}
 
 	override void onUpdate() {

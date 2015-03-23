@@ -26,7 +26,7 @@ final class UEEditorgridComponent : UEComponent {
 		renderer.mesh = mesh;
 		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.material.polygonFill = false;
-		
+
 		mesh.vertexBuffer = new GLVertexBufferObject();
 		mesh.vertexBuffer.vertices = [
 			vec3(-10,0,-10),
@@ -35,7 +35,7 @@ final class UEEditorgridComponent : UEComponent {
 			vec3(-10,0,10),
 		];
 		mesh.vertexBuffer.indices = [0,1,2, 0,2,3];
-		mesh.vertexBuffer.init();
+		mesh.vertexBuffer.create();
 	}
 }
 

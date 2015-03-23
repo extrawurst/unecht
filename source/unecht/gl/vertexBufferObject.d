@@ -18,8 +18,13 @@ public:
 	vec3[] vertices;
 	uint[] indices;
 	GLuint boundToIndex = GLuint.max;
-	
-	void init()
+
+	~this()
+	{
+		//TODO: ensure teardown
+	}
+
+	void create()
 	{
 		glGenVertexArrays(1, &vao);
 		
@@ -32,6 +37,11 @@ public:
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length * uint.sizeof, indices.ptr, GL_STATIC_DRAW);
 		
 		checkGLError();
+	}
+
+	void destroy()
+	{
+
 	}
 
 	void bind(GLuint _index)

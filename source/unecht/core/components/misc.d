@@ -37,8 +37,8 @@ final class UEMaterial : UEComponent
 		scope(exit) vshader.destroy();
 		scope(exit) fshader.destroy();
 
-		vshader.setup(ShaderType.vertex, simpleVShader);
-		fshader.setup(ShaderType.fragment, simpleFShader);
+		vshader.create(ShaderType.vertex, simpleVShader);
+		fshader.create(ShaderType.fragment, simpleFShader);
 		
 		program = new GLProgram();
 		program.init(vshader,fshader);

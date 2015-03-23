@@ -21,7 +21,7 @@ final class GLShader
 	string errors;
 	bool success;
 
-	void setup(ShaderType _type, string _src)
+	void create(ShaderType _type, string _src)
 	{
 		shaderType = _type;
 
