@@ -16,6 +16,7 @@ final class UEMesh : UEComponent
 
 	GLVertexArrayObject vertexArrayObject;
 	GLVertexBufferObject vertexBuffer;
+	GLVertexBufferObject colorBuffer;
 	GLVertexBufferObject indexBuffer;
 	GLVertexBufferObject normalBuffer;
 }
@@ -31,6 +32,9 @@ final class UEMaterial : UEComponent
 
 	static const string vs_flat = cast(string)import("vs_flat.glsl");
 	static const string fs_flat = cast(string)import("fs_flat.glsl");
+
+	static const string vs_flatcolor = cast(string)import("vs_flatcolor.glsl");
+	static const string fs_flatcolor = cast(string)import("fs_flatcolor.glsl");
 
 	GLProgram program;
 
@@ -93,7 +97,9 @@ final class UERenderer : UEComponent
 	///
 	void render(UECamera _cam)
 	{
-		auto mat = _cam.matProjection * _cam.matLook;
+		auto matModel = mat4.translation(sceneNode.position.x,sceneNode.position.y,sceneNode.position.z);
+
+		auto mat = _cam.matProjection * _cam.matLook * matModel;
 
 		if(material)
 			material.preRender();
@@ -104,6 +110,8 @@ final class UERenderer : UEComponent
 
 		//TODO: dont query those things every frame
 		auto normLoc = glGetAttribLocation(material.program.program, toStringz("Normal"));
+
+		auto colorLoc = glGetAttribLocation(material.program.program, toStringz("Color"));
 		
 		material.program.setUniformMatrix("matWorld", mat);
 		material.program.setUniformVec3("v3ViewDir", _cam.direction);
@@ -119,6 +127,12 @@ final class UERenderer : UEComponent
 			mesh.normalBuffer.bind(normLoc);
 		}
 
+		if(colorLoc != -1)
+		{
+			assert(mesh.colorBuffer, "shader needs Colors but mesh does not contain any");
+			mesh.colorBuffer.bind(colorLoc);
+		}
+
 		mesh.indexBuffer.bind(0);
 		scope(exit) mesh.indexBuffer.unbind();
 
@@ -127,6 +141,9 @@ final class UERenderer : UEComponent
 
 		if(normLoc != -1)
 			mesh.normalBuffer.unbind();
+
+		if(colorLoc != -1)
+			mesh.colorBuffer.unbind();
 
 		if(material)
 			material.postRender();

@@ -6,6 +6,12 @@ import derelict.opengl3.gl3;
 
 import gl3n.linalg;
 
+enum GLRenderPrimitive
+{
+	triangles,
+	lines,
+}
+
 ///
 final class GLVertexBufferObject
 {
@@ -17,6 +23,7 @@ private:
 	int _elementSize;
 	uint _elementBufferType;
 	ElementType _elementType;
+	GLRenderPrimitive _primitiveType=GLRenderPrimitive.triangles;
 
 	enum ElementType
 	{
@@ -30,6 +37,8 @@ public:
 	@property int elementSize() const { return _elementSize; }
 	///
 	@property int elementCount() const { return _elementCount; }
+	///
+	@property void primitiveType(GLRenderPrimitive _val) { _primitiveType = _val; }
 
 	/// create vertex buffer
 	this(vec3[] _vertexData, bool _static=true)
@@ -118,7 +127,10 @@ public:
 	///
 	void renderIndexed()
 	{
-		glDrawElements(GL_TRIANGLES, _elementCount, GL_UNSIGNED_INT, null);
+		//TODO: save primtype and save the branch here
+		auto primType = _primitiveType==GLRenderPrimitive.triangles?GL_TRIANGLES:GL_LINES;
+
+		glDrawElements(primType, _elementCount, GL_UNSIGNED_INT, null);
 		
 		checkGLError();
 	}

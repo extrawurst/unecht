@@ -11,7 +11,8 @@ import derelict.opengl3.gl3;
 
 import imgui;
 
-version(UEIncludeEditor):
+//TODO: hope for mono-d to fix greying out this even though main app defines the version
+//version(UEIncludeEditor):
 
 ///
 final class UEEditorgridComponent : UEComponent {
@@ -41,6 +42,56 @@ final class UEEditorgridComponent : UEComponent {
 			]);
 
 		mesh.indexBuffer = new GLVertexBufferObject([0,1,2, 0,2,3]);
+		mesh.vertexArrayObject.unbind();
+	}
+}
+
+///
+final class UEEditorGismo : UEComponent {
+	
+	mixin(UERegisterComponent!());
+	
+	override void onCreate() {
+		super.onCreate;
+		
+		import unecht.core.components.misc;
+		
+		auto renderer = this.entity.addComponent!UERenderer;
+		auto mesh = this.entity.addComponent!UEMesh;
+		
+		renderer.mesh = mesh;
+		renderer.material = this.entity.addComponent!UEMaterial;
+		renderer.material.setProgram(UEMaterial.vs_flatcolor,UEMaterial.fs_flatcolor, "flat colored");
+		
+		mesh.vertexArrayObject = new GLVertexArrayObject();
+		mesh.vertexArrayObject.bind();
+
+		enum length = 2;
+		mesh.vertexBuffer = new GLVertexBufferObject([
+				vec3(0,0,0),
+				vec3(length,0,0),
+
+				vec3(0,0,0),
+				vec3(0,length,0),
+
+				vec3(0,0,0),
+				vec3(0,0,length),
+			]);
+
+		mesh.colorBuffer = new GLVertexBufferObject([
+				vec3(1,0,0),
+				vec3(1,0,0),
+				
+				vec3(0,1,0),
+				vec3(0,1,0),
+				
+				vec3(0,0,1),
+				vec3(0,0,1),
+			]);
+		
+		mesh.indexBuffer = new GLVertexBufferObject([0,1, 2,3, 4,5]);
+		mesh.indexBuffer.primitiveType = GLRenderPrimitive.lines;
+
 		mesh.vertexArrayObject.unbind();
 	}
 }
@@ -116,8 +167,9 @@ final class EditorRootComponent : UEComponent {
 
 	private UEEntity editorComponent;
 
+	private static UEEntity gismo;
+
 	private static bool _editorVisible;
-	//private static GLVertexBuffer gismo;
 	private static UECamera _editorCam;
 	private static UEEntity _currentEntity;
 
@@ -148,6 +200,12 @@ final class EditorRootComponent : UEComponent {
 		editorComponent.sceneNode.parent = this.sceneNode;
 		editorComponent.addComponent!UEEditorComponent;
 		editorComponent.sceneNode.enabled = false;
+
+		//TODO: support recursive disabling and move it under the editor subcomponent
+		gismo = UEEntity.create("editor gismo");
+		gismo.sceneNode.parent = this.sceneNode;
+		gismo.addComponent!UEEditorGismo;
+		gismo.sceneNode.enabled = false;
 	}
 
 	///
@@ -157,15 +215,23 @@ final class EditorRootComponent : UEComponent {
 			_ev.keyEvent.key == UEKey.f1)
 		{
 			_editorVisible = !_editorVisible;
-			editorComponent.sceneNode.enabled = !editorComponent.sceneNode.enabled;
+			editorComponent.sceneNode.enabled = _editorVisible;
 		}
 	}
 
 	///
-	version(UEIncludeEditor)static void renderEditor()
+	static void renderEditor()
 	{
 		if(_editorVisible)
 		{
+			if(_currentEntity)
+			{
+				gismo.sceneNode.enabled = true;
+				gismo.sceneNode.position = _currentEntity.sceneNode.position;
+			}
+			else
+				gismo.sceneNode.enabled = false;
+
 			_editorCam.render();
 			//TODO: support wireframe shader
 			//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -177,19 +243,11 @@ final class EditorRootComponent : UEComponent {
 			//_editorCam.clearBitDepth = true;
 		}
 
-		renderEntities();
-
 		renderEditorGUI();
 	}
 
 	///
-	static void renderEntities()
-	{
-
-	}
-
-	///
-	version(UEIncludeEditor)static void renderEditorGUI()
+	static void renderEditorGUI()
 	{
 		ubyte mouseButtons = ue.mouseDown?MouseButton.left:0;
 		int mouseScroll;
@@ -225,12 +283,13 @@ final class EditorRootComponent : UEComponent {
 	}
 
 	///
-	version(UEIncludeEditor)private static void renderInspector()
+	private static void renderInspector()
 	{
 		if(!_currentEntity)
 			return;
 
 		static int scroll;
+		//TODO: do not use hardcoded values here
 		imguiBeginScrollArea("inspector: "~_currentEntity.name,200,0,300,ue.application.mainWindow.size.height,&scroll);
 		
 		foreach(c; _currentEntity.components)
