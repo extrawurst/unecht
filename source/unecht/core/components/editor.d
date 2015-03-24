@@ -12,7 +12,7 @@ import derelict.opengl3.gl3;
 import imgui;
 
 //TODO: hope for mono-d to fix greying out this even though main app defines the version
-//version(UEIncludeEditor):
+version(UEIncludeEditor):
 
 ///
 final class UEEditorgridComponent : UEComponent {
