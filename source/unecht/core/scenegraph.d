@@ -92,6 +92,11 @@ public:
 	void update()
 	{
 		updateNode(_root);
+
+		//TODO: optimize this
+		auto allComponents = gatherAllComponents!UEComponent();
+		foreach(c; allComponents)
+			c.onUpdate();
 	}
 
 	auto gatherAllComponents(T : UEComponent)()

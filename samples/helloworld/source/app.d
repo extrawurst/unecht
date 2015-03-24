@@ -88,6 +88,9 @@ final class TestComponent : UEComponent {
 
 	override void onUpdate() {
 		super.onUpdate;
+
+		auto time = ue.tickTime;
+		this.sceneNode.position = vec3(sin(time)*2.0f,0,0);
 	}
 
 	void OnKeyEvent(UEEvent _ev)
