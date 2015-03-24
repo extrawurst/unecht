@@ -50,6 +50,7 @@ public:
 
 private:
 
+	///
 	void setParent(UESceneNode _node)
 	{
 		assert(_node, "null parent not allowed");
@@ -64,12 +65,14 @@ private:
 		this._parent.attachChild(this);
 	}
 
+	///
 	void detachChild(UESceneNode _node)
 	{
 		import unecht.core.stdex;
 		children = children.removeElement(_node);
 	}
 
+	///
 	void attachChild(UESceneNode _node)
 	{
 		children ~= _node;
@@ -99,6 +102,7 @@ public:
 			c.onUpdate();
 	}
 
+	///
 	auto gatherAllComponents(T : UEComponent)()
 	{
 		T[] res;
