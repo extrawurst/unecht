@@ -90,16 +90,27 @@ public:
 
 	///
 	@property UESceneNode root() {return _root;}
+	///
+	@property void playing(bool _v) { _playing=_v; }
+	///
+	@property bool playing() const { return _playing; }
+	///
+	@property void step() { _singleStep = true; }
 
 	///
 	void update()
 	{
 		updateNode(_root);
 
-		//TODO: optimize this
-		auto allComponents = gatherAllComponents!UEComponent();
-		foreach(c; allComponents)
-			c.onUpdate();
+		if(_playing || _singleStep)
+		{
+			_singleStep=false;
+
+			//TODO: optimize this
+			auto allComponents = gatherAllComponents!UEComponent();
+			foreach(c; allComponents)
+				c.onUpdate();
+		}
 	}
 
 	///
@@ -144,6 +155,8 @@ public:
 
 private:
 	UESceneNode _root = new UESceneNode();
+	bool _playing=true;
+	bool _singleStep=false;
 }
 
 unittest

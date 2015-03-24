@@ -257,6 +257,7 @@ final class EditorRootComponent : UEComponent {
 
 		if(_editorVisible)
 		{
+			renderControlPanel();
 			renderScene();
 			renderInspector();
 			imguiDrawText(0, 2, TextAlign.left, "EditorMode (hide with F1)", RGBA(255, 255, 255));
@@ -266,6 +267,31 @@ final class EditorRootComponent : UEComponent {
 
 		imguiEndFrame();
 		imguiRender(ue.application.mainWindow.size.width,ue.application.mainWindow.size.height);
+	}
+
+	///
+	private static void renderControlPanel()
+	{
+		static int scroll;
+		//TODO: do not use hardcoded values here
+		imguiBeginScrollArea("controls: ",
+			ue.application.mainWindow.size.width-80,0,
+			80,85,&scroll);
+
+		if(imguiButton("play"))
+			ue.scene.playing = true;
+		if(ue.scene.playing)
+		{
+			if(imguiButton("stop"))
+				ue.scene.playing = false;
+		}
+		else
+		{
+			if(imguiButton("step"))
+				ue.scene.step;
+		}
+
+		imguiEndScrollArea();
 	}
 
 	///
