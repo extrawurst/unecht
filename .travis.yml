@@ -10,4 +10,4 @@ d:
 script:
   - dub test --compiler=$DC
   - cd samples/helloworld/
-  - dub test --compiler=$DC
+  - dub test --force --compiler=$DC
