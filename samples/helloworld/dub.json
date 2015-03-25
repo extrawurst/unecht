@@ -4,7 +4,8 @@
 	"copyright": "Copyright © 2015, Stephan Dilly",
 	"authors": ["Stephan Dilly"],
 	"dependencies": {
-		"unecht" : {"version": "~master", "path": "../../"}
+		"unecht" : {"version": "~master", "path": "../../"},
+		"derelict-ode": {"version": "~master", "path": "../../submodules/DerelictODE/"},
 	},
-	"versions": ["UEIncludeEditor"]
+	"versions": ["UEIncludeEditor","DerelictODE_Single"]
 }

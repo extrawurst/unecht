@@ -114,6 +114,11 @@ final class UEEditorComponent : UEComponent {
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Repeat ||
 			_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
 		{
+			if(_ev.keyEvent.key == UEKey.p)
+			{
+				ue.scene.playing = !ue.scene.playing;
+			}
+
 			enum speed = 0.5f;
 			
 			if(_ev.keyEvent.isModShift)

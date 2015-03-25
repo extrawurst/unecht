@@ -4,3 +4,6 @@
 [submodule "submodules/tharsis-dimgui"]
 	path = submodules/tharsis-dimgui
 	url = https://github.com/Extrawurst/tharsis-dimgui.git
+[submodule "submodules/DerelictODE"]
+	path = submodules/DerelictODE
+	url = https://github.com/Extrawurst/DerelictODE.git
