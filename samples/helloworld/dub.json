@@ -6,6 +6,7 @@
 	"dependencies": {
 		"unecht" : {"version": "~master", "path": "../../"},
 		"derelict-ode": {"version": "~master", "path": "../../submodules/DerelictODE/"},
+		"derelict-util": "~>1.9.1",
 	},
 	"versions": ["UEIncludeEditor","DerelictODE_Single"]
 }
