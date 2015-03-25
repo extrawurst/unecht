@@ -20,5 +20,5 @@
     	"tharsis-dimgui": "derelict-gl-library",
 	},
 
-	"stringImportPaths": ["imp"]
+	"stringImportPaths": ["imp","imp/tex"]
 }

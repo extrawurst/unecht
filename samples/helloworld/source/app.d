@@ -19,7 +19,7 @@ final class TestComponent : UEComponent {
 		auto mesh = this.entity.addComponent!UEMesh;
 	
 		renderer.material = this.entity.addComponent!UEMaterial;
-		renderer.material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
+		renderer.material.setProgram(UEMaterial.vs_tex,UEMaterial.fs_tex, "tex");
 		renderer.material.depthTest = true;
 		renderer.mesh = mesh;
 
@@ -49,6 +49,26 @@ final class TestComponent : UEComponent {
 				upRB,upLB,dnRB,dnLB,
 				//right
 				upRB,upRF,dnRB,dnRF
+			]);
+
+		auto ul = vec2(0,0);
+		auto ur = vec2(1,0);
+		auto lr = vec2(1,1);
+		auto ll = vec2(0,1);
+
+		mesh.uvBuffer = new GLVertexBufferObject([
+				//top
+				ul,ur,ll,lr,
+				//front
+				ul,ur,ll,lr,
+				//bottom
+				ul,ur,ll,lr,
+				//left
+				ul,ur,ll,lr,
+				//back
+				ul,ur,ll,lr,
+				//right
+				ul,ur,ll,lr,
 			]);
 
 		mesh.normalBuffer = new GLVertexBufferObject([
