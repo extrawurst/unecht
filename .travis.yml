@@ -1,8 +1,7 @@
 language: d
 
 d:
-  - dmd
   - dmd-2.067.0
   - dmd-2.065.0
   - dmd-2.066.1
-  - gdc
+  - gdc-latest
