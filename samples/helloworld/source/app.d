@@ -4,11 +4,10 @@ import unecht;
 
 import derelict.ode.ode;
 
-__gshared dWorldID World;
-__gshared dJointGroupID contactgroup;
+dWorldID World;
+dJointGroupID contactgroup;
 
-
-extern(C) nothrow @nogc static void nearCallback (void *data, dGeomID o1, dGeomID o2)
+extern(C) @nogc nothrow static void nearCallback (void *data, dGeomID o1, dGeomID o2)
 {
 	// Get the dynamics body for each geom
 	dBodyID b1 = dGeomGetBody(o1);
