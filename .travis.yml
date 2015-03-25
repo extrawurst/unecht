@@ -8,6 +8,6 @@ d:
   - ldc-0.14.0
 
 script:
-  - dub test --compiler=$DC
+  - dub test --compiler=$DC || exit 1
   - cd samples/helloworld/
   - dub build --compiler=$DC

@@ -27,7 +27,7 @@ final class GLTexture
 			assert(stream);
 			scope(exit) FreeImage_CloseMemory(stream);
 
-			auto ftype = FreeImage_GetFileTypeFromMemory(stream, _file.length);
+			auto ftype = FreeImage_GetFileTypeFromMemory(stream, cast(int)_file.length);
 
 			FIBITMAP* bitmap = FreeImage_LoadFromMemory(ftype, stream);
 			scope(exit) FreeImage_Unload(bitmap);
