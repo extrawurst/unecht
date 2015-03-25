@@ -3,6 +3,7 @@ module app;
 import unecht;
 
 import derelict.ode.ode;
+import derelict.util.system:nogc;
 
 dWorldID World;
 dJointGroupID contactgroup;
