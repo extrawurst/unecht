@@ -1,3 +1,6 @@
 [submodule "tharsis-dimgui"]
 	path = tharsis-dimgui
 	url = https://github.com/Extrawurst/tharsis-dimgui.git
+[submodule "submodules/gl3n"]
+	path = submodules/gl3n
+	url = https://github.com/Extrawurst/gl3n.git

@@ -12,7 +12,7 @@
 		"derelict-glfw3": "~>1.1.0",
 		"derelict-gl3": "~>1.0.12",
 		"derelict-fi": "~>1.9.0",
-		"gl3n": "~>1.0.1",
+		"gl3n": {"version":"~master", "path": "submodules/gl3n/"},
 		"cerealed": "~>0.5.0"
 	},
 
