@@ -6,3 +6,8 @@ d:
   - dmd-2.066.1
   - gdc-4.8.2
   - ldc-0.14.0
+
+script:
+  - dub test --compiler=$DC
+  - cd samples/helloworld/
+  - dub test --compiler=$DC
