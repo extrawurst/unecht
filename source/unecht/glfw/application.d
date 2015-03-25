@@ -4,6 +4,7 @@ import std.stdio;
 
 import derelict.glfw3.glfw3;
 import derelict.opengl3.gl3;
+import derelict.freeimage.freeimage;
 
 import unecht.glfw.window;
 import unecht.core.types;
@@ -24,6 +25,7 @@ struct UEApplication
 	/// contains the game loop is run in main function
 	int run()
 	{
+		DerelictFI.load();
 		DerelictGL3.load();
 		DerelictGLFW3.load();
 

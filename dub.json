@@ -11,6 +11,7 @@
 		"tharsis-dimgui": {"version":"~master", "path": "tharsis-dimgui/"},
 		"derelict-glfw3": "~>1.1.0",
 		"derelict-gl3": "~>1.0.12",
+		"derelict-fi": "~>1.9.0",
 		"gl3n": "~>1.0.1",
 		"cerealed": "~>0.5.0"
 	},
