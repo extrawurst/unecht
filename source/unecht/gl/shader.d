@@ -109,7 +109,8 @@ final class GLProgram
 		}
 		else
 		{
-			writefln("Error: could not locate uniform: '%s' in '%s'", _name, this._name);
+			//TODO: implement a logging scheme
+			//writefln("Error: could not locate uniform: '%s' in '%s'", _name, this._name);
 			return -1;
 		}
 	}
