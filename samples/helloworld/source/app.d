@@ -234,11 +234,16 @@ final class TestControls : UEComponent
             
             if(_ev.keyEvent.key == UEKey.enter)
             {
-                auto newE = UEEntity.create("ode entity");
-                newE.addComponent!TestGfxBox;
-                newE.addComponent!TestPhysicsObject;
+                spawnBox();
             }
         }
+    }
+
+    static void spawnBox()
+    {
+        auto newE = UEEntity.create("ode entity");
+        newE.addComponent!TestGfxBox;
+        newE.addComponent!TestPhysicsObject;
     }
 }
 
@@ -355,6 +360,8 @@ shared static this()
 		auto newE = UEEntity.create("app test entity");
         newE.addComponent!TestControls;
 		newE.addComponent!TestODESystem;
+
+        TestControls.spawnBox();
 
 		auto newE2 = UEEntity.create("app test entity 2");
 		newE2.sceneNode.position = vec3(0,3,-20);
