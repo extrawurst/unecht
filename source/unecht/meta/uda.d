@@ -1,6 +1,6 @@
 ﻿module unecht.meta.uda;
 
-import std.format:format;
+import std.string:format;
 
 ///
 private struct UDASearchResult(alias UDA)
