@@ -2,9 +2,9 @@
 
 uniform mat4 matWorld;
 
-in vec3 Position;
+in vec3 position;
 
 void main()
 {
-	gl_Position = matWorld * vec4(Position, 1.0);
+	gl_Position = matWorld * vec4(position, 1.0);
 }

@@ -2,8 +2,8 @@
 
 uniform mat4 matWorld;
 
-in vec3 Position;
-in vec2 Texcoord;
+in vec3 position;
+in vec2 texcoord;
 
 out Data {
 	vec2 texcoord;
@@ -11,7 +11,7 @@ out Data {
 
 void main()
 {
-	gl_Position = matWorld * vec4(Position, 1.0);
+	gl_Position = matWorld * vec4(position, 1.0);
 	
-	DataOut.texcoord = Texcoord;
+	DataOut.texcoord = texcoord;
 }

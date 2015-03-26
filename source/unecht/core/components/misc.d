@@ -124,13 +124,12 @@ final class UERenderer : UEComponent
 			material.preRender();
 
 		import std.string:toStringz;
-		auto posLoc = glGetAttribLocation(material.program.program, toStringz("Position"));
+        auto posLoc = material.program.attribLocations[GLAtrribTypes.position];
 		assert(posLoc != -1);
 
-		//TODO: dont query those things every frame
-		auto normLoc = glGetAttribLocation(material.program.program, toStringz("Normal"));
-		auto colorLoc = glGetAttribLocation(material.program.program, toStringz("Color"));
-		auto uvLoc = glGetAttribLocation(material.program.program, toStringz("Texcoord"));
+        auto normLoc = material.program.attribLocations[GLAtrribTypes.normal];
+        auto colorLoc = material.program.attribLocations[GLAtrribTypes.color];
+        auto uvLoc = material.program.attribLocations[GLAtrribTypes.texcoord];
 		
 		material.program.setUniformMatrix("matWorld", mat);
 		material.program.setUniformVec3("v3ViewDir", _cam.direction);

@@ -1,10 +1,13 @@
-﻿module unecht.gl.shader;
+﻿
+module unecht.gl.shader;
 
 import derelict.opengl3.gl3;
 
 import gl3n.linalg;
 
 import unecht.gl.vertexBufferObject:checkGLError;
+
+import unecht.meta.misc;
 
 ///
 enum ShaderType
@@ -57,11 +60,22 @@ final class GLShader
 }
 
 ///
+enum GLAtrribTypes
+{
+    position,
+    normal,
+    color,
+    texcoord
+}
+
+///
 final class GLProgram
 {
 	GLuint program;
 	GLint[string] uniforms;
 	private string _name;
+
+    GLuint[EnumMemberCount!GLAtrribTypes] attribLocations;
 
 	void create(GLShader _vshader, GLShader _fshader, string _name="<unknown>")
 	{
@@ -83,7 +97,15 @@ final class GLProgram
 			import std.stdio;
 			import std.conv;
 			writefln("Error: linking program: '%s': %s", _name, to!string(log[0..logLen-1]));
+            return;
 		}
+
+        foreach(i, att; __traits(allMembers, GLAtrribTypes))
+        {
+            import std.string:toStringz;
+            auto attrName = att.stringof[1..$-1];
+            attribLocations[i] = glGetAttribLocation(program, toStringz(attrName));
+        }
 	}
 
 	//TODO:
