@@ -6,7 +6,7 @@ import unecht.core.component:UEComponent;
 
 public import unecht.meta.uda:getUDA;
 
-import std.format;
+import std.string:format;
 
 ///
 template UERegisterInspector(T)
