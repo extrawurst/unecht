@@ -7,6 +7,7 @@ import derelict.util.system;
 
 dWorldID World;
 dJointGroupID contactgroup;
+dSpaceID Space;
 
 extern(C) @nogc nothrow static void nearCallback (void *data, dGeomID o1, dGeomID o2)
 {
@@ -59,16 +60,79 @@ quat ode2quat(in dReal* _rotMatrix) pure
 	return quat.from_matrix(m4rot);
 }
 
-final class TestODE : UEComponent {
+final class TestPhysicsObject : UEComponent {
+    mixin(UERegisterComponent!());
+
+    dBodyID Body;  // the dynamics body
+    dGeomID Geom;  // geometry representing this body
+
+    override void onCreate() {
+        super.onCreate;
+
+        // This brings us to the end of the world settings, now we have to initialize the objects themselves.
+        // Create a new body for our object in the world and get its ID.
+        Body = dBodyCreate(World);
+        
+        // Next we set the position of the new body
+        dBodySetPosition(Body, 0, 10, -5);
+        
+        // Here I have set the initial linear velocity to stationary and let gravity do the work, but you can experiment
+        // with the velocity vector to change the starting behaviour. You can also set the rotational velocity for the new
+        // body using dBodySetAngularVel which takes the same parameters.
+        dBodySetLinearVel(Body, 0,0,0);
+        
+        // To start the object with a different rotation each time the program runs we create a new matrix called R and use
+        // the function dRFromAxisAndAngle to create a random initial rotation before passing this matrix to dBodySetRotation.
+        dMatrix3 R;
+        dRFromAxisAndAngle(R, dRandReal() * 2.0 - 1.0,
+            dRandReal() * 2.0 - 1.0,
+            dRandReal() * 2.0 - 1.0,
+            dRandReal() * 10.0 - 5.0);
+        
+        dBodySetRotation(Body, R);
+        
+        // At this point we could add our own user data using dBodySetData but in this example it isn't used.
+        size_t i = 0;
+        dBodySetData(Body, cast(void*)i);
+        
+        // Now we need to create a box mass to go with our geom. First we create a new dMass structure (the internals
+        // of which aren't important at the moment) then create an array of 3 float (dReal) values and set them
+        // to the side lengths of our box along the x, y and z axes. We then pass the both of these to dMassSetBox with a
+        // pre-defined DENSITY value of 0.5 in this case.
+        dMass m;
+        
+        dReal[3] sides;
+        sides[0] = 2.0;
+        sides[1] = 2.0;
+        sides[2] = 2.0;
+        static immutable DENSITY = 0.5f;
+        dMassSetBox(&m, DENSITY, sides[0], sides[1], sides[2]);
+        
+        // We can then apply this mass to our objects body.
+        dBodySetMass(Body, &m);
+        
+        // Here we create the actual geom object using dCreateBox. Note that this also adds the geom to our 
+        // collision space and sets the size of the geom to that of our box mass.
+        Geom = dCreateBox(Space, sides[0], sides[1], sides[2]);
+        
+        // And lastly we want to associate the body with the geom using dGeomSetBody. Setting a body on a geom automatically
+        // combines the position vector and rotation matrix of the body and geom so that setting the position or orientation
+        // of one will set the value for both objects. The ODE docs have a lot more to say about the geom functions.
+        dGeomSetBody(Geom, Body);
+    }
+
+    override void onUpdate() {
+        auto pos = dGeomGetPosition (Geom);
+        auto R = dGeomGetRotation (Geom);
+        
+        this.sceneNode.position = vec3(pos[0..3]);
+        this.sceneNode.rotation = ode2quat(R);
+    }
+}
+
+final class TestODESystem : UEComponent {
 	
 	mixin(UERegisterComponent!());
-	
-	dSpaceID Space;
-
-	dBodyID Body;  // the dynamics body
-
-	static immutable GEOMSPERBODY = 1;
-	dGeomID[GEOMSPERBODY] Geom;  // geometries representing this body
 	
 	override void onCreate() {
 		DerelictODE.load();
@@ -119,57 +183,6 @@ final class TestODE : UEComponent {
 		// by a moving object. If you do not want to use this feature then set the flag to 0. You can also manually enable
 		// or disable objects using dBodyEnable and dBodyDisable, see the docs for more info on this.
 		dWorldSetAutoDisableFlag(World, 1);
-
-		// This brings us to the end of the world settings, now we have to initialize the objects themselves.
-		// Create a new body for our object in the world and get its ID.
-		Body = dBodyCreate(World);
-		
-		// Next we set the position of the new body
-		dBodySetPosition(Body, 0, 10, -5);
-		
-		// Here I have set the initial linear velocity to stationary and let gravity do the work, but you can experiment
-		// with the velocity vector to change the starting behaviour. You can also set the rotational velocity for the new
-		// body using dBodySetAngularVel which takes the same parameters.
-		dBodySetLinearVel(Body, 0,0,0);
-
-		// To start the object with a different rotation each time the program runs we create a new matrix called R and use
-		// the function dRFromAxisAndAngle to create a random initial rotation before passing this matrix to dBodySetRotation.
-		dMatrix3 R;
-		dRFromAxisAndAngle(R, dRandReal() * 2.0 - 1.0,
-			dRandReal() * 2.0 - 1.0,
-			dRandReal() * 2.0 - 1.0,
-			dRandReal() * 10.0 - 5.0);
-		
-		dBodySetRotation(Body, R);
-
-		// At this point we could add our own user data using dBodySetData but in this example it isn't used.
-		size_t i = 0;
-		dBodySetData(Body, cast(void*)i);
-
-		// Now we need to create a box mass to go with our geom. First we create a new dMass structure (the internals
-		// of which aren't important at the moment) then create an array of 3 float (dReal) values and set them
-		// to the side lengths of our box along the x, y and z axes. We then pass the both of these to dMassSetBox with a
-		// pre-defined DENSITY value of 0.5 in this case.
-		dMass m;
-		
-		dReal[3] sides;
-		sides[0] = 2.0;
-		sides[1] = 2.0;
-		sides[2] = 2.0;
-		static immutable DENSITY = 0.5f;
-		dMassSetBox(&m, DENSITY, sides[0], sides[1], sides[2]);
-		
-		// We can then apply this mass to our objects body.
-		dBodySetMass(Body, &m);
-		
-		// Here we create the actual geom object using dCreateBox. Note that this also adds the geom to our 
-		// collision space and sets the size of the geom to that of our box mass.
-		Geom[0] = dCreateBox(Space, sides[0], sides[1], sides[2]);
-		
-		// And lastly we want to associate the body with the geom using dGeomSetBody. Setting a body on a geom automatically
-		// combines the position vector and rotation matrix of the body and geom so that setting the position or orientation
-		// of one will set the value for both objects. The ODE docs have a lot more to say about the geom functions.
-		dGeomSetBody(Geom[0], Body);
 	}
 
 	override void onUpdate() {
@@ -198,24 +211,43 @@ final class TestODE : UEComponent {
 
 		// Remove all temporary collision joints now that the world has been stepped
 		dJointGroupEmpty(contactgroup);
-
-		auto pos = dGeomGetPosition (Geom[0]);
-		auto R = dGeomGetRotation (Geom[0]);
-
-		this.sceneNode.position = vec3(pos[0..3]);
-		this.sceneNode.rotation = ode2quat(R);
 	}
 	
 }
 
-final class TestComponent : UEComponent {
+final class TestControls : UEComponent
+{
+    mixin(UERegisterComponent!());
+
+    override void onCreate() {
+        super.onCreate;
+
+        registerEvent(UEEventType.key, &OnKeyEvent);
+    }
+
+    void OnKeyEvent(UEEvent _ev)
+    {
+        if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
+        {
+            if(_ev.keyEvent.key == UEKey.esc)
+                ue.application.terminate();
+            
+            if(_ev.keyEvent.key == UEKey.enter)
+            {
+                auto newE = UEEntity.create("ode entity");
+                newE.addComponent!TestGfxBox;
+                newE.addComponent!TestPhysicsObject;
+            }
+        }
+    }
+}
+
+final class TestGfxBox : UEComponent {
 	
 	mixin(UERegisterComponent!());
 
 	override void onCreate() {
 		super.onCreate;
-
-		registerEvent(UEEventType.key, &OnKeyEvent);
 
 		import unecht.core.components.misc;
 		import unecht.gl.vertexBufferObject;
@@ -311,24 +343,6 @@ final class TestComponent : UEComponent {
 			]);
 		mesh.vertexArrayObject.unbind();
 	}
-
-	override void onUpdate() {
-		super.onUpdate;
-
-		auto time = ue.tickTime;
-		//this.sceneNode.position = vec3(sin(time)*2.0f,0,0);
-	}
-
-	void OnKeyEvent(UEEvent _ev)
-	{
-		import std.stdio;
-
-		//writefln("key: %s",_ev.keyEvent);
-
-		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
-			_ev.keyEvent.key == UEKey.esc)
-			ue.application.terminate();
-	}
 }
 
 shared static this()
@@ -339,8 +353,8 @@ shared static this()
 
 	ue.hookStartup = () {
 		auto newE = UEEntity.create("app test entity");
-		newE.addComponent!TestComponent;
-		newE.addComponent!TestODE;
+        newE.addComponent!TestControls;
+		newE.addComponent!TestODESystem;
 
 		auto newE2 = UEEntity.create("app test entity 2");
 		newE2.sceneNode.position = vec3(0,3,-20);
