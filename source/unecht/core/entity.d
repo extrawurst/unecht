@@ -3,7 +3,7 @@ module unecht.core.entity;
 import gl3n.linalg:vec3;
 
 import unecht;
-import unecht.core.scenegraph;
+import unecht.core.components.sceneNode;
 
 /// 
 final class UEEntity

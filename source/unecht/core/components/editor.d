@@ -4,6 +4,7 @@ import unecht;
 
 import unecht.core.component;
 import unecht.core.components.camera;
+import unecht.core.components.sceneNode;
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
 

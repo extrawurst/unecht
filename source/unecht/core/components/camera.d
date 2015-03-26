@@ -7,35 +7,32 @@ import unecht.core.types;
 
 import gl3n.linalg;
 
+//TODO: create mixin and automation
+version(UEIncludeEditor)
+@EditorInspector("UECamera")
+static class UECameraInspector : IComponentEditor
+{
+    override void render(UEComponent _component)
+    {
+        auto thisT = cast(UECamera)_component;
+        
+        import imgui;
+        import std.format;
+        
+        imguiLabel(format("rot: %s",thisT.rotation));
+        imguiLabel(format("dir: %s",thisT.dir));
+        imguiLabel(format("up: %s",thisT.up));
+        imguiLabel(format("fov: %s",thisT.fieldOfView));
+    }
+
+    mixin(UERegisterInspector!UECameraInspector);
+}
 
 //TODO: add properties and make matrix updates implicit
 /// 
 final class UECamera : UEComponent
 {
 	mixin(UERegisterComponent!());
-
-	//TODO: create mixin
-	version(UEIncludeEditor)
-	static class UECameraInspector : IComponentEditor
-	{
-		override void render(UEComponent _component)
-		{
-			auto thisT = cast(UECamera)_component;
-
-			import imgui;
-			import std.format;
-
-			imguiLabel(format("rot: %s",thisT.rotation));
-			imguiLabel(format("dir: %s",thisT.dir));
-			imguiLabel(format("up: %s",thisT.up));
-			imguiLabel(format("fov: %s",thisT.fieldOfView));
-		}
-
-		shared static this()
-		{
-			UEComponentsManager.editors["UECamera"] = new UECameraInspector();
-		}
-	}
 
 	@property auto direction() const { return dir; }
 

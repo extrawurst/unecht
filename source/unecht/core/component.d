@@ -2,7 +2,7 @@ module unecht.core.component;
 
 import unecht.core.events;
 import unecht.core.entity;
-import unecht.core.scenegraph;
+import unecht.core.components.sceneNode;
 import unecht;
 
 ///
