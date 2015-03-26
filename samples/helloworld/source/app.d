@@ -52,12 +52,18 @@ extern(C) @nogc nothrow static void nearCallback (void *data, dGeomID o1, dGeomI
 	}
 }
 
+quat ode2quat(in dReal* _rotMatrix) pure
+{
+	auto rot = Matrix!(float,3,4)(_rotMatrix[0..12]);
+	mat3 m4rot = rot;
+	return quat.from_matrix(m4rot);
+}
+
 final class TestODE : UEComponent {
 	
 	mixin(UERegisterComponent!());
 	
 	dSpaceID Space;
-
 
 	dBodyID Body;  // the dynamics body
 
@@ -90,23 +96,15 @@ final class TestODE : UEComponent {
 		// Now we set the gravity vector for our world by passing World as the first argument to dWorldSetGravity.
 		// Earth's gravity vector would be (0, -9.81, 0) assuming that +Y is up. I found that a lighter gravity looked
 		// more realistic in this case.	
-		dWorldSetGravity(World, 0, -1.0, 0);
-		
-		
-		
+		dWorldSetGravity(World, 0, -1, 0);
+
 		// These next two functions control how much error correcting and constraint force mixing occurs in the world.
-		
 		// Don't worry about these for now as they are set to the default values and we could happily delete them from
-		
 		// this example. Different values, however, can drastically change the behaviour of the objects colliding, so
-		
 		// I suggest you look up the full info on them in the ODE docs.
-		
 		dWorldSetERP(World, 0.2);
 		
 		dWorldSetCFM(World, 1e-5);
-		
-		
 		
 		// This function sets the velocity that interpenetrating objects will separate at. The default value is infinity.
 		dWorldSetContactMaxCorrectingVel(World, 0.9);
@@ -115,19 +113,14 @@ final class TestODE : UEComponent {
 		// each other up to this depth. Setting it to a small value reduces the amount of jittering between contacting
 		// objects, the default value is 0. 	
 		dWorldSetContactSurfaceLayer(World, 0.001);
-		
-		
-		
+
 		// To save some CPU time we set the auto disable flag to 1. This means that objects that have come to rest (based
 		// on their current linear and angular velocity) will no longer participate in the simulation, unless acted upon
 		// by a moving object. If you do not want to use this feature then set the flag to 0. You can also manually enable
 		// or disable objects using dBodyEnable and dBodyDisable, see the docs for more info on this.
 		dWorldSetAutoDisableFlag(World, 1);
-		
-		
-		
+
 		// This brings us to the end of the world settings, now we have to initialize the objects themselves.
-		
 		// Create a new body for our object in the world and get its ID.
 		Body = dBodyCreate(World);
 		
@@ -206,11 +199,11 @@ final class TestODE : UEComponent {
 		// Remove all temporary collision joints now that the world has been stepped
 		dJointGroupEmpty(contactgroup);
 
-		// redraw sphere at new location
 		auto pos = dGeomGetPosition (Geom[0]);
 		auto R = dGeomGetRotation (Geom[0]);
 
 		this.sceneNode.position = vec3(pos[0..3]);
+		this.sceneNode.rotation = ode2quat(R);
 	}
 	
 }

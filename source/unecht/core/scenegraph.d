@@ -33,9 +33,9 @@ final class UESceneNode : UEComponent
 	mixin(UERegisterComponent!());
 
 public:
-	mat4 matrixWorld = mat4.identity;
+	/+mat4 matrixWorld = mat4.identity;
 	mat4 matrixLocal = mat4.identity;
-	bool invalidated = true;
+	bool invalidated = true;+/
 
 	UESceneNode[] children;
 
@@ -44,9 +44,13 @@ public:
 	///
 	@property void parent(UESceneNode _parent) { setParent(_parent); }
 	///
-	@property void position(vec3 _pos) { _position = _pos; }
+	@property void position(vec3 _v) { _position = _v; }
 	///
 	@property vec3 position() const { return _position; }
+	///
+	@property void rotation(quat _v) { _rotation = _v; }
+	///
+	@property quat rotation() const { return _rotation; }
 
 private:
 
@@ -81,6 +85,7 @@ private:
 private:
 	UESceneNode _parent;
 	vec3 _position = vec3(0);
+	quat _rotation = quat.identity;
 }
 
 ///
@@ -142,12 +147,12 @@ public:
 		if(!_node)
 			return;
 
-		if(_node.parent && _node.invalidated)
+		/+if(_node.parent && _node.invalidated)
 		{
 			//TODO: update matrix
 
 			_node.invalidated = false;
-		}
+		}+/
 
 		foreach(node; _node.children)
 			updateNode(node);

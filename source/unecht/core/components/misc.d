@@ -116,7 +116,7 @@ final class UERenderer : UEComponent
 	///
 	void render(UECamera _cam)
 	{
-		auto matModel = mat4.translation(sceneNode.position.x,sceneNode.position.y,sceneNode.position.z);
+		auto matModel = mat4.translation(sceneNode.position.x,sceneNode.position.y,sceneNode.position.z) * sceneNode.rotation.to_matrix!(4,4);
 
 		auto mat = _cam.matProjection * _cam.matLook * matModel;
 
