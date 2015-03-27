@@ -16,3 +16,4 @@ Game Engine Framework for the D programming language
 * opengl 3.3 (core profile) compatible graphics/drivers
 * glfw library ([link](http://www.glfw.org/))
 * ODE physics library ([link](http://ode-wiki.org/wiki/index.php?title=Manual:_Install_and_Use))
+* freeimage library ([link](http://freeimage.sourceforge.net/))
