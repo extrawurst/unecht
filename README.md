@@ -9,4 +9,10 @@ Game Engine Framework for the D programming language
 
 * editor mode to inspect scene at runtime
 * component based design (think [unity3d](http://unity3d.com/))
-* integrated physics engine ([ODE](http://www.ode.org/))
+* integrated physics engine ([ODE](http://ode-wiki.org))
+
+# dependecies
+
+* opengl 3.3 (core profile) compatible graphics/drivers
+* glfw library ([link](http://www.glfw.org/))
+* ODE physics library ([link](http://ode-wiki.org/wiki/index.php?title=Manual:_Install_and_Use))
