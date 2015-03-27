@@ -25,7 +25,7 @@ static class UECameraInspector : IComponentEditor
         imguiLabel(format("fov: %s",thisT.fieldOfView));
     }
 
-    mixin(UERegisterInspector!UECameraInspector);
+    mixin UERegisterInspector!UECameraInspector;
 }
 
 //TODO: add properties and make matrix updates implicit

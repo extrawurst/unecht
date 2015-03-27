@@ -9,15 +9,13 @@ public import unecht.meta.uda:getUDA;
 import std.string:format;
 
 ///
-template UERegisterInspector(T)
+mixin template UERegisterInspector(T)
 {
-    enum UERegisterInspector = .format(q{
-        shared static this()
-        {
-            enum componentName = getUDA!(%s,EditorInspector)().componentName;
-            UEComponentsManager.editors[componentName] = new %s();
-        }
-        },T.stringof,T.stringof);
+    shared static this()
+    {
+        enum componentName = getUDA!(T,EditorInspector)().componentName;
+        UEComponentsManager.editors[componentName] = new T();
+    }
 }
 
 /// UDA

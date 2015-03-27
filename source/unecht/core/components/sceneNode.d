@@ -21,7 +21,7 @@ version(UEIncludeEditor)
             imguiLabel(format("pos: %s",thisT.position));
         }
         
-        mixin(UERegisterInspector!UESceneNodeInspector);
+        mixin UERegisterInspector!UESceneNodeInspector;
     }
 }
 
