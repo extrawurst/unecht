@@ -6,8 +6,6 @@ import unecht.core.component:UEComponent;
 
 public import unecht.meta.uda:getUDA;
 
-import std.string:format;
-
 ///
 mixin template UERegisterInspector(T)
 {
