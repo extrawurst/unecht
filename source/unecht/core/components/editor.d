@@ -233,6 +233,7 @@ final class EditorRootComponent : UEComponent {
 			{
 				gismo.sceneNode.enabled = true;
 				gismo.sceneNode.position = _currentEntity.sceneNode.position;
+                gismo.sceneNode.rotation = _currentEntity.sceneNode.rotation;
 			}
 			else
 				gismo.sceneNode.enabled = false;

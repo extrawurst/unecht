@@ -19,6 +19,7 @@ version(UEIncludeEditor)
             import std.format;
             
             imguiLabel(format("pos: %s",thisT.position));
+            imguiLabel(format("rot: %s",thisT.rotation));
         }
         
         mixin UERegisterInspector!UESceneNodeInspector;
