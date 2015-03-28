@@ -16,6 +16,20 @@ final class UEEntity
 	///
 	@property UEComponent[] components() { return _components; } 
 
+    //TODO: optimize ?
+    /// find first component of type T
+    auto getComponent(T : UEComponent)()
+    {
+        foreach(c; _components)
+        {
+            auto c2t = cast(T)c;
+            if(c2t)
+                return c2t;
+        }
+
+        return null;
+    }
+
 	///
 	auto addComponent(T : UEComponent)()
 	{

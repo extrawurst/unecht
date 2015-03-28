@@ -15,12 +15,7 @@ import unecht;
 import unecht.core.components.camera;
 import unecht.core.components.misc;
 
-version(UEProfiling)
-{
-import tharsis.prof;
-// Get 2 MB more than the minimum (maxEventBytes). Could also use malloc() here.
-ubyte[] storage = new ubyte[Profiler.maxEventBytes + 1024 * 1024 * 2];
-}
+version(UEProfiling) import unecht.core.profiler;
 
 ///
 struct UEApplication
@@ -31,7 +26,6 @@ struct UEApplication
 
     version(UEProfiling)
     {
-        Profiler profiler;
         DespikerSender sender;
     }
 
@@ -248,11 +242,21 @@ private:
 
 		ue.scene = new UEScenegraph();
 
+        insertPhysicsObj();
+
 		version(UEIncludeEditor)insertEditorEntity();
 
 		if(ue.hookStartup)
 			ue.hookStartup();
 	}
+
+    void insertPhysicsObj()
+    {
+        auto newE = UEEntity.create("physics");
+        import unecht.core.components.physics;
+        newE.addComponent!UEPhysicsSystem;
+        newE.hideInEditor = true;
+    }
 
 	version(UEIncludeEditor)void insertEditorEntity()
 	{
