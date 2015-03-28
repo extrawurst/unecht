@@ -10,3 +10,6 @@
 [submodule "submodules/tharsis.prof"]
 	path = submodules/tharsis.prof
 	url = https://github.com/Extrawurst/tharsis.prof.git
+[submodule "submodules/tinyendian"]
+	path = submodules/tinyendian
+	url = https://github.com/Extrawurst/tinyendian.git
