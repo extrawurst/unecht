@@ -10,6 +10,7 @@
 	{
 		"tharsis-dimgui": {"version":"~master", "path": "submodules/tharsis-dimgui/"},
 		"gl3n": {"version":"~master", "path": "submodules/gl3n/"},
+        "tharsis-prof": {"version":"~master", "path": "submodules/tharsis.prof/"},
 		"derelict-glfw3": "~>1.1.0",
 		"derelict-gl3": "~>1.0.12",
 		"derelict-fi": "~>1.9.0",

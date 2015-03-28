@@ -15,6 +15,13 @@ import unecht;
 import unecht.core.components.camera;
 import unecht.core.components.misc;
 
+version(UEProfiling)
+{
+import tharsis.prof;
+// Get 2 MB more than the minimum (maxEventBytes). Could also use malloc() here.
+ubyte[] storage = new ubyte[Profiler.maxEventBytes + 1024 * 1024 * 2];
+}
+
 ///
 struct UEApplication
 {
@@ -22,9 +29,21 @@ struct UEApplication
 	UEEventsSystem events;
 	UEEntity rootEntity;
 
+    version(UEProfiling)
+    {
+        Profiler profiler;
+        DespikerSender sender;
+    }
+
 	/// contains the game loop is run in main function
 	int run()
 	{
+        version(UEProfiling)
+        {
+            profiler = new Profiler(storage);
+            sender = new DespikerSender([profiler]);
+        }
+
 		DerelictFI.load();
 		DerelictGL3.load();
 		DerelictGLFW3.load();
@@ -47,27 +66,78 @@ struct UEApplication
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
 
+        version(none)
+        {
+            import core.memory;
+            GC.disable();
+        }
+
 		while (!mainWindow.shouldClose)
 		{
-			events.cleanUp();
-			ue.tickTime = glfwGetTime();
+            {
+                version(UEProfiling)
+                auto frame = Zone(profiler, "frame");
 
-			ue.scene.update();
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "events.cleanup");
+        		    events.cleanUp();
+                }
 
-			render();
+        		ue.tickTime = glfwGetTime();
 
-			foreach(f; ue.debugTick)
-				f(glfwGetTime());
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "scene update");
 
-			version(UEIncludeEditor)
-			{
-				import unecht.core.components.editor;
-				EditorRootComponent.renderEditor();
-			}
+        		    ue.scene.update();
+                }
 
-			mainWindow.swapBuffers();
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "render update");
 
-			glfwPollEvents();
+        		    render();
+                }
+
+        		foreach(f; ue.debugTick)
+        			f(glfwGetTime());
+
+        		version(UEIncludeEditor)
+        		{
+                    {
+                        version(UEProfiling)
+                        auto profZone = Zone(profiler, "render editor");
+
+        			    import unecht.core.components.editor;
+        			    EditorRootComponent.renderEditor();
+                    }
+        		}
+
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "vertical sync");
+
+                    mainWindow.swapBuffers();
+                }
+
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "poll events");
+
+        		    glfwPollEvents();
+                }
+
+                version(none)
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "gc");
+                    GC.collect();
+                }
+            }
+
+            version(UEProfiling)
+            sender.update();
 		}
 
 		return 0;
@@ -92,8 +162,21 @@ package:
 		else if(action == GLFW_REPEAT)
 			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
 
-		if( (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT)
-			ev.keyEvent.shift = true;
+        auto shiftDown = (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT;
+        auto superDown = (mods & GLFW_MOD_SUPER) == GLFW_MOD_SUPER;
+
+		ev.keyEvent.shift = shiftDown;
+
+        version(UEProfiling)
+        {
+            if( action == GLFW_PRESS && 
+                key == GLFW_KEY_P && 
+                shiftDown && superDown)
+            {
+                if(!sender.sending)
+                    sender.startDespiker();
+            }
+        }
 
 		events.trigger(ev);
 	}

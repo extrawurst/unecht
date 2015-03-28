@@ -7,3 +7,6 @@
 [submodule "submodules/DerelictODE"]
 	path = submodules/DerelictODE
 	url = https://github.com/Extrawurst/DerelictODE.git
+[submodule "submodules/tharsis.prof"]
+	path = submodules/tharsis.prof
+	url = https://github.com/Extrawurst/tharsis.prof.git
