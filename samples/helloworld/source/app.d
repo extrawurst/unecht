@@ -72,9 +72,10 @@ final class TestPhysicsObject : UEComponent {
         // This brings us to the end of the world settings, now we have to initialize the objects themselves.
         // Create a new body for our object in the world and get its ID.
         Body = dBodyCreate(World);
-        
+
         // Next we set the position of the new body
-        dBodySetPosition(Body, 0, 10, -5);
+        auto pos = sceneNode.position;
+        dBodySetPosition(Body, pos.x, pos.y, pos.z);
         
         // Here I have set the initial linear velocity to stationary and let gravity do the work, but you can experiment
         // with the velocity vector to change the starting behaviour. You can also set the rotational velocity for the new
@@ -242,6 +243,7 @@ final class TestControls : UEComponent
     static void spawnBox()
     {
         auto newE = UEEntity.create("ode entity");
+        newE.sceneNode.position = vec3(0,15,0);
         newE.addComponent!TestGfxBox;
         newE.addComponent!TestPhysicsObject;
     }
