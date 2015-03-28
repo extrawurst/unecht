@@ -345,19 +345,41 @@ final class EditorRootComponent : UEComponent {
 		if(_node.entity.hideInEditor)
 			return;
 
-		if(imguiButton(_node.entity.name))
-		{
-			if(_currentEntity is _node.entity)
-				_currentEntity = null;
-			else
-				_currentEntity = _node.entity;
-		}
+        const canExpand = _node.children.length>0;
 
-		imguiIndent();
-		foreach(n; _node.children)
-		{
-			renderSceneNode(n);
-		}
-		imguiUnindent();
+        if(canExpand)
+        {
+            bool expanded=_node.entity.stateInSceneEditor;
+
+            if(imguiCollapse(_node.entity.name,"",&expanded))
+    		{
+    			if(_currentEntity is _node.entity)
+    				_currentEntity = null;
+    			else
+    				_currentEntity = _node.entity;
+    		}
+
+            _node.entity.stateInSceneEditor = expanded;
+
+            if(!expanded)
+                return;
+
+    		imguiIndent();
+    		foreach(n; _node.children)
+    		{
+    			renderSceneNode(n);
+    		}
+    		imguiUnindent();
+        }
+        else
+        {
+            if(imguiItem(_node.entity.name))
+            {
+                if(_currentEntity is _node.entity)
+                    _currentEntity = null;
+                else
+                    _currentEntity = _node.entity;
+            }
+        }
 	}
 }

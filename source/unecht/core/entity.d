@@ -8,6 +8,7 @@ import unecht.core.components.sceneNode;
 /// 
 final class UEEntity
 {
+    version(UEIncludeEditor) bool stateInSceneEditor=false;
 	bool hideInEditor;
 	///
 	@property UESceneNode sceneNode() { return _sceneNode; } 
