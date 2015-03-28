@@ -16,6 +16,8 @@ template UERegisterComponent()
 /// binding component between an GameEntity and a SceneNode
 abstract class UEComponent
 {
+    version(UEIncludeEditor) bool stateInSceneEditor=false;
+
 	///
 	version(UEIncludeEditor)@property string name();
 

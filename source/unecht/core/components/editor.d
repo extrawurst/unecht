@@ -323,17 +323,34 @@ final class EditorRootComponent : UEComponent {
 		static int scroll;
 		//TODO: do not use hardcoded values here
 		imguiBeginScrollArea("inspector: "~_currentEntity.name,200,0,300,ue.application.mainWindow.size.height,&scroll);
+
+        if(imguiButton("[X]"))
+        {
+            _currentEntity = null;
+            return;
+        }
 		
 		foreach(c; _currentEntity.components)
 		{
-			imguiLabel(c.name);
-			import unecht.core.componentManager;
-			if(auto renderer = c.name in UEComponentsManager.editors)
-			{
-				imguiIndent();
-				renderer.render(c);
-				imguiUnindent();
-			}
+            bool expanded=c.stateInSceneEditor;
+
+            imguiCollapse(c.name,"",&expanded);
+
+			if(expanded)
+            {
+                if(imguiButton("toggle"))
+                    c.enabled = !c.enabled;
+
+    			import unecht.core.componentManager;
+    			if(auto renderer = c.name in UEComponentsManager.editors)
+    			{
+    				imguiIndent();
+    				renderer.render(c);
+    				imguiUnindent();
+    			}
+            }
+
+            c.stateInSceneEditor = expanded;
 		}
 		
 		imguiEndScrollArea();
@@ -349,17 +366,19 @@ final class EditorRootComponent : UEComponent {
 
         if(canExpand)
         {
-            bool expanded=_node.entity.stateInSceneEditor;
+            bool expanded=_node.sceneNode.stateInSceneEditor;
 
-            if(imguiCollapse(_node.entity.name,"",&expanded))
+            auto subtext = "[  ]";
+            if(_node.sceneNode.enabled)
+                subtext = "[X]";
+
+            if(imguiCollapse(_node.entity.name,subtext,&expanded))
     		{
-    			if(_currentEntity is _node.entity)
-    				_currentEntity = null;
-    			else
+    			if(_currentEntity !is _node.entity)
     				_currentEntity = _node.entity;
     		}
 
-            _node.entity.stateInSceneEditor = expanded;
+            _node.sceneNode.stateInSceneEditor = expanded;
 
             if(!expanded)
                 return;
