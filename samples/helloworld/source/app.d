@@ -46,14 +46,19 @@ final class TestGfxBox : UEComponent {
 		import unecht.core.components.misc;
 		import unecht.gl.vertexBufferObject;
 		import unecht.gl.vertexArrayObject;
+        import unecht.gl.texture;
 
 		auto renderer = this.entity.addComponent!UERenderer;
 		auto mesh = this.entity.addComponent!UEMesh;
 	
+        auto tex = new GLTexture();
+        tex.create("data/green.png",false);
+
 		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.material.setProgram(UEMaterial.vs_tex,UEMaterial.fs_tex, "tex");
 		renderer.material.depthTest = true;
 		renderer.mesh = mesh;
+        renderer.material.texture = tex;
 
 		mesh.vertexArrayObject = new GLVertexArrayObject();
 		mesh.vertexArrayObject.bind();

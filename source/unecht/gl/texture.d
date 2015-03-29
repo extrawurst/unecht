@@ -36,6 +36,12 @@ final class GLTexture
 		}
 	}
 
+    void destroy()
+    {
+        glDeleteTextures(1,&tex);
+        tex = 0;
+    }
+
 	private void createRaw(FIBITMAP* _image)
 	{
 		//TODO: check if bits are not 32 first

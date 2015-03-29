@@ -43,11 +43,12 @@ final class UEMaterial : UEComponent
 
 	static const string dummyTex = cast(string)import("rgb.png");
 
-	GLProgram program;
-	GLTexture texture;
+    private GLProgram program;
 
 	bool polygonFill = true;
 	bool depthTest = false;
+
+    @property void texture(GLTexture _texture) { setTexture(_texture); }
 
 	///
 	override void onCreate() {
@@ -55,9 +56,9 @@ final class UEMaterial : UEComponent
 
 		program = new GLProgram();
 
-		texture = new GLTexture();
-		texture.create(dummyTex);
-		texture.pointFiltering = true;
+		_tex = new GLTexture();
+		_tex.create(dummyTex);
+		_tex.pointFiltering = true;
 
 		setProgram(vs_flat,fs_flat, "flat");
 	}
@@ -85,7 +86,7 @@ final class UEMaterial : UEComponent
 			glEnable(GL_DEPTH_TEST);
 
 		glActiveTexture(GL_TEXTURE0);
-		texture.bind();
+        _tex.bind();
 
 		program.bind();
 	}
@@ -96,13 +97,27 @@ final class UEMaterial : UEComponent
 		program.unbind();
 
 		glActiveTexture(GL_TEXTURE0);
-		texture.unbind();
+        _tex.unbind();
 
 		if(depthTest)
 			glDisable(GL_DEPTH_TEST);
 
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
+
+protected:
+
+    ///
+    void setTexture(GLTexture _texture)
+    {
+        if(_tex)
+            _tex.destroy();
+
+        _tex = _texture;
+    }
+
+private:
+    GLTexture _tex;
 }
 
 /// 
