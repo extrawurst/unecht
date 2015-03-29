@@ -324,7 +324,7 @@ final class EditorRootComponent : UEComponent {
 		//TODO: do not use hardcoded values here
 		imguiBeginScrollArea("inspector: "~_currentEntity.name,200,0,300,ue.application.mainWindow.size.height,&scroll);
 
-        if(imguiButton("[X]"))
+        if(imguiButton("[deselect]"))
         {
             _currentEntity = null;
             return;
@@ -334,7 +334,11 @@ final class EditorRootComponent : UEComponent {
 		{
             bool expanded=c.stateInSceneEditor;
 
-            imguiCollapse(c.name,"",&expanded);
+            auto subtext = "[  ]";
+            if(c.enabled)
+                subtext = "[X]";
+
+            imguiCollapse(c.name,subtext,&expanded);
 
 			if(expanded)
             {
@@ -368,11 +372,7 @@ final class EditorRootComponent : UEComponent {
         {
             bool expanded=_node.sceneNode.stateInSceneEditor;
 
-            auto subtext = "[  ]";
-            if(_node.sceneNode.enabled)
-                subtext = "[X]";
-
-            if(imguiCollapse(_node.entity.name,subtext,&expanded))
+            if(imguiCollapse(_node.entity.name,"",&expanded))
     		{
     			if(_currentEntity !is _node.entity)
     				_currentEntity = _node.entity;
