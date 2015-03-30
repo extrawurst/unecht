@@ -303,6 +303,11 @@ final class UEPhysicsBody : UEComponent
 {
     mixin(UERegisterComponent!());
 
+    vec3 getVelocity() {
+        auto vel = dBodyGetLinearVel(Body);
+        return vec3(vel[0..2]);
+    }
+
     void setVelocity(vec3 _v) {
         dBodySetLinearVel(Body, _v.x,_v.y,_v.z);
     }
