@@ -79,10 +79,10 @@ final class UEMaterial : UEComponent
 
 	///
 	void preRender()
-	{
+    {
 		glPolygonMode( GL_FRONT_AND_BACK, polygonFill ? GL_FILL : GL_LINE );
 
-		if(depthTest)
+        if(depthTest)
 			glEnable(GL_DEPTH_TEST);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -99,9 +99,9 @@ final class UEMaterial : UEComponent
 		glActiveTexture(GL_TEXTURE0);
         _tex.unbind();
 
-		if(depthTest)
+        if(depthTest)
 			glDisable(GL_DEPTH_TEST);
-
+            
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
 
@@ -128,6 +128,8 @@ final class UERenderer : UEComponent
 	UEMaterial material;
 	UEMesh mesh;
 
+    version(UEIncludeEditor)static UEMaterial editorMaterial;
+
 	///
 	void render(UECamera _cam)
 	{
@@ -135,6 +137,14 @@ final class UERenderer : UEComponent
         auto matModel = mat4.translation(sceneNode.position) * sceneNode.rotation.to_matrix!(4,4) * matScale;
 
 		auto mat = _cam.matProjection * _cam.matLook * matModel;
+
+        version(UEIncludeEditor)
+        {
+            auto oldMaterial=material;
+            if(material && editorMaterial)
+                material = editorMaterial;
+            scope(exit) material=oldMaterial;
+        }
 
 		if(material)
 			material.preRender();

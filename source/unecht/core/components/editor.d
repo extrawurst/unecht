@@ -1,18 +1,19 @@
 ﻿module unecht.core.components.editor;
 
+version(UEIncludeEditor):
+
 import unecht;
 
 import unecht.core.component;
 import unecht.core.components.camera;
 import unecht.core.components.sceneNode;
+import unecht.core.components.misc;
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
 
 import derelict.opengl3.gl3;
 
 import imgui;
-
-version(UEIncludeEditor):
 
 ///
 final class UEEditorgridComponent : UEComponent {
@@ -21,8 +22,6 @@ final class UEEditorgridComponent : UEComponent {
 
 	override void onCreate() {
 		super.onCreate;
-
-		import unecht.core.components.misc;
 		
 		auto renderer = this.entity.addComponent!UERenderer;
 		auto mesh = this.entity.addComponent!UEMesh;
@@ -173,6 +172,7 @@ final class EditorRootComponent : UEComponent {
 	private UEEntity editorComponent;
 
 	private static UEEntity gismo;
+    private static UEMaterial editorMaterial;
 
 	private static bool _editorVisible;
 	private static UECamera _editorCam;
@@ -211,6 +211,11 @@ final class EditorRootComponent : UEComponent {
 		gismo.sceneNode.parent = this.sceneNode;
 		gismo.addComponent!UEEditorGismo;
 		gismo.sceneNode.enabled = false;
+
+        editorMaterial = this.entity.addComponent!UEMaterial;
+        editorMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat, "color");
+        editorMaterial.depthTest = false;
+        editorMaterial.polygonFill = false;
 	}
 
 	///
@@ -239,14 +244,13 @@ final class EditorRootComponent : UEComponent {
 				gismo.sceneNode.enabled = false;
 
 			_editorCam.render();
-			//TODO: support wireframe shader
-			//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-			//_editorCam.clearBitColor = false;
-			//_editorCam.clearBitDepth = false;
-			//_editorCam.render();
-			//glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-			//_editorCam.clearBitColor = true;
-			//_editorCam.clearBitDepth = true;
+
+            import unecht.core.components.misc;
+            UERenderer.editorMaterial = editorMaterial;
+            _editorCam.clearBitColor=false;
+            _editorCam.render();
+            _editorCam.clearBitColor=true;
+            UERenderer.editorMaterial = null;
 		}
 
 		renderEditorGUI();
