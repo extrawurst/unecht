@@ -30,6 +30,7 @@ final class TestControls : UEComponent
     {
         auto newE = UEEntity.create("ode entity");
         newE.sceneNode.position = vec3(0,15,0);
+        newE.sceneNode.scaling = vec3(1,1,2);
         newE.addComponent!TestGfxBox;
         newE.addComponent!UEPhysicsBody;
         newE.addComponent!UEPhysicsColliderBox;

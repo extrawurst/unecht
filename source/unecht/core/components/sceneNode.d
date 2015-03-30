@@ -20,6 +20,7 @@ version(UEIncludeEditor)
             
             imguiLabel(format("pos: %s",thisT.position));
             imguiLabel(format("rot: %s",thisT.rotation));
+            imguiLabel(format("scale: %s",thisT.scaling));
         }
         
         mixin UERegisterInspector!UESceneNodeInspector;
@@ -46,6 +47,10 @@ public:
     @property void position(vec3 _v) { _position = _v; }
     ///
     @property vec3 position() const { return _position; }
+    ///
+    @property void scaling(vec3 _v) { _scaling = _v; }
+    ///
+    @property vec3 scaling() const { return _scaling; }
     ///
     @property void rotation(quat _v) { _rotation = _v; }
     ///
@@ -84,5 +89,6 @@ private:
 private:
     UESceneNode _parent;
     vec3 _position = vec3(0);
+    vec3 _scaling = vec3(1);
     quat _rotation = quat.identity;
 }
