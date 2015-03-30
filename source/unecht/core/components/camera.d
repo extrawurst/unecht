@@ -93,7 +93,7 @@ final class UECamera : UEComponent
 		updateProjection();
 		updateLook();
 		
-		auto clearBits = 0;
+		int clearBits = 0;
 		if(clearBitColor) clearBits |= GL_COLOR_BUFFER_BIT;
 		if(clearBitDepth) clearBits |= GL_DEPTH_BUFFER_BIT;
 		

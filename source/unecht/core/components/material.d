@@ -30,9 +30,17 @@ final class UEMaterial : UEComponent
     static const string dummyTex = cast(string)import("rgb.png");
     
     package GLProgram program;
+
+    enum CullMode
+    {
+        cullNone,
+        cullFront,
+        cullBack
+    }
     
     bool polygonFill = true;
-    bool depthTest = false;
+    bool depthTest = true;
+    CullMode cullMode = CullMode.cullNone;
     
     @property void texture(GLTexture _texture) { setTexture(_texture); }
     
@@ -69,9 +77,23 @@ final class UEMaterial : UEComponent
         glPolygonMode( GL_FRONT_AND_BACK, polygonFill ? GL_FILL : GL_LINE );
         
         if(depthTest)
+        {
             glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+            glDepthMask(GL_TRUE);
+        }
         else
             glDisable(GL_DEPTH_TEST);
+
+        if(cullMode != CullMode.cullNone)
+        {
+            glEnable(GL_CULL_FACE);
+            glCullFace((cullMode == CullMode.cullFront) ? GL_FRONT : GL_BACK);
+        }
+        else
+        {
+            glDisable(GL_CULL_FACE);
+        }
         
         glActiveTexture(GL_TEXTURE0);
         _tex.bind();
@@ -86,6 +108,9 @@ final class UEMaterial : UEComponent
         
         glActiveTexture(GL_TEXTURE0);
         _tex.unbind();
+
+        if(cullMode != CullMode.cullNone)
+            glDisable(GL_CULL_FACE);
         
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }

@@ -26,7 +26,6 @@ final class UEShapeBox : UEComponent {
         
         renderer.material = this.entity.addComponent!UEMaterial;
         renderer.material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
-        renderer.material.depthTest = true;
         renderer.mesh = mesh;
         renderer.material.texture = tex;
         
@@ -127,7 +126,6 @@ final class UEShapeSphere : UEComponent {
         
         renderer.material = this.entity.addComponent!UEMaterial;
         renderer.material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
-        renderer.material.depthTest = true;
         renderer.mesh = mesh;
         
         mesh.vertexArrayObject = new GLVertexArrayObject();

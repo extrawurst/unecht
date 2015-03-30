@@ -62,6 +62,7 @@ final class UEEditorGismo : UEComponent {
 		renderer.mesh = mesh;
 		renderer.material = this.entity.addComponent!UEMaterial;
 		renderer.material.setProgram(UEMaterial.vs_flatcolor,UEMaterial.fs_flatcolor, "flat colored");
+        renderer.material.depthTest = false;
 		
 		mesh.vertexArrayObject = new GLVertexArrayObject();
 		mesh.vertexArrayObject.bind();
@@ -217,6 +218,7 @@ final class EditorRootComponent : UEComponent {
         editorMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat, "color");
         editorMaterial.depthTest = false;
         editorMaterial.polygonFill = false;
+        //editorMaterial.cullMode = UEMaterial.CullMode.cullBack;
 	}
 
 	///
