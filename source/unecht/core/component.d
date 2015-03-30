@@ -25,7 +25,10 @@ abstract class UEComponent
 	void onUpdate() {}
 	//void OnDisable() {}
 	
+    ///
 	void onCreate() {}
+    ///
+    void onCollision(UEComponent _collider) {}
 	
 	///
 	@property bool enabled() const { return _enabled; }

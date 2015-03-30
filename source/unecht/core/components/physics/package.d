@@ -53,6 +53,8 @@ final class UEPhysicsColliderBox : UEComponent
         // collision space and sets the size of the geom to that of our box mass.
         _geom = dCreateBox(UEPhysicsSystem.space, size.x*sceneNode.scaling.x, size.y*sceneNode.scaling.y, size.z*sceneNode.scaling.z);
 
+        dGeomSetData(_geom, cast(void*)this);
+
         if(_rigidBody)
         {
             // And lastly we want to associate the body with the geom using dGeomSetBody. Setting a body on a geom automatically
@@ -100,6 +102,8 @@ final class UEPhysicsColliderSphere : UEComponent
         auto rigidBody = entity.getComponent!UEPhysicsBody;
 
         _geom = dCreateSphere(UEPhysicsSystem.space, rad);
+
+        dGeomSetData(_geom, cast(void*)this);
 
         if(rigidBody)
             dGeomSetBody(_geom, rigidBody.Body);
@@ -174,7 +178,9 @@ final class UEPhysicsSystem : UEComponent {
     override void onUpdate() {
         version(UEProfiling)
         auto profZone = Zone(profiler, "physics update");
-        
+
+        _collisionsThisFrame = 0;
+
         /++
          + dSpaceCollide determines which pairs of geoms in the space we pass to it may potentially intersect. 
          + We must also pass the address of a callback function that we will provide. 
@@ -198,7 +204,32 @@ final class UEPhysicsSystem : UEComponent {
         
         // Remove all temporary collision joints now that the world has been stepped
         dJointGroupEmpty(contactgroup);
+
+        propagateCollisions();
     }
+
+    ///
+    void propagateCollisions()
+    {
+        import std.stdio;
+
+        foreach(col; _collisions[0.._collisionsThisFrame])
+        {
+            if(col.c1)
+                col.c1.entity.broadcast!"onCollision"(col.c2);
+            if(col.c2)
+                col.c2.entity.broadcast!"onCollision"(col.c1);
+        }
+    }
+
+    ///
+    private struct Collision
+    {
+        UEComponent c1,c2;
+    }
+
+    private static Collision[1024] _collisions;
+    private static uint _collisionsThisFrame;
 
     ///
     private extern(C) @nogc nothrow static void nearCallback(void *data, dGeomID o1, dGeomID o2)
@@ -206,6 +237,9 @@ final class UEPhysicsSystem : UEComponent {
         // Get the dynamics body for each geom
         dBodyID b1 = dGeomGetBody(o1);
         dBodyID b2 = dGeomGetBody(o2);
+
+        void* gData1 = dGeomGetData(o1);
+        void* gData2 = dGeomGetData(o2);
         
         static immutable MAX_CONTACTS = 128;
         // Create an array of dContact objects to hold the contact joints
@@ -242,10 +276,19 @@ final class UEPhysicsSystem : UEComponent {
                 
                 dJointAttach(c, b1, b2);    
             }
+
+            auto component1 = cast(UEComponent)gData1;
+            auto component2 = cast(UEComponent)gData2;
+
+            if(_collisionsThisFrame<_collisions.length)
+                _collisions[_collisionsThisFrame++] = Collision(component1,component2);
+            else
+                assert(false);
         }
     }
 }
 
+///
 final class UEPhysicsBody : UEComponent 
 {
     mixin(UERegisterComponent!());

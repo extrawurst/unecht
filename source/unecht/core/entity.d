@@ -17,6 +17,18 @@ final class UEEntity
 	///
 	@property UEComponent[] components() { return _components; } 
 
+    ///
+    void broadcast(string _method,ARG)(ARG _arg)
+    {
+        import std.string:format;
+        foreach(component; _components)
+        {
+            enum mix = .format("component.%s(_arg);",_method);
+            //pragma(msg, mix);
+            mixin(mix);
+        }
+    }
+
     //TODO: optimize ?
     /// find first component of type T
     auto getComponent(T : UEComponent)()

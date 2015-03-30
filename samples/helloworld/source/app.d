@@ -3,6 +3,20 @@ module app;
 import unecht;
 
 ///
+final class TestLogic : UEComponent
+{
+    mixin(UERegisterComponent!());
+
+    override void onCollision(UEComponent _collider) {
+        if(_collider && _collider.entity.name == "border-out")
+        {
+            import std.stdio;
+            //writefln("out!");
+        }
+    }
+}
+
+///
 final class TestControls : UEComponent
 {
     mixin(UERegisterComponent!());
@@ -40,6 +54,7 @@ final class TestControls : UEComponent
         newE.addComponent!UEShapeSphere;
         newE.addComponent!UEPhysicsBody;
         newE.addComponent!UEPhysicsColliderSphere;
+        newE.addComponent!TestLogic;
     }
 
     static void spawnBox()
@@ -82,14 +97,14 @@ final class GameBorders : UEComponent
             newE.addComponent!UEPhysicsColliderBox;
         }
         {
-            auto newE = UEEntity.create("border",sceneNode);
+            auto newE = UEEntity.create("border-out",sceneNode);
             newE.sceneNode.position = vec3(-x,h/2,0);
             newE.sceneNode.scaling = vec3(1,h,z);
             newE.addComponent!UEShapeBox;
             newE.addComponent!UEPhysicsColliderBox;
         }
         {
-            auto newE = UEEntity.create("border",sceneNode);
+            auto newE = UEEntity.create("border-out",sceneNode);
             newE.sceneNode.position = vec3(x,h/2,0);
             newE.sceneNode.scaling = vec3(1,h,z);
             newE.addComponent!UEShapeBox;
