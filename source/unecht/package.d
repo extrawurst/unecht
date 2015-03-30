@@ -6,6 +6,7 @@ public import unecht.core.entity;
 public import unecht.core.scenegraph;
 public import unecht.core.component;
 public import unecht.core.components.physics;
+public import unecht.core.components.shapes;
 
 public import unecht.glfw.application;
 
