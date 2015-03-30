@@ -117,6 +117,8 @@ shared static this()
 		newE2.sceneNode.position = vec3(0,30,0);
 		auto cam = newE2.addComponent!UECamera;
         cam.rotation = vec3(90,0,0);
+        cam.isOrthographic = true;
+        cam.orthoSize = 30.0f;
 		
 		auto newEs = UEEntity.create("sub entity ");
         newEs.sceneNode.position = vec3(1,0,-5);

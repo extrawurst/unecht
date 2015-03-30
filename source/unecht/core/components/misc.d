@@ -40,7 +40,7 @@ final class UERenderer : UEComponent
         auto matScale = mat4.scaling(sceneNode.scaling.x,sceneNode.scaling.y,sceneNode.scaling.z);
         auto matModel = mat4.translation(sceneNode.position) * sceneNode.rotation.to_matrix!(4,4) * matScale;
 
-		auto mat = _cam.matProjection * _cam.matLook * matModel;
+		auto mat = _cam.projectionLook * matModel;
 
         version(UEIncludeEditor)
         {

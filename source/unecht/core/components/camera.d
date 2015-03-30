@@ -34,7 +34,10 @@ final class UECamera : UEComponent
 {
 	mixin(UERegisterComponent!());
 
+    ///
 	@property auto direction() const { return dir; }
+    ///
+    @property auto projectionLook() const { return matProjection * matLook; }
 
 	vec3 rotation = vec3(0,0,0);
 	private vec3 dir = vec3(0);
@@ -43,9 +46,6 @@ final class UECamera : UEComponent
 	static const vec3 ORIG_DIR = vec3(0,0,1);
 	static const vec3 ORIG_UP = vec3(0,1,0);
 
-	mat4 matProjection = mat4.identity;
-	mat4 matLook = mat4.identity;
-
 	float fieldOfView = 60;
 	float clipNear = 1;
 	float clipFar = 1000;
@@ -53,6 +53,9 @@ final class UECamera : UEComponent
 	vec4 clearColor = vec4(0,0,0,1);
 	bool clearBitColor = true;
 	bool clearBitDepth = true;
+
+    bool isOrthographic=false;
+    float orthoSize=1;
 
 	UERect viewport;
 
@@ -79,7 +82,14 @@ final class UECamera : UEComponent
 
 	void updateProjection()
 	{
-		matProjection = mat4.perspective(1024,768,fieldOfView,clipNear,clipFar);
+        import unecht;
+
+        if(!isOrthographic)
+		    matProjection = mat4.perspective(1024,768,fieldOfView,clipNear,clipFar);
+        else
+        {
+            matProjection = mat4.orthographic(-(orthoSize/2),(orthoSize/2),-(orthoSize/2),(orthoSize/2),clipNear,clipFar);
+        }
 	}
 
 	void render()
@@ -111,4 +121,8 @@ final class UECamera : UEComponent
 				r.render(this);
 		}
 	}
+
+private:
+    mat4 matProjection = mat4.identity;
+    mat4 matLook = mat4.identity;
 }
