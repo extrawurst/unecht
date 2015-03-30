@@ -303,6 +303,16 @@ final class UEPhysicsBody : UEComponent
 {
     mixin(UERegisterComponent!());
 
+    void addForce(vec3 _v)
+    {
+        dBodyAddForce(Body, _v.x, _v.y, _v.z);
+    }
+
+    void setDamping(float _v)
+    {
+        dBodySetLinearDamping(Body, _v);
+    }
+
     vec3 getVelocity() {
         auto vel = dBodyGetLinearVel(Body);
         return vec3(vel[0..2]);
