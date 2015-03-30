@@ -174,33 +174,42 @@ final class UEPhysicsSystem : UEComponent {
             initialised = true;
         }
     }
-    
+
+    ///
     override void onUpdate() {
         version(UEProfiling)
         auto profZone = Zone(profiler, "physics update");
 
         _collisionsThisFrame = 0;
 
-        /++
-         + dSpaceCollide determines which pairs of geoms in the space we pass to it may potentially intersect. 
-         + We must also pass the address of a callback function that we will provide. 
-         + The callback function is responsible for determining which of the potential intersections 
-         + are actual collisions before adding the collision joints to our joint group called contactgroup, 
-         + this gives us the chance to set the behaviour of these joints before adding them to the group. 
-         + The second parameter is a pointer to any data that we may want to pass to our callback routine. 
-         + We will cover the details of the nearCallback routine in the next section.
-         +/
-        dSpaceCollide(space, null, &nearCallback);
-        
-        /+ 
-         + Now we advance the simulation by calling dWorldQuickStep. 
-         + This is a faster version of dWorldStep but it is also 
-         + slightly less accurate. As well as the World object ID we also pass a step size value. 
-         + In each step the simulation is updated by a certain number of smaller steps or iterations. 
-         + The default number of iterations is 20 but you can change this by calling 
-         + dWorldSetQuickStepNumIterations.
-        +/
-        dWorldQuickStep(world, 0.05);
+        {
+            version(UEProfiling)
+            auto profZone2 = Zone(profiler, "physics collide");
+            /++
+             + dSpaceCollide determines which pairs of geoms in the space we pass to it may potentially intersect. 
+             + We must also pass the address of a callback function that we will provide. 
+             + The callback function is responsible for determining which of the potential intersections 
+             + are actual collisions before adding the collision joints to our joint group called contactgroup, 
+             + this gives us the chance to set the behaviour of these joints before adding them to the group. 
+             + The second parameter is a pointer to any data that we may want to pass to our callback routine. 
+             + We will cover the details of the nearCallback routine in the next section.
+             +/
+            dSpaceCollide(space, null, &nearCallback);
+        }
+
+        {
+            version(UEProfiling)
+            auto profZone2 = Zone(profiler, "physics step");
+            /+ 
+             + Now we advance the simulation by calling dWorldQuickStep. 
+             + This is a faster version of dWorldStep but it is also 
+             + slightly less accurate. As well as the World object ID we also pass a step size value. 
+             + In each step the simulation is updated by a certain number of smaller steps or iterations. 
+             + The default number of iterations is 20 but you can change this by calling 
+             + dWorldSetQuickStepNumIterations.
+            +/
+            dWorldQuickStep(world, 0.05);
+        }
         
         // Remove all temporary collision joints now that the world has been stepped
         dJointGroupEmpty(contactgroup);
@@ -211,7 +220,8 @@ final class UEPhysicsSystem : UEComponent {
     ///
     void propagateCollisions()
     {
-        import std.stdio;
+        version(UEProfiling)
+        auto profZone = Zone(profiler, "physics propagate");
 
         foreach(col; _collisions[0.._collisionsThisFrame])
         {
