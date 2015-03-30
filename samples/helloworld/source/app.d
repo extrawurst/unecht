@@ -7,13 +7,22 @@ final class TestLogic : UEComponent
 {
     mixin(UERegisterComponent!());
 
+    override void onCreate() {
+        super.onCreate;
+
+        _physicsBody = entity.getComponent!UEPhysicsBody;
+    }
+
     override void onCollision(UEComponent _collider) {
         if(_collider && _collider.entity.name == "border-out")
         {
-            import std.stdio;
-            //writefln("out!");
+            import std.random;
+            sceneNode.position = vec3(0,sceneNode.position.y,0);
+            _physicsBody.setVelocity(vec3(uniform(-5,5),0,uniform(-5,5)));
         }
     }
+private:
+    UEPhysicsBody _physicsBody;
 }
 
 ///

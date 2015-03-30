@@ -292,34 +292,27 @@ final class UEPhysicsSystem : UEComponent {
 final class UEPhysicsBody : UEComponent 
 {
     mixin(UERegisterComponent!());
-    
-    dBodyID Body;  // the dynamics body
-    
+
+    void setVelocity(vec3 _v) {
+        dBodySetLinearVel(Body, _v.x,_v.y,_v.z);
+    }
+
     override void onCreate() {
         super.onCreate;
         
         // This brings us to the end of the world settings, now we have to initialize the objects themselves.
         // Create a new body for our object in the world and get its ID.
         Body = dBodyCreate(UEPhysicsSystem.world);
-        
-        // Next we set the position of the new body
+
         auto pos = sceneNode.position;
         dBodySetPosition(Body, pos.x, pos.y, pos.z);
+        auto rot = sceneNode.rotation;
+        dBodySetQuaternion(Body, rot.quaternion);
         
         // Here I have set the initial linear velocity to stationary and let gravity do the work, but you can experiment
         // with the velocity vector to change the starting behaviour. You can also set the rotational velocity for the new
         // body using dBodySetAngularVel which takes the same parameters.
         dBodySetLinearVel(Body, 0,0,0);
-        
-        // To start the object with a different rotation each time the program runs we create a new matrix called R and use
-        // the function dRFromAxisAndAngle to create a random initial rotation before passing this matrix to dBodySetRotation.
-        dMatrix3 R;
-        dRFromAxisAndAngle(R, dRandReal() * 2.0 - 1.0,
-            dRandReal() * 2.0 - 1.0,
-            dRandReal() * 2.0 - 1.0,
-            dRandReal() * 10.0 - 5.0);
-        
-        dBodySetRotation(Body, R);
         
         dBodySetData(Body, cast(void*)this);
         
@@ -333,20 +326,33 @@ final class UEPhysicsBody : UEComponent
         sides[0] = 2.0;
         sides[1] = 2.0;
         sides[2] = 2.0;
-        static immutable DENSITY = 0.5f;
+        static immutable DENSITY = 1.0f;
         dMassSetBox(&m, DENSITY, sides[0], sides[1], sides[2]);
         
         // We can then apply this mass to our objects body.
         dBodySetMass(Body, &m);
     }
-    
+
+    ///
     override void onUpdate() {
+        if(lastPos != sceneNode.position)
+            dBodySetPosition(Body, sceneNode.position.x,sceneNode.position.y,sceneNode.position.z);
+
+        if(lastRot != sceneNode.rotation)
+            dBodySetQuaternion(Body, sceneNode.rotation.quaternion);
+
         auto pos = dBodyGetPosition(Body);
         auto qrot = dBodyGetQuaternion(Body);
-        
+
         quat rot = quat(qrot[0],qrot[1],qrot[2],qrot[3]);
         
-        this.sceneNode.position = vec3(pos[0..3]);
-        this.sceneNode.rotation = rot;
+        this.sceneNode.position = lastPos = vec3(pos[0..3]);
+        this.sceneNode.rotation = lastRot = rot;
     }
+
+private:
+    vec3 lastPos;
+    quat lastRot;
+
+    dBodyID Body;  // the dynamics body
 }
