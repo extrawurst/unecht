@@ -84,6 +84,8 @@ final class UEMaterial : UEComponent
 
         if(depthTest)
 			glEnable(GL_DEPTH_TEST);
+        else
+            glDisable(GL_DEPTH_TEST);
 
 		glActiveTexture(GL_TEXTURE0);
         _tex.bind();
@@ -98,9 +100,6 @@ final class UEMaterial : UEComponent
 
 		glActiveTexture(GL_TEXTURE0);
         _tex.unbind();
-
-        if(depthTest)
-			glDisable(GL_DEPTH_TEST);
             
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
