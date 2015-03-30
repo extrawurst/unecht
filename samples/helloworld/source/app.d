@@ -55,6 +55,7 @@ final class TestControls : UEComponent
     }
 }
 
+///
 final class GameBorders : UEComponent
 {
     mixin(UERegisterComponent!());
@@ -111,15 +112,12 @@ shared static this()
         newE = UEEntity.create("borders");
         newE.addComponent!GameBorders;
 
-        //TestControls.spawnBox();
-
-		auto newE2 = UEEntity.create("app test entity 2");
-		newE2.sceneNode.position = vec3(0,3,-20);
-
-		import unecht.core.components.camera;
+        import unecht.core.components.camera;
+		auto newE2 = UEEntity.create("camera entity");
+		newE2.sceneNode.position = vec3(0,30,0);
 		auto cam = newE2.addComponent!UECamera;
-		cam.clearColor = vec4(0,0,0,1);
-
+        cam.rotation = vec3(90,0,0);
+		
 		auto newEs = UEEntity.create("sub entity ");
         newEs.sceneNode.position = vec3(1,0,-5);
 		newEs.sceneNode.parent = newE.sceneNode;
