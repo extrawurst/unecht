@@ -54,7 +54,7 @@ final class UEPhysicsColliderBox : UEComponent
         {
             // Here we create the actual geom object using dCreateBox. Note that this also adds the geom to our 
             // collision space and sets the size of the geom to that of our box mass.
-            Geom = dCreateBox(UEPhysicsSystem.space, size.x, size.y, size.z);
+            Geom = dCreateBox(UEPhysicsSystem.space, size.x*sceneNode.scaling.x, size.y*sceneNode.scaling.y, size.z*sceneNode.scaling.z);
             
             // And lastly we want to associate the body with the geom using dGeomSetBody. Setting a body on a geom automatically
             // combines the position vector and rotation matrix of the body and geom so that setting the position or orientation
