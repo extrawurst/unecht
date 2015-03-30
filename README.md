@@ -1,4 +1,6 @@
 # unecht
+
+[![Join the chat at https://gitter.im/Extrawurst/unecht](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Extrawurst/unecht?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Extrawurst/unecht.svg)](https://travis-ci.org/Extrawurst/unecht)
 
 Game Engine Framework for the D programming language
