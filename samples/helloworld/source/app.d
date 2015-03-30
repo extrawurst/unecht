@@ -33,8 +33,8 @@ final class TestControls : UEComponent
     static void spawnBall()
     {
         auto newE = UEEntity.create("ode ball");
-        import std.random;
-        newE.sceneNode.position = vec3(uniform01,15,uniform01);
+        import std.random:uniform;
+        newE.sceneNode.position = vec3(uniform(0.0f,1),15,uniform(0.0f,1));
 
         newE.addComponent!UEShapeSphere;
         newE.addComponent!UEPhysicsBody;
@@ -44,9 +44,10 @@ final class TestControls : UEComponent
     static void spawnBox()
     {
         auto newE = UEEntity.create("ode box");
-        import std.random;
-        newE.sceneNode.position = vec3(uniform01,15,uniform01);
+        import std.random:uniform;
+        newE.sceneNode.position = vec3(uniform(0.0f,1),15,uniform(0.0f,1));
         newE.sceneNode.scaling = vec3(1,1,2);
+
         newE.addComponent!UEShapeBox;
         newE.addComponent!UEPhysicsBody;
         newE.addComponent!UEPhysicsColliderBox;
