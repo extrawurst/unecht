@@ -32,7 +32,6 @@ final class UEPhysicsColliderPlane : UEComponent
         // equation a*x+b*y+c*z=d and must have length 1
         Geom = dCreatePlane(UEPhysicsSystem.space, 0, 1, 0, 0);
     }
-    
 }
 
 ///
@@ -40,28 +39,50 @@ final class UEPhysicsColliderBox : UEComponent
 {
     mixin(UERegisterComponent!());
     
-    dGeomID Geom;
+    dGeomID _geom;
+
     vec3 size = vec3(2);
-    bool isTrigger = false;
     
     override void onCreate() {
         super.onCreate;
         
-        auto rigidBody = entity.getComponent!UEPhysicsBody;
+        _rigidBody = entity.getComponent!UEPhysicsBody;
         //TODO: logging
-        
-        if(rigidBody)
+
+        // Here we create the actual geom object using dCreateBox. Note that this also adds the geom to our 
+        // collision space and sets the size of the geom to that of our box mass.
+        _geom = dCreateBox(UEPhysicsSystem.space, size.x*sceneNode.scaling.x, size.y*sceneNode.scaling.y, size.z*sceneNode.scaling.z);
+
+        if(_rigidBody)
         {
-            // Here we create the actual geom object using dCreateBox. Note that this also adds the geom to our 
-            // collision space and sets the size of the geom to that of our box mass.
-            Geom = dCreateBox(UEPhysicsSystem.space, size.x*sceneNode.scaling.x, size.y*sceneNode.scaling.y, size.z*sceneNode.scaling.z);
-            
             // And lastly we want to associate the body with the geom using dGeomSetBody. Setting a body on a geom automatically
             // combines the position vector and rotation matrix of the body and geom so that setting the position or orientation
             // of one will set the value for both objects. The ODE docs have a lot more to say about the geom functions.
-            dGeomSetBody(Geom, rigidBody.Body);
+            dGeomSetBody(_geom, _rigidBody.Body);
+        }
+        else
+        {
+            auto pos = this.sceneNode.position;
+            dGeomSetPosition(_geom, pos.x, pos.y, pos.z);
         }
     }
+
+    override void onUpdate() {
+        if(!_rigidBody)
+        {
+            auto pos = dGeomGetPosition(_geom);
+            float[4] qrot;
+            dGeomGetQuaternion(_geom,qrot);
+            
+            quat rot = quat(qrot[0],qrot[1],qrot[2],qrot[3]);
+            
+            this.sceneNode.position = vec3(pos[0..3]);
+            this.sceneNode.rotation = rot;
+        }
+    }
+
+private:
+    UEPhysicsBody _rigidBody;
 }
 
 ///
@@ -78,12 +99,10 @@ final class UEPhysicsColliderSphere : UEComponent
         
         auto rigidBody = entity.getComponent!UEPhysicsBody;
 
-        if(rigidBody)
-        {
-            _geom = dCreateSphere(UEPhysicsSystem.space, rad);
+        _geom = dCreateSphere(UEPhysicsSystem.space, rad);
 
+        if(rigidBody)
             dGeomSetBody(_geom, rigidBody.Body);
-        }
     }
 
 private:

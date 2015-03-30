@@ -2,6 +2,7 @@ module app;
 
 import unecht;
 
+///
 final class TestControls : UEComponent
 {
     mixin(UERegisterComponent!());
@@ -54,6 +55,48 @@ final class TestControls : UEComponent
     }
 }
 
+final class GameBorders : UEComponent
+{
+    mixin(UERegisterComponent!());
+    
+    override void onCreate() {
+        super.onCreate;
+      
+        enum z = 10;
+        enum x = 15;
+
+        enum h = 2;
+        {
+            auto newE = UEEntity.create("border",sceneNode);
+            newE.sceneNode.position = vec3(0,h/2,-z);
+            newE.sceneNode.scaling = vec3(x,h,1);
+            newE.addComponent!UEShapeBox;
+            newE.addComponent!UEPhysicsColliderBox;
+        }
+        {
+            auto newE = UEEntity.create("border",sceneNode);
+            newE.sceneNode.position = vec3(0,h/2,z);
+            newE.sceneNode.scaling = vec3(x,h,1);
+            newE.addComponent!UEShapeBox;
+            newE.addComponent!UEPhysicsColliderBox;
+        }
+        {
+            auto newE = UEEntity.create("border",sceneNode);
+            newE.sceneNode.position = vec3(-x,h/2,0);
+            newE.sceneNode.scaling = vec3(1,h,z);
+            newE.addComponent!UEShapeBox;
+            newE.addComponent!UEPhysicsColliderBox;
+        }
+        {
+            auto newE = UEEntity.create("border",sceneNode);
+            newE.sceneNode.position = vec3(x,h/2,0);
+            newE.sceneNode.scaling = vec3(1,h,z);
+            newE.addComponent!UEShapeBox;
+            newE.addComponent!UEPhysicsColliderBox;
+        }
+    }
+}
+
 shared static this()
 {
 	ue.windowSettings.size.width = 1024;
@@ -61,11 +104,14 @@ shared static this()
 	ue.windowSettings.title = "unecht - hello world sample";
 
 	ue.hookStartup = () {
-		auto newE = UEEntity.create("app test entity");
+		auto newE = UEEntity.create("game");
         newE.addComponent!TestControls;
         newE.addComponent!UEPhysicsColliderPlane;
 
-        TestControls.spawnBox();
+        newE = UEEntity.create("borders");
+        newE.addComponent!GameBorders;
+
+        //TestControls.spawnBox();
 
 		auto newE2 = UEEntity.create("app test entity 2");
 		newE2.sceneNode.position = vec3(0,3,-20);

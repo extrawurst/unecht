@@ -54,9 +54,9 @@ final class UEEntity
 	}
 
 	/// factory method
-	static auto create(string _name = null)
+	static auto create(string _name = null, UESceneNode _parent = null)
 	{
-		return new UEEntity(ue.scene.root, _name);
+        return new UEEntity(_parent ? _parent : ue.scene.root, _name);
 	}
 
 private:
