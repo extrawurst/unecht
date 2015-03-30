@@ -19,17 +19,33 @@ final class TestControls : UEComponent
             if(_ev.keyEvent.key == UEKey.esc)
                 ue.application.terminate();
             
-            if(_ev.keyEvent.key == UEKey.enter)
+            if(_ev.keyEvent.key == UEKey.num1)
             {
                 spawnBox();
+            }
+            if(_ev.keyEvent.key == UEKey.num2)
+            {
+                spawnBall();
             }
         }
     }
 
+    static void spawnBall()
+    {
+        auto newE = UEEntity.create("ode ball");
+        import std.random;
+        newE.sceneNode.position = vec3(uniform01,15,uniform01);
+
+        newE.addComponent!UEShapeSphere;
+        newE.addComponent!UEPhysicsBody;
+        newE.addComponent!UEPhysicsColliderSphere;
+    }
+
     static void spawnBox()
     {
-        auto newE = UEEntity.create("ode entity");
-        newE.sceneNode.position = vec3(0,15,0);
+        auto newE = UEEntity.create("ode box");
+        import std.random;
+        newE.sceneNode.position = vec3(uniform01,15,uniform01);
         newE.sceneNode.scaling = vec3(1,1,2);
         newE.addComponent!UEShapeBox;
         newE.addComponent!UEPhysicsBody;
@@ -57,8 +73,8 @@ shared static this()
 		auto cam = newE2.addComponent!UECamera;
 		cam.clearColor = vec4(0,0,0,1);
 
-		auto newEs = UEEntity.create("sub entity");
-		newEs.sceneNode.position = vec3(10,0,0);
+		auto newEs = UEEntity.create("sub entity ");
+        newEs.sceneNode.position = vec3(1,0,-5);
 		newEs.sceneNode.parent = newE.sceneNode;
 	};
 }

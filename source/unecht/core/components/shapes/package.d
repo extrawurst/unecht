@@ -112,3 +112,89 @@ final class UEShapeBox : UEComponent {
         mesh.vertexArrayObject.unbind();
     }
 }
+
+///
+final class UEShapeSphere : UEComponent {
+    
+    mixin(UERegisterComponent!());
+    
+    override void onCreate() {
+        super.onCreate;      
+        
+        auto renderer = this.entity.addComponent!UERenderer;
+        auto mesh = this.entity.addComponent!UEMesh;
+        
+        renderer.material = this.entity.addComponent!UEMaterial;
+        renderer.material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
+        renderer.material.depthTest = true;
+        renderer.mesh = mesh;
+        
+        mesh.vertexArrayObject = new GLVertexArrayObject();
+        mesh.vertexArrayObject.bind();
+
+        createSphereMesh(mesh,24,24);
+
+        mesh.vertexArrayObject.unbind();
+    }
+
+    ///
+    private void createSphereMesh(UEMesh _mesh, int width, int height)
+    {
+        import std.math:PI,sinf,cosf;
+        
+        float theta, phi;
+        int t, j, ntri, nvec;
+        
+        nvec = (height-2)* width+2;
+        ntri = (height-2)*(width-1)*2;
+        
+        auto dat = new vec3[nvec];
+        auto idx = new uint[ntri*3];
+        auto norm = new vec3[nvec];
+        
+        for( t=0, j=1; j<height-1; j++ )
+        {
+            for( int i=0; i<width; i++ )
+            {
+                theta = (cast(float)j)/(height-1) * PI;
+                phi   = (cast(float)i)/(width-1) * PI*2;
+                auto x =  sinf(theta) * cosf(phi);
+                auto y =  cosf(theta);
+                auto z = -sinf(theta) * sinf(phi);
+
+                auto pos = dat[t++] = vec3(x,y,z);
+
+                norm[t-1] = pos.normalized;
+            }
+        }
+        dat[t++] = norm[t-1] = vec3(0,1,0);
+        dat[t++] = norm[t-1] = vec3(0,-1,0);
+        
+        for( t=0, j=0; j<height-3; j++ )
+        {
+            for( int i=0; i<width-1; i++ )
+            {
+                idx[t++] = (j  )*width + i  ;
+                idx[t++] = (j+1)*width + i+1;
+                idx[t++] = (j  )*width + i+1;
+                idx[t++] = (j  )*width + i  ;
+                idx[t++] = (j+1)*width + i  ;
+                idx[t++] = (j+1)*width + i+1;
+            }
+        }
+
+        for( int i=0; i<width-1; i++ )
+        {
+            idx[t++] = (height-2)*width;
+            idx[t++] = i;
+            idx[t++] = i+1;
+            idx[t++] = (height-2)*width+1;
+            idx[t++] = (height-3)*width + i+1;
+            idx[t++] = (height-3)*width + i;
+        }
+
+        _mesh.vertexBuffer = new GLVertexBufferObject(dat);
+        _mesh.indexBuffer = new GLVertexBufferObject(idx);
+        _mesh.normalBuffer = new GLVertexBufferObject(norm);
+    }
+}

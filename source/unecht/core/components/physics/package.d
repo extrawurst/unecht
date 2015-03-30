@@ -64,6 +64,33 @@ final class UEPhysicsColliderBox : UEComponent
     }
 }
 
+///
+final class UEPhysicsColliderSphere : UEComponent
+{
+    mixin(UERegisterComponent!());
+
+    float rad=1.0f;
+
+    bool isTrigger = false;
+    
+    override void onCreate() {
+        super.onCreate;
+        
+        auto rigidBody = entity.getComponent!UEPhysicsBody;
+
+        if(rigidBody)
+        {
+            _geom = dCreateSphere(UEPhysicsSystem.space, rad);
+
+            dGeomSetBody(_geom, rigidBody.Body);
+        }
+    }
+
+private:
+    dGeomID _geom;
+}
+
+///
 final class UEPhysicsSystem : UEComponent {
     
     mixin(UERegisterComponent!());
