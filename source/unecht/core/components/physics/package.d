@@ -64,7 +64,7 @@ final class UEPhysicsColliderBox : UEComponent
         }
         else
         {
-            auto pos = this.sceneNode.position;
+            auto pos = _lastPos = this.sceneNode.position;
             dGeomSetPosition(_geom, pos.x, pos.y, pos.z);
         }
     }
@@ -72,19 +72,24 @@ final class UEPhysicsColliderBox : UEComponent
     override void onUpdate() {
         if(!_rigidBody)
         {
+            auto posNow = sceneNode.position;
+            if(_lastPos != posNow)
+                dGeomSetPosition(_geom, posNow.x, posNow.y, posNow.z);
+
             auto pos = dGeomGetPosition(_geom);
             float[4] qrot;
             dGeomGetQuaternion(_geom,qrot);
             
             quat rot = quat(qrot[0],qrot[1],qrot[2],qrot[3]);
             
-            this.sceneNode.position = vec3(pos[0..3]);
+            this.sceneNode.position = _lastPos = vec3(pos[0..3]);
             this.sceneNode.rotation = rot;
         }
     }
 
 private:
     UEPhysicsBody _rigidBody;
+    vec3 _lastPos;
 }
 
 ///
@@ -123,6 +128,12 @@ final class UEPhysicsSystem : UEComponent {
     
     private static bool initialised;
     private static dJointGroupID contactgroup;
+
+    ///
+    static void setGravity(vec3 _v)
+    {
+        dWorldSetGravity(world, _v.x,_v.y,_v.z);
+    }
     
     override void onCreate() {
         if(!initialised)
@@ -253,19 +264,19 @@ final class UEPhysicsSystem : UEComponent {
         
         static immutable MAX_CONTACTS = 128;
         // Create an array of dContact objects to hold the contact joints
-        dContact[MAX_CONTACTS] contact;
+        static dContact[MAX_CONTACTS] contact;
         
         // Now we set the joint properties of each contact. Going into the full details here would require a tutorial of its
         // own. I'll just say that the members of the dContact structure control the joint behaviour, such as friction,
         // velocity and bounciness. See section 7.3.7 of the ODE manual and have fun experimenting to learn more.
         foreach (i; 0..MAX_CONTACTS)
         {
-            contact[i].surface.mode = dContactBounce | dContactSoftCFM;
-            contact[i].surface.mu = dInfinity;
+            contact[i].surface.mode = dContactBounce;
+            contact[i].surface.mu = 0;
             contact[i].surface.mu2 = 0;
-            contact[i].surface.bounce = 0.01;   
+            contact[i].surface.bounce = 1;
             contact[i].surface.bounce_vel = 0.1;
-            contact[i].surface.soft_cfm = 0.01;
+            //contact[i].surface.soft_cfm = 0.01;
         }
         
         // Here we do the actual collision test by calling dCollide. It returns the number of actual contact points or zero
