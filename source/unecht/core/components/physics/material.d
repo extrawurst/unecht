@@ -13,7 +13,7 @@ struct UEPhysicsMaterialInfo
     float bouncyness = 0;
     float friction = 0.6f;
 
-    @property @nogc bool isBouncy() const nothrow { return bouncyness > 0.0f; }
+    @nogc @property bool isBouncy() const nothrow { return bouncyness > 0.0f; }
 }
 
 ///
