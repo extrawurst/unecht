@@ -38,9 +38,9 @@ abstract class UEComponent
     	///
     	@property void enabled(bool _value) { _enabled = _value; }
     	///
-    	@property @nogc UEEntity entity() { return _entity; }
+    	@property UEEntity entity() { return _entity; }
     	///
-    	@property @nogc UESceneNode sceneNode() { return _entity.sceneNode; }
+    	@property UESceneNode sceneNode() { return _entity.sceneNode; }
     }
 	
 	/// helper
