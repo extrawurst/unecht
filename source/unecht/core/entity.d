@@ -13,7 +13,7 @@ final class UEEntity
     ///
 	bool hideInEditor;
 	///
-	@property @nogc UESceneNode sceneNode() nothrow { return _sceneNode; } 
+    @nogc @property UESceneNode sceneNode() nothrow { return _sceneNode; } 
 	///
 	@property string name() { return _name; } 
 	///
