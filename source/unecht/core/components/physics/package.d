@@ -7,6 +7,8 @@ import unecht.core.component;
 
 import gl3n.linalg;
 
+public import unecht.core.components.physics.material;
+
 version(UEProfiling)import unecht.core.profiler;
 
 ///
@@ -261,39 +263,61 @@ final class UEPhysicsSystem : UEComponent {
 
         void* gData1 = dGeomGetData(o1);
         void* gData2 = dGeomGetData(o2);
-        
-        static immutable MAX_CONTACTS = 128;
-        // Create an array of dContact objects to hold the contact joints
-        static dContact[MAX_CONTACTS] contact;
-        
-        // Now we set the joint properties of each contact. Going into the full details here would require a tutorial of its
-        // own. I'll just say that the members of the dContact structure control the joint behaviour, such as friction,
-        // velocity and bounciness. See section 7.3.7 of the ODE manual and have fun experimenting to learn more.
-        foreach (i; 0..MAX_CONTACTS)
-        {
-            contact[i].surface.mode = dContactBounce;
-            contact[i].surface.mu = 0;
-            contact[i].surface.mu2 = 0;
-            contact[i].surface.bounce = 1;
-            contact[i].surface.bounce_vel = 0.1;
-            //contact[i].surface.soft_cfm = 0.01;
+
+        UEComponent comp1 = cast(UEComponent)gData1;
+        UEComponent comp2 = cast(UEComponent)gData2;
+
+        UEPhysicsMaterialInfo m1,m2;
+
+        if(comp1)
+            if(auto mat = comp1.entity.getComponent!UEPhysicsMaterial)
+                m1 = mat.materialInfo;
+
+        if(comp2)
+            if(auto mat = comp2.entity.getComponent!UEPhysicsMaterial)
+                m2 = mat.materialInfo;
+
+        dSurfaceParameters surfaceParams;
+        with(surfaceParams){
+            mode = 0;
+
+            if(m1.isBouncy || m2.isBouncy)
+                mode = dContactBounce;
+
+            mu = (m1.friction + m2.friction) / 2.0f;
+            //mu2 = 0;
+            //rho = 0
+            //rho2 = 0;
+            //rhoN = 0;
+            bounce = (m1.bouncyness + m2.bouncyness) / 2.0f;
+            bounce_vel = 0.001;
+            //soft_erp = 0;
+            //soft_cfm = 0;
+            //motion1 = 0;
+            //motion2 = 0;
+            //motionN = 0;
+            //dReal slip1, slip2;
         }
+
+        // Create an array of dContact objects to hold the contact joints
+        dContact contact;
+        contact.surface = surfaceParams;
         
         // Here we do the actual collision test by calling dCollide. It returns the number of actual contact points or zero
         // if there were none. As well as the geom IDs, max number of contacts we also pass the address of a dContactGeom
         // as the fourth parameter. dContactGeom is a substructure of a dContact object so we simply pass the address of
         // the first dContactGeom from our array of dContact objects and then pass the offset to the next dContactGeom
         // as the fifth paramater, which is the size of a dContact structure. That made sense didn't it?  
-        if (int numc = dCollide(o1, o2, MAX_CONTACTS, &contact[0].geom, dContact.sizeof))
+        if (int numc = dCollide(o1, o2, 1, &contact.geom, dContact.sizeof))
         {   
             // To add each contact point found to our joint group we call dJointCreateContact which is just one of the many
             // different joint types available.  
-            foreach (i; 0..numc)
+            //foreach (i; 0..numc)
             {
                 // dJointCreateContact needs to know which world and joint group to work with as well as the dContact
                 // object itself. It returns a new dJointID which we then use with dJointAttach to finally create the
                 // temporary contact joint between the two geom bodies.
-                dJointID c = dJointCreateContact(UEPhysicsSystem.world, contactgroup, contact.ptr + i);
+                dJointID c = dJointCreateContact(UEPhysicsSystem.world, contactgroup, &contact);
                 
                 dJointAttach(c, b1, b2);    
             }

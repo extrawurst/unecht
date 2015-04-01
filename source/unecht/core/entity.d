@@ -1,5 +1,7 @@
 module unecht.core.entity;
 
+import derelict.util.system;
+
 import gl3n.linalg:vec3;
 
 import unecht;
@@ -11,7 +13,7 @@ final class UEEntity
     ///
 	bool hideInEditor;
 	///
-	@property UESceneNode sceneNode() { return _sceneNode; } 
+	@property @nogc UESceneNode sceneNode() nothrow { return _sceneNode; } 
 	///
 	@property string name() { return _name; } 
 	///
@@ -31,7 +33,7 @@ final class UEEntity
 
     //TODO: optimize ?
     /// find first component of type T
-    auto getComponent(T : UEComponent)()
+    @nogc auto getComponent(T : UEComponent)() nothrow
     {
         foreach(c; _components)
         {

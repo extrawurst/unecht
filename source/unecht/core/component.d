@@ -1,5 +1,7 @@
 module unecht.core.component;
 
+import derelict.util.system;
+
 import unecht.core.events;
 import unecht.core.entity;
 import unecht.core.components.sceneNode;
@@ -30,14 +32,16 @@ abstract class UEComponent
     ///
     void onCollision(UEComponent _collider) {}
 	
-	///
-	@property bool enabled() const { return _enabled; }
-	///
-	@property void enabled(bool _value) { _enabled = _value; }
-	///
-	@property UEEntity entity() { return _entity; }
-	///
-	@property UESceneNode sceneNode() { return _entity.sceneNode; }
+    @nogc nothrow {
+    	///
+    	@property bool enabled() const { return _enabled; }
+    	///
+    	@property void enabled(bool _value) { _enabled = _value; }
+    	///
+    	@property @nogc UEEntity entity() { return _entity; }
+    	///
+    	@property @nogc UESceneNode sceneNode() { return _entity.sceneNode; }
+    }
 	
 	/// helper
 	void registerEvent(UEEventType _type, UEEventCallback _callback)

@@ -14,6 +14,10 @@ final class PaddleLogic : UEComponent
         super.onCreate;
 
         registerEvent(UEEventType.key, &OnKeyEvent);
+
+        auto material = entity.addComponent!UEPhysicsMaterial;
+        material.materialInfo.bouncyness = 1.0f;
+        material.materialInfo.friction = 0;
     }
 
     override void onUpdate() {
@@ -56,6 +60,10 @@ final class BallLogic : UEComponent
         _physicsBody = entity.getComponent!UEPhysicsBody;
 
         _physicsBody.setDamping(0);
+
+        auto material = entity.addComponent!UEPhysicsMaterial;
+        material.materialInfo.bouncyness = 1.0f;
+        material.materialInfo.friction = 0;
 
         reset();
     }
@@ -158,6 +166,9 @@ final class GameBorders : UEComponent
             newE.sceneNode.scaling = vec3(x,h,1);
             newE.addComponent!UEShapeBox;
             newE.addComponent!UEPhysicsColliderBox;
+            auto material = newE.addComponent!UEPhysicsMaterial;
+            material.materialInfo.bouncyness = 1.0f;
+            material.materialInfo.friction = 0;
         }
         {
             auto newE = UEEntity.create("border",sceneNode);
@@ -165,6 +176,9 @@ final class GameBorders : UEComponent
             newE.sceneNode.scaling = vec3(x,h,1);
             newE.addComponent!UEShapeBox;
             newE.addComponent!UEPhysicsColliderBox;
+            auto material = newE.addComponent!UEPhysicsMaterial;
+            material.materialInfo.bouncyness = 1.0f;
+            material.materialInfo.friction = 0;
         }
         {
             auto newE = UEEntity.create("border-out",sceneNode);
