@@ -3,6 +3,7 @@ module unecht;
 public import unecht.core.types;
 public import unecht.core.events;
 public import unecht.core.entity;
+public import unecht.core.stdex;
 public import unecht.core.scenegraph;
 public import unecht.core.component;
 public import unecht.core.components.physics;
