@@ -17,17 +17,3 @@ unittest
 	arr = arr.removeElement(5);
 	assert(arr == [1,10]);
 }
-
-static if (__VERSION__ < 2067)
-{
-    ///
-    auto clamp(T)(T _val, T _lower, T _upper)
-    {
-        if(_val < _lower)
-            return _lower;
-        else if(_val > _upper)
-            return _upper;
-        else
-            return _val;
-    }
-}

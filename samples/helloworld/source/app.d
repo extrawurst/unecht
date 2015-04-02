@@ -25,8 +25,6 @@ final class PaddleLogic : UEComponent
     override void onUpdate() {
         super.onUpdate;
 
-        import std.algorithm:clamp;
-
         auto pos = sceneNode.position;
         pos.z += 0.3f * control;
         pos.z = pos.z.clamp(-border,border);
