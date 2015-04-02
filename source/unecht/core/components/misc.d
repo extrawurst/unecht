@@ -8,6 +8,7 @@ import unecht.core.components.material;
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
 import unecht.gl.shader;
+import unecht.gl.program;
 import unecht.gl.texture;
 import derelict.opengl3.gl3;
 

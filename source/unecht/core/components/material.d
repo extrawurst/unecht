@@ -7,6 +7,7 @@ import derelict.opengl3.gl3;
 import unecht.core.component;
 
 import unecht.gl.shader;
+import unecht.gl.program;
 import unecht.gl.texture;
 
 /// 
