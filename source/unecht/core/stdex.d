@@ -21,7 +21,7 @@ unittest
 static if (__VERSION__ < 2067)
 {
     ///
-    auto clamp(T _val, T _lower, T _upper)
+    auto clamp(T)(T _val, T _lower, T _upper)
     {
         if(_val < _lower)
             return _lower;
