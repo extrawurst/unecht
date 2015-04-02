@@ -9,6 +9,8 @@ final class PaddleLogic : UEComponent
 
     auto keyUp = UEKey.u;
     auto keyDown = UEKey.j;
+
+    static border = 7.2f;
     
     override void onCreate() {
         super.onCreate;
@@ -23,7 +25,13 @@ final class PaddleLogic : UEComponent
     override void onUpdate() {
         super.onUpdate;
 
-        sceneNode.position = sceneNode.position + (vec3(0,0,0.3f)*control);
+        import std.algorithm:clamp;
+
+        auto pos = sceneNode.position;
+        pos.z += 0.3f * control;
+        pos.z = pos.z.clamp(-border,border);
+
+        sceneNode.position = pos;
     }
 
     private void OnKeyEvent(UEEvent _ev)
