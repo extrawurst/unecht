@@ -9,6 +9,8 @@ import unecht.core.components.camera;
 import unecht.core.components.sceneNode;
 import unecht.core.components.material;
 import unecht.core.components.misc;
+import unecht.core.components.renderer;
+
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
 

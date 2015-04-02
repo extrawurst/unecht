@@ -1,5 +1,7 @@
 ﻿module unecht.core.components.camera;
 
+import unecht.core.components.misc;
+import unecht.core.components.renderer;
 import unecht.core.component;
 import unecht.core.componentManager;
 
@@ -82,8 +84,6 @@ final class UECamera : UEComponent
 
 	void updateProjection()
 	{
-        import unecht;
-
         if(!isOrthographic)
 		    matProjection = mat4.perspective(1024,768,fieldOfView,clipNear,clipFar);
         else
@@ -94,9 +94,8 @@ final class UECamera : UEComponent
 
 	void render()
 	{
-		import unecht;
-		import derelict.opengl3.gl3;
-		import unecht.core.components.misc;
+        import unecht;
+        import derelict.opengl3.gl3;
 
 		auto renderers = ue.scene.gatherAllComponents!UERenderer;
 		
