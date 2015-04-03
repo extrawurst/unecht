@@ -11,10 +11,14 @@ final class TestControls : UEComponent
 {
     mixin(UERegisterComponent!());
 
+    static UEEntity balls;
+
     override void onCreate() {
         super.onCreate;
 
         registerEvent(UEEventType.key, &OnKeyEvent);
+
+        balls = UEEntity.create("balls");
 
         spawnBall();
         spawnPaddle(false);
@@ -37,7 +41,7 @@ final class TestControls : UEComponent
 
     static void spawnBall()
     {
-        auto newE = UEEntity.create("ball");
+        auto newE = UEEntity.create("ball",balls.sceneNode);
         import std.random:uniform;
         newE.sceneNode.position = vec3(uniform(0.0f,1),1,uniform(0.0f,1));
 
