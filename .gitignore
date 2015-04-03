@@ -5,7 +5,7 @@ __dummy.html
 *.obj
 dub.userprefs
 libunecht.a
-samples/helloworld/helloworld
+samples/pong/pong
 samples/*.exe
 samples/*/dub.selections.json
 unecht.lib
