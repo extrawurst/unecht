@@ -15,20 +15,24 @@ import gl3n.linalg;
 final class UEShapeBox : UEComponent {
     
     mixin(UERegisterComponent!());
-    
+
+    UERenderer renderer;
+
     override void onCreate() {
         super.onCreate;      
         
-        auto renderer = this.entity.addComponent!UERenderer;
+        renderer = this.entity.addComponent!UERenderer;
         auto mesh = this.entity.addComponent!UEMesh;
         
         auto tex = new GLTexture();
         tex.create("data/green.png",false);
-        
-        renderer.material = this.entity.addComponent!UEMaterial;
-        renderer.material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
+
         renderer.mesh = mesh;
-        renderer.material.texture = tex;
+
+        auto material = this.entity.addComponent!UEMaterial;
+        material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
+        material.texture = tex;
+        renderer.material = material;
         
         mesh.vertexArrayObject = new GLVertexArrayObject();
         mesh.vertexArrayObject.bind();
@@ -118,15 +122,17 @@ final class UEShapeBox : UEComponent {
 final class UEShapeSphere : UEComponent {
     
     mixin(UERegisterComponent!());
+
+    UERenderer renderer;
     
     override void onCreate() {
         super.onCreate;      
         
-        auto renderer = this.entity.addComponent!UERenderer;
+        renderer = this.entity.addComponent!UERenderer;
         auto mesh = this.entity.addComponent!UEMesh;
         
-        renderer.material = this.entity.addComponent!UEMaterial;
-        renderer.material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
+        auto material = renderer.material = this.entity.addComponent!UEMaterial;
+        material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
         renderer.mesh = mesh;
         
         mesh.vertexArrayObject = new GLVertexArrayObject();

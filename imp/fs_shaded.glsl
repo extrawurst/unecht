@@ -1,12 +1,8 @@
 #version 330
 
-#define NORMAL_AMBIENT
+const vec3 ambient = vec3(0.1,0.1,0.1);
 
-#ifdef NORMAL_AMBIENT
-vec3 ambient = vec3(0.1,0.1,0.1);
-#else
-vec3 ambient = vec3(0,0.6,0);
-#endif
+uniform vec4 globalColor = vec4(1,1,1,1);
 
 in Data {
     float shading;
@@ -17,5 +13,5 @@ out vec4 Color;
 void main(void)
 {
 	vec3 shadedAmbient = ambient + DataIn.shading;
-	Color = vec4(shadedAmbient, 1.0);
+	Color = vec4(shadedAmbient, 1.0) * globalColor;
 }

@@ -18,13 +18,17 @@ enum GLAtrribTypes
 }
 
 ///
+alias GLProgramAttribLocations = GLuint[EnumMemberCount!GLAtrribTypes];
+
+///
 final class GLProgram
 {
     GLuint program;
+    //TODO: use sorted array here:
     GLint[string] uniforms;
     private string _name;
     
-    GLuint[EnumMemberCount!GLAtrribTypes] attribLocations;
+    GLProgramAttribLocations attribLocations;
     
     void create(GLShader _vshader, GLShader _fshader, string _name="<unknown>")
     {
@@ -96,8 +100,24 @@ final class GLProgram
             loc = addUniform(_name);
         else
             loc = *locPtr;
+
+        if(loc != -1)
+            glUniform3fv(loc, 1, _val.vector.ptr);
+    }
+
+    ///
+    void setUniformVec4(string _name, in vec4 _val)
+    {
+        auto locPtr = _name in uniforms;
+        GLint loc;
         
-        glUniform3fv(loc, 1, _val.vector.ptr);
+        if(!locPtr)
+            loc = addUniform(_name);
+        else
+            loc = *locPtr;
+        
+        if(loc != -1)
+            glUniform4fv(loc, 1, _val.vector.ptr);
     }
     
     ///
@@ -110,8 +130,9 @@ final class GLProgram
             loc = addUniform(_name);
         else
             loc = *locPtr;
-        
-        glUniformMatrix4fv(loc, 1, GL_TRUE, _mat[0].ptr);
+
+        if(loc != -1)
+            glUniformMatrix4fv(loc, 1, GL_TRUE, _mat[0].ptr);
     }
     
     void bind()

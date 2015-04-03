@@ -12,13 +12,21 @@ import unecht.gl.program;
 /// 
 final class UERenderer : UEComponent
 {
+private:
+    UEMaterial _material;
+
+public:
     mixin(UERegisterComponent!());
-    
-    UEMaterial material;
+
     UEMesh mesh;
     
     version(UEIncludeEditor)static UEMaterial editorMaterial;
-    
+
+    ///
+    @property UEMaterial material(UEMaterial _v) { setMaterial(_v); return _v; }
+    ///
+    @property UEMaterial material() { return _material; }
+
     ///
     void render(UECamera _cam)
     {
@@ -29,25 +37,22 @@ final class UERenderer : UEComponent
         
         version(UEIncludeEditor)
         {
-            auto oldMaterial=material;
-            if(material && editorMaterial)
-                material = editorMaterial;
-            scope(exit) material=oldMaterial;
+            auto oldMaterial=_material;
+            if(_material && editorMaterial)
+                _material = editorMaterial;
+            scope(exit) _material=oldMaterial;
         }
         
-        if(material)
-            material.preRender();
+        if(_material)
+            _material.preRender();
         
-        import std.string:toStringz;
-        auto posLoc = material.program.attribLocations[GLAtrribTypes.position];
-        assert(posLoc != -1);
-        
-        auto normLoc = material.program.attribLocations[GLAtrribTypes.normal];
-        auto colorLoc = material.program.attribLocations[GLAtrribTypes.color];
-        auto uvLoc = material.program.attribLocations[GLAtrribTypes.texcoord];
-        
-        material.program.setUniformMatrix("matWorld", mat);
-        material.program.setUniformVec3("v3ViewDir", _cam.direction);
+        auto posLoc = _material.attribLocation(GLAtrribTypes.position);
+        auto normLoc = _material.attribLocation(GLAtrribTypes.normal);
+        auto colorLoc = _material.attribLocation(GLAtrribTypes.color);
+        auto uvLoc = _material.attribLocation(GLAtrribTypes.texcoord);
+
+        _material.uniforms.setMatWorld(mat);
+        _material.uniforms.setViewDir(_cam.direction);
         
         mesh.vertexArrayObject.bind();
         scope(exit) mesh.vertexArrayObject.unbind();
@@ -74,8 +79,9 @@ final class UERenderer : UEComponent
         
         mesh.indexBuffer.bind(0);
         scope(exit) mesh.indexBuffer.unbind();
-        
-        material.program.validate();
+
+        //TODO: validate
+        //material.program.validate();
         mesh.indexBuffer.renderIndexed();
         
         if(normLoc != -1)
@@ -87,7 +93,12 @@ final class UERenderer : UEComponent
         if(colorLoc != -1)
             mesh.colorBuffer.unbind();
         
-        if(material)
-            material.postRender();
+        if(_material)
+            _material.postRender();
+    }
+
+    private void setMaterial(UEMaterial _v)
+    {
+        _material = _v;
     }
 }

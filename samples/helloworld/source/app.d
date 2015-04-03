@@ -11,11 +11,24 @@ final class PaddleLogic : UEComponent
     auto keyDown = UEKey.j;
 
     static border = 7.2f;
+
+    static UEMaterial sharedMaterial;
     
     override void onCreate() {
         super.onCreate;
 
         registerEvent(UEEventType.key, &OnKeyEvent);
+
+        auto shape = entity.addComponent!UEShapeBox;
+        entity.addComponent!UEPhysicsColliderBox;
+
+        if(!sharedMaterial)
+        {
+            sharedMaterial = entity.addComponent!UEMaterial;
+            sharedMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat,"flat");
+            sharedMaterial.uniforms.setColor(vec4(0,1,0,1));
+        }
+        shape.renderer.material = sharedMaterial;
 
         auto material = entity.addComponent!UEPhysicsMaterial;
         material.materialInfo.bouncyness = 1.0f;
@@ -60,12 +73,23 @@ final class BallLogic : UEComponent
 {
     mixin(UERegisterComponent!());
 
+    static UEMaterial sharedMaterial;
+
     override void onCreate() {
         super.onCreate;
 
-        _physicsBody = entity.getComponent!UEPhysicsBody;
-
+        auto shape = entity.addComponent!UEShapeSphere;
+        _physicsBody = entity.addComponent!UEPhysicsBody;
         _physicsBody.setDamping(0);
+        entity.addComponent!UEPhysicsColliderSphere;
+
+        if(!sharedMaterial)
+        {
+            sharedMaterial = entity.addComponent!UEMaterial;
+            sharedMaterial.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded,"shaded");
+            sharedMaterial.uniforms.setColor(vec4(1,0,0,1));
+        }
+        shape.renderer.material = sharedMaterial;
 
         auto material = entity.addComponent!UEPhysicsMaterial;
         material.materialInfo.bouncyness = 1.0f;
@@ -127,9 +151,6 @@ final class TestControls : UEComponent
         import std.random:uniform;
         newE.sceneNode.position = vec3(uniform(0.0f,1),1,uniform(0.0f,1));
 
-        newE.addComponent!UEShapeSphere;
-        newE.addComponent!UEPhysicsBody;
-        newE.addComponent!UEPhysicsColliderSphere;
         newE.addComponent!BallLogic;
     }
 
@@ -142,8 +163,6 @@ final class TestControls : UEComponent
         newE.sceneNode.position = vec3(-14.5*side,1,0);
         newE.sceneNode.scaling = vec3(0.5,1,2);
 
-        newE.addComponent!UEShapeBox;
-        newE.addComponent!UEPhysicsColliderBox;
         auto paddleLogic = newE.addComponent!PaddleLogic;
 
         if(!rightSide)
@@ -166,39 +185,31 @@ final class GameBorders : UEComponent
     override void onCreate() {
         super.onCreate;
 
+
+        createBorder(false, vec3(0,h/2,-z), vec3(x,h,1));
+        createBorder(false, vec3(0,h/2,z), vec3(x,h,1));
+        createBorder(true, vec3(-x-1.1f,h/2,0), vec3(1,h,z));
+        createBorder(true, vec3(x+1.1f,h/2,0), vec3(1,h,z));
+    }
+
+    void createBorder(bool _outside, vec3 _pos, vec3 _size)
+    {
+        auto name = "border";
+        if(_outside)
+            name ~="-out";
+
+        auto newE = UEEntity.create(name,sceneNode);
+        newE.sceneNode.position = _pos;
+        newE.sceneNode.scaling = _size;
+        auto shape = newE.addComponent!UEShapeBox;
+        newE.addComponent!UEPhysicsColliderBox;
+        if(!_outside)
         {
-            auto newE = UEEntity.create("border",sceneNode);
-            newE.sceneNode.position = vec3(0,h/2,-z);
-            newE.sceneNode.scaling = vec3(x,h,1);
-            newE.addComponent!UEShapeBox;
-            newE.addComponent!UEPhysicsColliderBox;
+            shape.renderer.material.uniforms.setColor(vec4(0,1,0,1));
+
             auto material = newE.addComponent!UEPhysicsMaterial;
             material.materialInfo.bouncyness = 1.0f;
             material.materialInfo.friction = 0;
-        }
-        {
-            auto newE = UEEntity.create("border",sceneNode);
-            newE.sceneNode.position = vec3(0,h/2,z);
-            newE.sceneNode.scaling = vec3(x,h,1);
-            newE.addComponent!UEShapeBox;
-            newE.addComponent!UEPhysicsColliderBox;
-            auto material = newE.addComponent!UEPhysicsMaterial;
-            material.materialInfo.bouncyness = 1.0f;
-            material.materialInfo.friction = 0;
-        }
-        {
-            auto newE = UEEntity.create("border-out",sceneNode);
-            newE.sceneNode.position = vec3(-x-1.1f,h/2,0);
-            newE.sceneNode.scaling = vec3(1,h,z);
-            newE.addComponent!UEShapeBox;
-            newE.addComponent!UEPhysicsColliderBox;
-        }
-        {
-            auto newE = UEEntity.create("border-out",sceneNode);
-            newE.sceneNode.position = vec3(x+1.1f,h/2,0);
-            newE.sceneNode.scaling = vec3(1,h,z);
-            newE.addComponent!UEShapeBox;
-            newE.addComponent!UEPhysicsColliderBox;
         }
     }
 }

@@ -30,8 +30,8 @@ final class UEEditorgridComponent : UEComponent {
 		auto mesh = this.entity.addComponent!UEMesh;
 		
 		renderer.mesh = mesh;
-		renderer.material = this.entity.addComponent!UEMaterial;
-		renderer.material.polygonFill = false;
+		auto material = renderer.material = this.entity.addComponent!UEMaterial;
+		material.polygonFill = false;
 
 		mesh.vertexArrayObject = new GLVertexArrayObject();
 		mesh.vertexArrayObject.bind();
@@ -62,9 +62,9 @@ final class UEEditorGismo : UEComponent {
 		auto mesh = this.entity.addComponent!UEMesh;
 		
 		renderer.mesh = mesh;
-		renderer.material = this.entity.addComponent!UEMaterial;
-		renderer.material.setProgram(UEMaterial.vs_flatcolor,UEMaterial.fs_flatcolor, "flat colored");
-        renderer.material.depthTest = false;
+		auto material = renderer.material = this.entity.addComponent!UEMaterial;
+		material.setProgram(UEMaterial.vs_flatcolor,UEMaterial.fs_flatcolor, "flat colored");
+        material.depthTest = false;
 		
 		mesh.vertexArrayObject = new GLVertexArrayObject();
 		mesh.vertexArrayObject.bind();
