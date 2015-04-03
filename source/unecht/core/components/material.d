@@ -148,6 +148,11 @@ final class UEMaterial : UEComponent
         
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
+
+    void validate()
+    {
+        _program.validate();
+    }
     
 protected:
     

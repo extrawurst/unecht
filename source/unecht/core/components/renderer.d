@@ -80,8 +80,7 @@ public:
         mesh.indexBuffer.bind(0);
         scope(exit) mesh.indexBuffer.unbind();
 
-        //TODO: validate
-        //material.program.validate();
+        material.validate();
         mesh.indexBuffer.renderIndexed();
         
         if(normLoc != -1)
