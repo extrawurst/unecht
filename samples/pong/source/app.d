@@ -12,6 +12,9 @@ final class TestControls : UEComponent
     mixin(UERegisterComponent!());
 
     static UEEntity balls;
+    static int ballCount;
+
+    float lastBallCreated;
 
     override void onCreate() {
         super.onCreate;
@@ -25,27 +28,31 @@ final class TestControls : UEComponent
         spawnPaddle(true);
     }
 
+    override void onUpdate() {
+        super.onUpdate;
+
+        if(ue.tickTime - lastBallCreated > ballCount*2)
+            spawnBall();
+    }
+
     void OnKeyEvent(UEEvent _ev)
     {
         if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
         {
             if(_ev.keyEvent.key == UEKey.esc)
                 ue.application.terminate();
-
-            if(_ev.keyEvent.key == UEKey.num2)
-            {
-                spawnBall();
-            }
         }
     }
 
-    static void spawnBall()
+    void spawnBall()
     {
         auto newE = UEEntity.create("ball",balls.sceneNode);
         import std.random:uniform;
         newE.sceneNode.position = vec3(uniform(0.0f,1),1,uniform(0.0f,1));
-
         newE.addComponent!BallLogic;
+
+        lastBallCreated = ue.tickTime;
+        ballCount++;
     }
 
     static void spawnPaddle(bool rightSide)

@@ -38,7 +38,7 @@ struct Unecht
 	UEApplication application;
 	UEEvents events;
 	ActionFunc hookStartup;
-	float tickTime;
+	float tickTime = 0;
 	vec2 mousePos;
 	bool mouseDown;
 }
