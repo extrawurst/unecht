@@ -36,11 +36,12 @@ final class UEEditorgridComponent : UEComponent {
 		mesh.vertexArrayObject = new GLVertexArrayObject();
 		mesh.vertexArrayObject.bind();
 
+        enum size = 100;
 		mesh.vertexBuffer = new GLVertexBufferObject([
-				vec3(-10,0,-10),
-				vec3(10,0,-10),
-				vec3(10,0,10),
-				vec3(-10,0,10),
+				vec3(-size,0,-size),
+				vec3(size,0,-size),
+				vec3(size,0,size),
+				vec3(-size,0,size),
 			]);
 
 		mesh.indexBuffer = new GLVertexBufferObject([0,1,2, 0,2,3]);
