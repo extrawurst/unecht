@@ -100,6 +100,102 @@ final class UEEditorGismo : UEComponent {
 	}
 }
 
+final class UEEditorMoveControls : UEComponent
+{
+    mixin(UERegisterComponent!());
+
+    vec3 move = vec3(0);
+    vec3 rotate = vec3(0);
+
+    override void onCreate() {
+        super.onCreate;
+        
+        registerEvent(UEEventType.key, &OnKeyEvent);
+    }
+
+    override void onUpdate() {
+        super.onUpdate;
+
+        enum speed = 0.5f;
+
+        sceneNode.position = sceneNode.position + (sceneNode.up * move.y * speed);
+        sceneNode.position = sceneNode.position + (sceneNode.right * move.x * speed);
+        sceneNode.position = sceneNode.position + (sceneNode.forward * move.z * speed);
+
+        sceneNode.angles = sceneNode.angles + (rotate * speed);
+    }
+
+    ///
+    private void OnKeyEvent(UEEvent _ev)
+    {
+        if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
+        {
+            if(_ev.keyEvent.isModShift)
+            {
+                if(_ev.keyEvent.key == UEKey.up)
+                    move.y = 1;
+                else if(_ev.keyEvent.key == UEKey.down)
+                    move.y = -1;
+            }
+            else
+            {
+                if(_ev.keyEvent.key == UEKey.up)
+                    move.z = 1;
+                else if(_ev.keyEvent.key == UEKey.down)
+                    move.z = -1;
+            }
+            
+            if(_ev.keyEvent.key == UEKey.left)
+                move.x = -1;
+            else if(_ev.keyEvent.key == UEKey.right)
+                move.x = 1;
+           
+            if(_ev.keyEvent.key == UEKey.w ||
+                _ev.keyEvent.key == UEKey.s)
+            {
+                bool inc = _ev.keyEvent.key == UEKey.w;
+                rotate.x = (inc?1.0f:-1.0f);
+            }
+            if(_ev.keyEvent.key == UEKey.a ||
+                _ev.keyEvent.key == UEKey.d)
+            {
+                bool inc = _ev.keyEvent.key == UEKey.a;
+                rotate.y = (inc?1.0f:-1.0f);
+            }
+            if(_ev.keyEvent.key == UEKey.q ||
+                _ev.keyEvent.key == UEKey.e)
+            {
+                bool inc = _ev.keyEvent.key == UEKey.q;
+                rotate.z = (inc?1.0f:-1.0f);
+            }
+        }
+        else if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Up)
+        {
+
+            if(_ev.keyEvent.key == UEKey.up ||
+                _ev.keyEvent.key == UEKey.down)
+            {
+                move.y = 0;
+                move.z = 0;
+            }
+
+            if(_ev.keyEvent.key == UEKey.left ||
+                _ev.keyEvent.key == UEKey.right)
+                move.x = 0;
+
+            if(_ev.keyEvent.key == UEKey.w ||
+                _ev.keyEvent.key == UEKey.s)
+                rotate.x = 0;
+            if(_ev.keyEvent.key == UEKey.a ||
+                _ev.keyEvent.key == UEKey.d)
+                rotate.y = 0;
+            if(_ev.keyEvent.key == UEKey.q ||
+                _ev.keyEvent.key == UEKey.e)
+                rotate.z = 0;
+        }
+    }
+}
+
 ///
 final class UEEditorComponent : UEComponent {
 
@@ -122,49 +218,6 @@ final class UEEditorComponent : UEComponent {
 			if(_ev.keyEvent.key == UEKey.p)
 			{
 				ue.scene.playing = !ue.scene.playing;
-			}
-
-            auto editorCamNode = EditorRootComponent._editorCam.sceneNode;
-			enum speed = 0.5f;
-			
-			if(_ev.keyEvent.isModShift)
-			{
-				if(_ev.keyEvent.key == UEKey.up)
-                    editorCamNode.position = editorCamNode.position + vec3(0,speed,0);
-				else if(_ev.keyEvent.key == UEKey.down)
-                    editorCamNode.position = editorCamNode.position + vec3(0,-speed,0);
-			}
-			else
-			{
-				if(_ev.keyEvent.key == UEKey.up)
-					EditorRootComponent._editorCam.sceneNode.position = EditorRootComponent._editorCam.sceneNode.position + vec3(0,0,speed);
-				else if(_ev.keyEvent.key == UEKey.down)
-					EditorRootComponent._editorCam.sceneNode.position = EditorRootComponent._editorCam.sceneNode.position + vec3(0,0,-speed);
-			}
-			
-			if(_ev.keyEvent.key == UEKey.left)
-				EditorRootComponent._editorCam.sceneNode.position = EditorRootComponent._editorCam.sceneNode.position + vec3(-speed,0,0);
-			else if(_ev.keyEvent.key == UEKey.right)
-				EditorRootComponent._editorCam.sceneNode.position = EditorRootComponent._editorCam.sceneNode.position + vec3(speed,0,0);
-			
-			enum rotSpeed = 1.0f;
-			if(_ev.keyEvent.key == UEKey.w ||
-				_ev.keyEvent.key == UEKey.s)
-			{
-				bool inc = _ev.keyEvent.key == UEKey.w;
-                editorCamNode.angles = editorCamNode.angles + vec3(rotSpeed * (inc?1.0f:-1.0f),0,0);
-			}
-			if(_ev.keyEvent.key == UEKey.a ||
-				_ev.keyEvent.key == UEKey.d)
-			{
-				bool inc = _ev.keyEvent.key == UEKey.a;
-                editorCamNode.angles = editorCamNode.angles + vec3(0,rotSpeed * (inc?1.0f:-1.0f),0);
-			}
-			if(_ev.keyEvent.key == UEKey.q ||
-				_ev.keyEvent.key == UEKey.e)
-			{
-				bool inc = _ev.keyEvent.key == UEKey.q;
-                editorCamNode.angles = editorCamNode.angles + vec3(0,0,rotSpeed * (inc?1.0f:-1.0f));
 			}
 		}
 	}
@@ -202,6 +255,8 @@ final class EditorRootComponent : UEComponent {
 
 		// hide the whole entity with its hirarchie
 		//this.entity.hideInEditor = true;
+
+        entity.addComponent!UEEditorMoveControls;
 
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.clearColor = vec4(0.1,0.1,0.1,1.0);

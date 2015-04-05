@@ -63,6 +63,8 @@ public:
     ///
     @property vec3 forward() const { return _dir; }
     ///
+    @property vec3 right() const { return _right; }
+    ///
     @property vec3 up() const { return _up; }
     
 private:
@@ -112,6 +114,8 @@ private:
         _up = _up * quat.zrotation(anglesInRad.z);
         _up = _up * quat.xrotation(anglesInRad.x);
         _up = _up * quat.yrotation(anglesInRad.y);
+
+        _right = _dir.cross(_up);
     }
 
     ///
@@ -129,6 +133,7 @@ private:
     quat _rotation = quat.identity;
     vec3 _dir = ORIG_DIR;
     vec3 _up = ORIG_UP;
+    vec3 _right = ORIG_DIR.cross(ORIG_UP);
     vec3 _angles = vec3(0);
     
     static immutable vec3 ORIG_DIR = vec3(0,0,1);
