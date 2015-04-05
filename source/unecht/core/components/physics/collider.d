@@ -65,8 +65,11 @@ final class UEPhysicsColliderBox : UEComponent
         if(!_rigidBody)
         {
             auto posNow = sceneNode.position;
+            auto rotNow = sceneNode.rotation;
             if(_lastPos != posNow)
                 dGeomSetPosition(_geom, posNow.x, posNow.y, posNow.z);
+            if(_lastRot != rotNow)
+                dGeomSetQuaternion(_geom, rotNow.quaternion);
             
             auto pos = dGeomGetPosition(_geom);
             float[4] qrot;
@@ -75,13 +78,14 @@ final class UEPhysicsColliderBox : UEComponent
             quat rot = quat(qrot[0],qrot[1],qrot[2],qrot[3]);
             
             this.sceneNode.position = _lastPos = vec3(pos[0..3]);
-            this.sceneNode.rotation = rot;
+            this.sceneNode.rotation = _lastRot = rot;
         }
     }
     
 private:
     UEPhysicsBody _rigidBody;
     vec3 _lastPos;
+    quat _lastRot;
 }
 
 ///

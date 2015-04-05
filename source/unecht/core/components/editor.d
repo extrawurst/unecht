@@ -100,31 +100,26 @@ final class UEEditorGismo : UEComponent {
 	}
 }
 
-final class UEEditorMoveControls : UEComponent
+///
+final class UEEditorNodeKeyControls : UEComponent
 {
     mixin(UERegisterComponent!());
 
-    vec3 move = vec3(0);
-    vec3 rotate = vec3(0);
-
-    override void onCreate() {
-        super.onCreate;
-        
-        registerEvent(UEEventType.key, &OnKeyEvent);
-    }
+    static UESceneNode target;
 
     override void onUpdate() {
         super.onUpdate;
 
         enum speed = 0.5f;
 
-        sceneNode.position = sceneNode.position + (sceneNode.up * move.y * speed);
-        sceneNode.position = sceneNode.position + (sceneNode.right * move.x * speed);
-        sceneNode.position = sceneNode.position + (sceneNode.forward * move.z * speed);
+        target.position = target.position + (target.up * move.y * speed);
+        target.position = target.position + (target.right * move.x * speed);
+        target.position = target.position + (target.forward * move.z * speed);
 
-        sceneNode.angles = sceneNode.angles + (rotate * speed);
+        target.angles = target.angles + (rotate * speed);
     }
 
+    //TODO: register this by it self once recursive enable/disable works
     ///
     private void OnKeyEvent(UEEvent _ev)
     {
@@ -194,6 +189,10 @@ final class UEEditorMoveControls : UEComponent
                 rotate.z = 0;
         }
     }
+
+private:
+    vec3 move = vec3(0);
+    vec3 rotate = vec3(0);
 }
 
 ///
@@ -201,12 +200,17 @@ final class UEEditorComponent : UEComponent {
 
 	mixin(UERegisterComponent!());
 
-	override void onCreate() {
+    private UEEditorNodeKeyControls keyControls;
+
+	override void onCreate() 
+    {
 		super.onCreate;
 
 		registerEvent(UEEventType.key, &OnKeyEvent);
 
 		entity.addComponent!UEEditorgridComponent;
+
+        keyControls = entity.addComponent!UEEditorNodeKeyControls;
 	}
 
 	///
@@ -220,6 +224,8 @@ final class UEEditorComponent : UEComponent {
 				ue.scene.playing = !ue.scene.playing;
 			}
 		}
+
+        keyControls.OnKeyEvent(_ev);
 	}
 }
 
@@ -256,8 +262,6 @@ final class EditorRootComponent : UEComponent {
 		// hide the whole entity with its hirarchie
 		//this.entity.hideInEditor = true;
 
-        entity.addComponent!UEEditorMoveControls;
-
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.clearColor = vec4(0.1,0.1,0.1,1.0);
 		_editorCam.sceneNode.position = vec3(0,5,-20);
@@ -278,10 +282,25 @@ final class EditorRootComponent : UEComponent {
         editorMaterial.depthTest = false;
         editorMaterial.polygonFill = false;
         //editorMaterial.cullMode = UEMaterial.CullMode.cullBack;
+
+        selectEntity(null);
 	}
 
-	///
-	private void OnKeyEvent(UEEvent _ev)
+    override void onUpdate() {
+        super.onUpdate;
+
+        if(_currentEntity)
+        {
+            gismo.sceneNode.enabled = true;
+            gismo.sceneNode.position = _currentEntity.sceneNode.position;
+            gismo.sceneNode.rotation = _currentEntity.sceneNode.rotation;
+        }
+        else
+            gismo.sceneNode.enabled = false;
+    }
+    
+    ///
+    private void OnKeyEvent(UEEvent _ev)
 	{
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
 			_ev.keyEvent.key == UEKey.f1)
@@ -296,15 +315,6 @@ final class EditorRootComponent : UEComponent {
 	{
 		if(_editorVisible)
 		{
-			if(_currentEntity)
-			{
-				gismo.sceneNode.enabled = true;
-				gismo.sceneNode.position = _currentEntity.sceneNode.position;
-                gismo.sceneNode.rotation = _currentEntity.sceneNode.rotation;
-			}
-			else
-				gismo.sceneNode.enabled = false;
-
 			_editorCam.render();
 
             import unecht.core.components.misc;
@@ -380,6 +390,21 @@ final class EditorRootComponent : UEComponent {
 		imguiEndScrollArea();
 	}
 
+    ///
+    private static void selectEntity(UEEntity _entity)
+    {
+        if(_entity)
+        {
+            UEEditorNodeKeyControls.target = _entity.sceneNode;
+            _currentEntity = _entity;
+        }
+        else
+        {
+            _currentEntity = null;
+            UEEditorNodeKeyControls.target = _editorCam.sceneNode;
+        }
+    }
+
 	///
 	private static void renderInspector()
 	{
@@ -392,7 +417,7 @@ final class EditorRootComponent : UEComponent {
 
         if(imguiButton("[deselect]"))
         {
-            _currentEntity = null;
+            selectEntity(null);
             return;
         }
 		
@@ -441,7 +466,7 @@ final class EditorRootComponent : UEComponent {
             if(imguiCollapse(_node.entity.name,"",&expanded))
     		{
     			if(_currentEntity !is _node.entity)
-    				_currentEntity = _node.entity;
+                    selectEntity(_node.entity);
     		}
 
             _node.sceneNode.stateInSceneEditor = expanded;
@@ -461,9 +486,9 @@ final class EditorRootComponent : UEComponent {
             if(imguiItem(_node.entity.name))
             {
                 if(_currentEntity is _node.entity)
-                    _currentEntity = null;
+                    selectEntity(null);
                 else
-                    _currentEntity = _node.entity;
+                    selectEntity(_node.entity);
             }
         }
 	}
