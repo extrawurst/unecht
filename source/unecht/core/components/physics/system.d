@@ -175,6 +175,10 @@ final class UEPhysicsSystem : UEComponent {
                 mode = dContactBounce;
             
             mu = (m1.friction + m2.friction) / 2.0f;
+
+            if(m1.friction >= dInfinity || m2.friction >= dInfinity)
+                mu = dInfinity;
+
             //mu2 = 0;
             //rho = 0
             //rho2 = 0;
@@ -190,31 +194,33 @@ final class UEPhysicsSystem : UEComponent {
         }
         
         // Create an array of dContact objects to hold the contact joints
-        dContact contact;
-        contact.surface = surfaceParams;
+        static immutable CONTACT_COUNT = 32;
+        dContact[CONTACT_COUNT] contacts;
+        foreach(ref c; contacts)
+            c.surface = surfaceParams;
         
         // Here we do the actual collision test by calling dCollide. It returns the number of actual contact points or zero
         // if there were none. As well as the geom IDs, max number of contacts we also pass the address of a dContactGeom
         // as the fourth parameter. dContactGeom is a substructure of a dContact object so we simply pass the address of
         // the first dContactGeom from our array of dContact objects and then pass the offset to the next dContactGeom
         // as the fifth paramater, which is the size of a dContact structure. That made sense didn't it?  
-        if (int numc = dCollide(o1, o2, 1, &contact.geom, dContact.sizeof))
+        if (int numc = dCollide(o1, o2, CONTACT_COUNT, &contacts[0].geom, dContact.sizeof))
         {   
             // To add each contact point found to our joint group we call dJointCreateContact which is just one of the many
             // different joint types available.  
-            //foreach (i; 0..numc)
+            foreach (i; 0..numc)
             {
                 // dJointCreateContact needs to know which world and joint group to work with as well as the dContact
                 // object itself. It returns a new dJointID which we then use with dJointAttach to finally create the
                 // temporary contact joint between the two geom bodies.
-                dJointID c = dJointCreateContact(UEPhysicsSystem.world, contactgroup, &contact);
+                dJointID c = dJointCreateContact(UEPhysicsSystem.world, contactgroup, &contacts[i]);
                 
                 dJointAttach(c, b1, b2);    
             }
-            
+
             auto component1 = cast(UEComponent)gData1;
             auto component2 = cast(UEComponent)gData2;
-            
+
             if(_collisionsThisFrame<_collisions.length)
                 _collisions[_collisionsThisFrame++] = Collision(component1,component2);
             else
