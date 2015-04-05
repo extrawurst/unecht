@@ -90,8 +90,8 @@ shared static this()
         import unecht.core.components.camera;
 		auto newE2 = UEEntity.create("camera entity");
 		newE2.sceneNode.position = vec3(0,30,0);
+        newE2.sceneNode.angles = vec3(90,0,0);
 		auto cam = newE2.addComponent!UECamera;
-        cam.rotation = vec3(90,0,0);
         cam.isOrthographic = true;
         cam.orthoSize = 30.0f;
 	};

@@ -20,11 +20,13 @@ static class UECameraInspector : IComponentEditor
         
         import imgui;
         import std.format;
-        
-        imguiLabel(format("rot: %s",thisT.rotation));
-        imguiLabel(format("dir: %s",thisT.dir));
-        imguiLabel(format("up: %s",thisT.up));
+
         imguiLabel(format("fov: %s",thisT.fieldOfView));
+        imguiLabel(format("ortho: %s",thisT.isOrthographic));
+        imguiLabel(format("orthoSize: %s",thisT.orthoSize));
+        imguiLabel(format("near: %s",thisT.clipNear));
+        imguiLabel(format("far: %s",thisT.clipFar));
+        imguiLabel(format("clearcol: %s",thisT.clearColor));
     }
 
     mixin UERegisterInspector!UECameraInspector;
@@ -37,16 +39,7 @@ final class UECamera : UEComponent
 	mixin(UERegisterComponent!());
 
     ///
-	@property auto direction() const { return dir; }
-    ///
     @property auto projectionLook() const { return matProjection * matLook; }
-
-	vec3 rotation = vec3(0,0,0);
-	private vec3 dir = vec3(0);
-	private vec3 up = vec3(0);
-
-	static const vec3 ORIG_DIR = vec3(0,0,1);
-	static const vec3 ORIG_UP = vec3(0,1,0);
 
 	float fieldOfView = 60;
 	float clipNear = 1;
@@ -63,23 +56,9 @@ final class UECamera : UEComponent
 
 	void updateLook()
 	{
-		import std.math:PI;
+        auto lookat = entity.sceneNode.position + entity.sceneNode.forward;
 
-		dir = ORIG_DIR;
-		dir = dir * quat.xrotation(rotation.x * (PI/180.0f));
-		dir = dir * quat.yrotation(rotation.y * (PI/180.0f));
-
-		up = ORIG_UP;
-		up = up * quat.zrotation(rotation.z * (PI/180.0f));
-		up = up * quat.xrotation(rotation.x * (PI/180.0f));
-		up = up * quat.yrotation(rotation.y * (PI/180.0f));
-
-		auto target = entity.sceneNode.position + dir;
-
-		matLook = mat4.look_at(
-			entity.sceneNode.position,
-			target,
-			up);
+        matLook = mat4.look_at(entity.sceneNode.position,lookat,entity.sceneNode.up);
 	}
 
 	void updateProjection()

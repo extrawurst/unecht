@@ -124,14 +124,15 @@ final class UEEditorComponent : UEComponent {
 				ue.scene.playing = !ue.scene.playing;
 			}
 
+            auto editorCamNode = EditorRootComponent._editorCam.sceneNode;
 			enum speed = 0.5f;
 			
 			if(_ev.keyEvent.isModShift)
 			{
 				if(_ev.keyEvent.key == UEKey.up)
-					EditorRootComponent._editorCam.sceneNode.position = EditorRootComponent._editorCam.sceneNode.position + vec3(0,speed,0);
+                    editorCamNode.position = editorCamNode.position + vec3(0,speed,0);
 				else if(_ev.keyEvent.key == UEKey.down)
-					EditorRootComponent._editorCam.sceneNode.position = EditorRootComponent._editorCam.sceneNode.position + vec3(0,-speed,0);
+                    editorCamNode.position = editorCamNode.position + vec3(0,-speed,0);
 			}
 			else
 			{
@@ -151,19 +152,19 @@ final class UEEditorComponent : UEComponent {
 				_ev.keyEvent.key == UEKey.s)
 			{
 				bool inc = _ev.keyEvent.key == UEKey.w;
-				EditorRootComponent._editorCam.rotation = EditorRootComponent._editorCam.rotation + vec3(rotSpeed * (inc?1.0f:-1.0f),0,0);
+                editorCamNode.angles = editorCamNode.angles + vec3(rotSpeed * (inc?1.0f:-1.0f),0,0);
 			}
 			if(_ev.keyEvent.key == UEKey.a ||
 				_ev.keyEvent.key == UEKey.d)
 			{
 				bool inc = _ev.keyEvent.key == UEKey.a;
-				EditorRootComponent._editorCam.rotation = EditorRootComponent._editorCam.rotation + vec3(0,rotSpeed * (inc?1.0f:-1.0f),0);
+                editorCamNode.angles = editorCamNode.angles + vec3(0,rotSpeed * (inc?1.0f:-1.0f),0);
 			}
 			if(_ev.keyEvent.key == UEKey.q ||
 				_ev.keyEvent.key == UEKey.e)
 			{
 				bool inc = _ev.keyEvent.key == UEKey.q;
-				EditorRootComponent._editorCam.rotation = EditorRootComponent._editorCam.rotation + vec3(0,0,rotSpeed * (inc?1.0f:-1.0f));
+                editorCamNode.angles = editorCamNode.angles + vec3(0,0,rotSpeed * (inc?1.0f:-1.0f));
 			}
 		}
 	}

@@ -52,7 +52,7 @@ public:
         auto uvLoc = _material.attribLocation(GLAtrribTypes.texcoord);
 
         _material.uniforms.setMatWorld(mat);
-        _material.uniforms.setViewDir(_cam.direction);
+        _material.uniforms.setViewDir(_cam.sceneNode.forward);
         
         mesh.vertexArrayObject.bind();
         scope(exit) mesh.vertexArrayObject.unbind();
