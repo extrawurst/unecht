@@ -22,12 +22,16 @@ static class UECameraInspector : IComponentEditor
         import unecht.core.components.internal.gui;
         import std.format;
 
+        ig_ColorEdit4("clearColor",thisT.clearColor.vector,true);
         UEGui.DragFloat("fov",thisT.fieldOfView,1,360);
-        UEGui.Text(format("ortho: %s",thisT.isOrthographic));
-        UEGui.Text(format("orthoSize: %s",thisT.orthoSize));
-        UEGui.Text(format("near: %s",thisT.clipNear));
-        UEGui.Text(format("far: %s",thisT.clipFar));
-        UEGui.Text(format("clearcol: %s",thisT.clearColor));
+        UEGui.DragFloat("near",thisT.clipNear,0.01f,float.max);
+        UEGui.DragFloat("far",thisT.clipFar,0.01f,float.max);
+
+        ig_Checkbox("isOrthographic",&thisT.isOrthographic);
+        if(thisT.isOrthographic)
+        {
+            UEGui.DragFloat("orthoSize",thisT.orthoSize,0.01f,float.max);
+        }
     }
 
     mixin UERegisterInspector!UECameraInspector;

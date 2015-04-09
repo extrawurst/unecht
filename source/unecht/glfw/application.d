@@ -170,16 +170,16 @@ package:
 		else if(action == GLFW_REPEAT)
 			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
 
-        auto shiftDown = (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT;
+        ev.keyEvent.shiftDown = (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT;
+        ev.keyEvent.ctrlDown = (mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL;
+        ev.keyEvent.altDown = (mods & GLFW_MOD_ALT) == GLFW_MOD_ALT;
         auto superDown = (mods & GLFW_MOD_SUPER) == GLFW_MOD_SUPER;
-
-		ev.keyEvent.shift = shiftDown;
 
         version(UEProfiling)
         {
             if( action == GLFW_PRESS && 
                 key == GLFW_KEY_P && 
-                shiftDown && superDown)
+                ev.keyEvent.shiftDown && superDown)
             {
                 if(!sender.sending)
                     sender.startDespiker();

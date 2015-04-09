@@ -5,6 +5,9 @@ import std.string:toStringz;
 import unecht.core.component;
 import unecht.core.components.camera;
 import unecht.core.components.sceneNode;
+import unecht.core.events;
+
+import gl3n.linalg;
 
 import derelict.imgui.imgui;
 
@@ -20,11 +23,58 @@ public:
     override void onCreate() {
         import unecht;
 
+        registerEvent(UEEventType.text, &OnCharInput);
+        registerEvent(UEEventType.key, &OnKeyInput);
+
         g_window = ue.application.mainWindow.window;
 
         ImGuiIO* io = ig_GetIO();
+
+        with(ImGuiKey_){
+            io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;                 // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
+            io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
+            io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
+            io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
+            io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
+            io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
+            io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
+            io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
+            io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
+            io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
+            io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
+            io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
+            io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
+            io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
+            io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
+            io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
+            io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
+        }
         
         io.RenderDrawListsFn = &renderDrawLists;
+    }
+
+    private void OnKeyInput(UEEvent event)
+    {
+        auto io = ig_GetIO();
+
+        if (UEEvent.KeyEvent.Action.Down == event.keyEvent.action)
+            io.KeysDown[event.keyEvent.key] = true;
+        if (UEEvent.KeyEvent.Action.Up == event.keyEvent.action)
+            io.KeysDown[event.keyEvent.key] = false;
+
+        io.KeyCtrl = event.keyEvent.isModCtrl;
+        io.KeyShift = event.keyEvent.isModShift;
+        io.KeyAlt = event.keyEvent.isModAlt;
+    }
+
+    private void OnCharInput(UEEvent event)
+    {
+        auto utfchar = cast(uint)event.textEvent.character;
+
+        if (utfchar > 0 && utfchar < 0x10000)
+        {
+            ImGuiIO_AddInputCharacter(cast(ushort)utfchar);
+        }
     }
 
     static bool TreeNode(string txt)
@@ -37,14 +87,36 @@ public:
         return ig_TreeNode3(pid, toStringz(txt));
     }
 
+    static bool InputVec(string label, ref vec3 v)
+    {
+        bool res = false;
+        ig_Text("%s:",toStringz(label));
+        ig_SameLine();
+        ig_PushID2(v.vector.ptr);
+        res = ig_DragFloat("x",&v.vector[0]);
+        ig_SameLine();
+        ig_PushID2(v.vector.ptr+1);
+        res = ig_DragFloat("y",&v.vector[1]) || res;
+        ig_SameLine();
+        ig_PushID2(v.vector.ptr+2);
+        res = ig_DragFloat("z",&v.vector[2]) || res;
+
+        return res;
+    }
+    
     static void DragFloat(string label, ref float v, float min, float max)
     {
         ig_DragFloat(toStringz(label),&v,min,max);
     }
 
-    static void InputFloat3(string label, ref float[3] v)
+    static bool InputFloat3(string label, ref float[3] v)
     {
-        ig_InputFloat3(toStringz(label), v, 2);
+        return ig_InputFloat3(toStringz(label), v, 2);
+    }
+
+    static bool InputFloat4(string label, ref float[4] v)
+    {
+        return ig_InputFloat4(toStringz(label), v, 2);
     }
 
     static void Text(string txt)

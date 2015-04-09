@@ -27,11 +27,16 @@ struct UEEvent
 
 		UEKey key;
 		Action action;
-		bool shift;
+		bool shiftDown;
+        bool ctrlDown;
+        bool altDown;
 
-		//TODO: impl
 		/// is shift mod set
-		@property bool isModShift() { return shift; }
+		@property bool isModShift() const { return shiftDown; }
+        ///
+        @property bool isModCtrl() const { return ctrlDown; }
+        ///
+        @property bool isModAlt() const { return altDown; }
 	}
 	KeyEvent keyEvent;
 
