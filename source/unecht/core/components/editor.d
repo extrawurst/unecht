@@ -237,10 +237,21 @@ final class UEEditorGUI : UEComponent
 
     void render() {
 
-        if(EditorRootComponent._editorVisible)
-            ig_Text("EditorMode (hide with F1)");
-        else
-            ig_Text("EditorMode (show with F1)");
+        {
+            ig_SetNextWindowPos(ImVec2(0,ue.application.mainWindow.size.height-25),ImGuiSetCond_Always);
+
+            ig_Begin("editor",null,
+                ImGuiWindowFlags_AlwaysAutoResize|
+                ImGuiWindowFlags_NoTitleBar|
+                ImGuiWindowFlags_NoMove);
+
+            scope(exit) ig_End();
+
+            if(EditorRootComponent._editorVisible)
+                ig_Text("EditorMode (hide with F1)");
+            else
+                ig_Text("EditorMode (show with F1)");
+        }
 
         if(EditorRootComponent._editorVisible)
         {
@@ -250,16 +261,20 @@ final class UEEditorGUI : UEComponent
         }
     }
 
+    static float sceneWindowWidth;
     ///
     private static void renderScene()
     {
-        ig_Begin("scene",null,ImGuiWindowFlags_NoTitleBar);
+        ig_SetNextWindowPos(ImVec2(0,0), ImGuiSetCond_Always);
+
+        ig_Begin("scene",null,ImGuiWindowFlags_NoMove);
 
         foreach(n; ue.scene.root.children)
         {
             renderSceneNode(n);
         }
 
+        sceneWindowWidth = ig_GetWindowWidth();
         ig_End();
     }
 
@@ -273,7 +288,7 @@ final class UEEditorGUI : UEComponent
 
         if(canExpand)
         {
-            const expanded = UEGui.TreeNode(_node.entity.name);
+            const expanded = UEGui.TreeNode(cast(void*)(_node.entity), _node.entity.name);
 
             if(ig_IsItemActive())
             {
@@ -294,6 +309,7 @@ final class UEEditorGUI : UEComponent
         else
         {
             ig_Bullet();
+            ig_PushID2(cast(void*)(_node.entity));
             if(UEGui.SmallButton(_node.entity.name))
             {
                 if(EditorRootComponent._currentEntity is _node.entity)
@@ -310,24 +326,36 @@ final class UEEditorGUI : UEComponent
         if(!EditorRootComponent._currentEntity)
             return;
 
-        ig_Begin("inspector");
+        ig_SetNextWindowPos(ImVec2(sceneWindowWidth,0),ImGuiSetCond_Always);
+        bool closed;
+        ig_Begin("inspector",&closed,
+            ImGuiWindowFlags_AlwaysAutoResize|
+            ImGuiWindowFlags_NoCollapse|
+            ImGuiWindowFlags_NoMove|
+            ImGuiWindowFlags_NoResize);
+
         scope(exit)ig_End();
 
-        if(UEGui.Button("[deselect]"))
+        if(closed)
         {
             EditorRootComponent.selectEntity(null);
             return;
         }
-        
-        foreach(c; EditorRootComponent._currentEntity.components)
-        {
-            auto subtext = "[  ]";
-            if(c.enabled)
-                subtext = "[X]";
 
+        import std.string:format;
+        UEGui.Text(.format("'%s'",EditorRootComponent._currentEntity.name));
+
+        foreach(int i, c; EditorRootComponent._currentEntity.components)
+        {
+            auto subtext = " ";
+            if(c.enabled)
+                subtext = "X";
+
+            ig_PushID3(i);
             if(UEGui.TreeNode(c.name))
             {
-                if(UEGui.Button("toggle"))
+                ig_SameLine();
+                if(UEGui.SmallButton(subtext))
                     c.enabled = !c.enabled;
 
                 import unecht.core.componentManager;
@@ -338,13 +366,26 @@ final class UEEditorGUI : UEComponent
 
                 ig_TreePop();
             }
+            else
+            {
+                ig_SameLine();
+                if(UEGui.SmallButton(subtext))
+                    c.enabled = !c.enabled;
+            }
         }
     }
 
     ///
     private static void renderControlPanel()
     {
-        ig_Begin("controls",null,ImGuiWindowFlags_NoTitleBar);
+        static float w=100;
+        ig_SetNextWindowPos(ImVec2(ue.application.mainWindow.size.width-w,0),ImGuiSetCond_Always);
+
+        ig_Begin("controls",null,
+            ImGuiWindowFlags_NoTitleBar|
+            ImGuiWindowFlags_AlwaysAutoResize|
+            ImGuiWindowFlags_NoResize|
+            ImGuiWindowFlags_NoMove);
 
         if(ig_Button("play"))
             ue.scene.playing = true;
@@ -360,6 +401,7 @@ final class UEEditorGUI : UEComponent
                 ue.scene.step;
         }
 
+        w = ig_GetWindowWidth();
         ig_End();
     }
 }

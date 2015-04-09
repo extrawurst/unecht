@@ -32,6 +32,11 @@ public:
         return ig_TreeNode(toStringz(txt));
     }
 
+    static bool TreeNode(const void* pid, string txt)
+    {
+        return ig_TreeNode3(pid, toStringz(txt));
+    }
+
     static void DragFloat(string label, ref float v, float min, float max)
     {
         ig_DragFloat(toStringz(label),&v,min,max);
@@ -112,7 +117,6 @@ public:
 
     static void renderGUI()
     {
-        ig_ShowMetricsWindow();
         ig_Render();
     }
 
