@@ -89,16 +89,20 @@ public:
 
     static bool InputVec(string label, ref vec3 v)
     {
+        static immutable ITEMWIDTH = 80;
         bool res = false;
         ig_Text("%s:",toStringz(label));
-        ig_SameLine();
+        //ig_SameLine();
         ig_PushID2(v.vector.ptr);
+        ig_PushItemWidth(ITEMWIDTH);
         res = ig_DragFloat("x",&v.vector[0]);
         ig_SameLine();
         ig_PushID2(v.vector.ptr+1);
+        ig_PushItemWidth(ITEMWIDTH);
         res = ig_DragFloat("y",&v.vector[1]) || res;
         ig_SameLine();
         ig_PushID2(v.vector.ptr+2);
+        ig_PushItemWidth(ITEMWIDTH);
         res = ig_DragFloat("z",&v.vector[2]) || res;
 
         return res;
