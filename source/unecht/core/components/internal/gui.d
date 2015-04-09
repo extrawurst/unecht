@@ -92,7 +92,7 @@ public:
         static immutable ITEMWIDTH = 80;
         bool res = false;
         ig_Text("%s:",toStringz(label));
-        //ig_SameLine();
+
         ig_PushID2(v.vector.ptr);
         ig_PushItemWidth(ITEMWIDTH);
         res = ig_DragFloat("x",&v.vector[0]);
@@ -136,6 +136,11 @@ public:
     static bool Button(string txt)
     {
         return ig_Button(toStringz(txt));
+    }
+
+    static bool Selectable(string txt, bool selected)
+    {
+        return ig_Selectable(toStringz(txt), selected);
     }
 
     static bool SmallButton(string txt)

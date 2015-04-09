@@ -310,9 +310,10 @@ final class UEEditorGUI : UEComponent
         {
             ig_Bullet();
             ig_PushID2(cast(void*)(_node.entity));
-            if(UEGui.SmallButton(_node.entity.name))
+            auto isSelected = EditorRootComponent._currentEntity is _node.entity;
+            if(UEGui.Selectable(_node.entity.name,isSelected))
             {
-                if(EditorRootComponent._currentEntity is _node.entity)
+                if(isSelected)
                     EditorRootComponent.selectEntity(null);
                 else
                     EditorRootComponent.selectEntity(_node.entity);
