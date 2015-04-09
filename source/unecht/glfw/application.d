@@ -4,6 +4,7 @@ import std.stdio;
 
 import derelict.glfw3.glfw3;
 import derelict.opengl3.gl3;
+import derelict.imgui.imgui;
 import derelict.freeimage.freeimage;
 
 import unecht.glfw.window;
@@ -14,6 +15,7 @@ public import unecht.glfw.types;
 import unecht;
 import unecht.core.components.camera;
 import unecht.core.components.misc;
+import unecht.core.components.internal.gui;
 
 version(UEProfiling) import unecht.core.profiler;
 
@@ -41,6 +43,7 @@ struct UEApplication
 		DerelictFI.load();
 		DerelictGL3.load();
 		DerelictGLFW3.load();
+        DerelictImgui.load();
 
 		if(!initGLFW())
 			return -1;
@@ -81,6 +84,10 @@ struct UEApplication
         		ue.tickTime = glfwGetTime();
 
                 {
+                    UEGui.startFrame();
+                }
+
+                {
                     version(UEProfiling)
                     auto profZone = Zone(profiler, "scene update");
 
@@ -107,6 +114,13 @@ struct UEApplication
         			    EditorRootComponent.renderEditor();
                     }
         		}
+
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "render gui");
+
+                    UEGui.renderGUI();
+                }
 
                 {
                     version(UEProfiling)
@@ -242,6 +256,8 @@ private:
 
 		ue.scene = new UEScenegraph();
 
+        insertGuiObj();
+
         insertPhysicsObj();
 
 		version(UEIncludeEditor)insertEditorEntity();
@@ -249,6 +265,13 @@ private:
 		if(ue.hookStartup)
 			ue.hookStartup();
 	}
+
+    void insertGuiObj()
+    {
+        auto newE = UEEntity.create("gui");
+        newE.addComponent!UEGui;
+        newE.hideInEditor = true;
+    }
 
     void insertPhysicsObj()
     {

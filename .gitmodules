@@ -13,3 +13,6 @@
 [submodule "submodules/tinyendian"]
 	path = submodules/tinyendian
 	url = https://github.com/Extrawurst/tinyendian.git
+[submodule "submodules/DerelictImgui"]
+	path = submodules/DerelictImgui
+	url = https://github.com/Extrawurst/DerelictImgui.git

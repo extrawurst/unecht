@@ -8,7 +8,7 @@
 	"mainSourceFile": "source/unecht/appmain.d",
 	"dependencies": 
 	{
-		"tharsis-dimgui": {"version":"~master", "path": "submodules/tharsis-dimgui/"},
+		"derelict-imgui": {"version": "~master", "path": "submodules/DerelictImgui/"},
 		"gl3n": {"version":"~master", "path": "submodules/gl3n/"},
         "tharsis-prof": {"version":"~master", "path": "submodules/tharsis.prof/"},
         "derelict-ode": {"version": "~master", "path": "submodules/DerelictODE/"},
@@ -16,14 +16,9 @@
 		"derelict-gl3": "~>1.0.12",
 		"derelict-fi": "~>1.9.0",
         "derelict-util": "~>1.9.1",
-		"cerealed": "~>0.5.0"
 	},
 
     "versions":["DerelictODE_Single"],
-
-	"subConfigurations": {
-    	"tharsis-dimgui": "derelict-gl-library",
-	},
-
+    
 	"stringImportPaths": ["imp","imp/tex"]
 }

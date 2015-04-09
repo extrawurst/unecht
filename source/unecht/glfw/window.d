@@ -19,7 +19,9 @@ package:
 	
 	///
 	@property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
-	
+    ///
+    public @property GLFWwindow* window() { return glfwWindow; }
+
 	///
 	bool create(UESize _size, string _title)
 	{

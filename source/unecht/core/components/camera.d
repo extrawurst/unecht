@@ -18,15 +18,16 @@ static class UECameraInspector : IComponentEditor
     {
         auto thisT = cast(UECamera)_component;
         
-        import imgui;
+        import derelict.imgui.imgui;
+        import unecht.core.components.internal.gui;
         import std.format;
 
-        imguiLabel(format("fov: %s",thisT.fieldOfView));
-        imguiLabel(format("ortho: %s",thisT.isOrthographic));
-        imguiLabel(format("orthoSize: %s",thisT.orthoSize));
-        imguiLabel(format("near: %s",thisT.clipNear));
-        imguiLabel(format("far: %s",thisT.clipFar));
-        imguiLabel(format("clearcol: %s",thisT.clearColor));
+        UEGui.DragFloat("fov",thisT.fieldOfView,1,360);
+        UEGui.Text(format("ortho: %s",thisT.isOrthographic));
+        UEGui.Text(format("orthoSize: %s",thisT.orthoSize));
+        UEGui.Text(format("near: %s",thisT.clipNear));
+        UEGui.Text(format("far: %s",thisT.clipFar));
+        UEGui.Text(format("clearcol: %s",thisT.clearColor));
     }
 
     mixin UERegisterInspector!UECameraInspector;

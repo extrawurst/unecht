@@ -10,13 +10,12 @@ import unecht.core.components.sceneNode;
 import unecht.core.components.material;
 import unecht.core.components.misc;
 import unecht.core.components.renderer;
+import unecht.core.components.internal.gui;
 
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
 
 import derelict.opengl3.gl3;
-
-import imgui;
 
 ///
 final class UEEditorgridComponent : UEComponent {
@@ -230,6 +229,141 @@ final class UEEditorComponent : UEComponent {
 }
 
 ///
+final class UEEditorGUI : UEComponent 
+{    
+    import derelict.imgui.imgui;
+
+    mixin(UERegisterComponent!());
+
+    void render() {
+
+        if(EditorRootComponent._editorVisible)
+            ig_Text("EditorMode (hide with F1)");
+        else
+            ig_Text("EditorMode (show with F1)");
+
+        if(EditorRootComponent._editorVisible)
+        {
+            renderControlPanel();
+            renderScene();
+            renderInspector();
+        }
+    }
+
+    ///
+    private static void renderScene()
+    {
+        ig_Begin("scene",null,ImGuiWindowFlags_NoTitleBar);
+
+        foreach(n; ue.scene.root.children)
+        {
+            renderSceneNode(n);
+        }
+
+        ig_End();
+    }
+
+    ///
+    private static void renderSceneNode(UESceneNode _node)
+    {
+        if(_node.entity.hideInEditor)
+            return;
+
+        const canExpand = _node.children.length>0;
+
+        if(canExpand)
+        {
+            const expanded = UEGui.TreeNode(_node.entity.name);
+
+            if(ig_IsItemActive())
+            {
+                if(EditorRootComponent._currentEntity !is _node.entity)
+                    EditorRootComponent.selectEntity(_node.entity);
+            }
+
+            if(!expanded)
+                return;
+
+            foreach(n; _node.children)
+            {
+                renderSceneNode(n);
+            }
+
+            ig_TreePop();
+        }
+        else
+        {
+            ig_Bullet();
+            if(UEGui.SmallButton(_node.entity.name))
+            {
+                if(EditorRootComponent._currentEntity is _node.entity)
+                    EditorRootComponent.selectEntity(null);
+                else
+                    EditorRootComponent.selectEntity(_node.entity);
+            }
+        }
+    }
+
+    ///
+    private static void renderInspector()
+    {
+        if(!EditorRootComponent._currentEntity)
+            return;
+
+        ig_Begin("inspector");
+        scope(exit)ig_End();
+
+        if(UEGui.Button("[deselect]"))
+        {
+            EditorRootComponent.selectEntity(null);
+            return;
+        }
+        
+        foreach(c; EditorRootComponent._currentEntity.components)
+        {
+            auto subtext = "[  ]";
+            if(c.enabled)
+                subtext = "[X]";
+
+            if(UEGui.TreeNode(c.name))
+            {
+                if(UEGui.Button("toggle"))
+                    c.enabled = !c.enabled;
+
+                import unecht.core.componentManager;
+                if(auto renderer = c.name in UEComponentsManager.editors)
+                {
+                    renderer.render(c);
+                }
+
+                ig_TreePop();
+            }
+        }
+    }
+
+    ///
+    private static void renderControlPanel()
+    {
+        ig_Begin("controls",null,ImGuiWindowFlags_NoTitleBar);
+
+        if(ig_Button("play"))
+            ue.scene.playing = true;
+
+        if(ue.scene.playing)
+        {
+            if(ig_Button("stop"))
+                ue.scene.playing = false;
+        }
+        else
+        {
+            if(ig_Button("step"))
+                ue.scene.step;
+        }
+
+        ig_End();
+    }
+}
+///
 final class EditorRootComponent : UEComponent {
 
 	mixin(UERegisterComponent!());
@@ -242,25 +376,17 @@ final class EditorRootComponent : UEComponent {
 	private static bool _editorVisible;
 	private static UECamera _editorCam;
 	private static UEEntity _currentEntity;
+    private static UEEditorGUI _editorGUI;
 
 	override void onCreate() {
 		super.onCreate;
 		
 		registerEvent(UEEventType.key, &OnKeyEvent);
 
-		// startup imgui
-		{
-			import std.file;
-			import std.path;
-			import std.exception;
-			
-			string fontPath = thisExePath().dirName().buildPath(".").buildPath("DroidSans.ttf");
-			
-			enforce(imguiInit(fontPath));
-		}
-
 		// hide the whole entity with its hirarchie
 		//this.entity.hideInEditor = true;
+
+        _editorGUI = entity.addComponent!UEEditorGUI;
 
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.clearColor = vec4(0.1,0.1,0.1,1.0);
@@ -325,69 +451,7 @@ final class EditorRootComponent : UEComponent {
             UERenderer.editorMaterial = null;
 		}
 
-		renderEditorGUI();
-	}
-
-	///
-	static void renderEditorGUI()
-	{
-		ubyte mouseButtons = ue.mouseDown?MouseButton.left:0;
-		int mouseScroll;
-
-		//TODO: push correct values here
-		imguiBeginFrame(cast(int)ue.mousePos.x, ue.application.mainWindow.size.height - cast(int)ue.mousePos.y, mouseButtons, mouseScroll);
-
-		if(_editorVisible)
-		{
-			renderControlPanel();
-			renderScene();
-			renderInspector();
-			imguiDrawText(0, 2, TextAlign.left, "EditorMode (hide with F1)", RGBA(255, 255, 255));
-		}
-		else
-			imguiDrawText(0, 2, TextAlign.left, "EditorMode (show with F1)", RGBA(255, 255, 255));
-
-		imguiEndFrame();
-		imguiRender(ue.application.mainWindow.size.width,ue.application.mainWindow.size.height);
-	}
-
-	///
-	private static void renderControlPanel()
-	{
-		static int scroll;
-		//TODO: do not use hardcoded values here
-		imguiBeginScrollArea("controls: ",
-			ue.application.mainWindow.size.width-80,0,
-			80,85,&scroll);
-
-		if(imguiButton("play"))
-			ue.scene.playing = true;
-		if(ue.scene.playing)
-		{
-			if(imguiButton("stop"))
-				ue.scene.playing = false;
-		}
-		else
-		{
-			if(imguiButton("step"))
-				ue.scene.step;
-		}
-
-		imguiEndScrollArea();
-	}
-
-	///
-	private static void renderScene()
-	{
-		static int scroll;
-		imguiBeginScrollArea("scene",0,0,200,ue.application.mainWindow.size.height,&scroll);
-
-		foreach(n; ue.scene.root.children)
-		{
-			renderSceneNode(n);
-		}
-
-		imguiEndScrollArea();
+        _editorGUI.render();
 	}
 
     ///
@@ -404,92 +468,4 @@ final class EditorRootComponent : UEComponent {
             UEEditorNodeKeyControls.target = _editorCam.sceneNode;
         }
     }
-
-	///
-	private static void renderInspector()
-	{
-		if(!_currentEntity)
-			return;
-
-		static int scroll;
-		//TODO: do not use hardcoded values here
-		imguiBeginScrollArea("inspector: "~_currentEntity.name,200,0,300,ue.application.mainWindow.size.height,&scroll);
-
-        if(imguiButton("[deselect]"))
-        {
-            selectEntity(null);
-            return;
-        }
-		
-		foreach(c; _currentEntity.components)
-		{
-            bool expanded=c.stateInSceneEditor;
-
-            auto subtext = "[  ]";
-            if(c.enabled)
-                subtext = "[X]";
-
-            imguiCollapse(c.name,subtext,&expanded);
-
-			if(expanded)
-            {
-                if(imguiButton("toggle"))
-                    c.enabled = !c.enabled;
-
-    			import unecht.core.componentManager;
-    			if(auto renderer = c.name in UEComponentsManager.editors)
-    			{
-    				imguiIndent();
-    				renderer.render(c);
-    				imguiUnindent();
-    			}
-            }
-
-            c.stateInSceneEditor = expanded;
-		}
-		
-		imguiEndScrollArea();
-	}
-
-	///
-	private static void renderSceneNode(UESceneNode _node)
-	{
-		if(_node.entity.hideInEditor)
-			return;
-
-        const canExpand = _node.children.length>0;
-
-        if(canExpand)
-        {
-            bool expanded=_node.sceneNode.stateInSceneEditor;
-
-            if(imguiCollapse(_node.entity.name,"",&expanded))
-    		{
-    			if(_currentEntity !is _node.entity)
-                    selectEntity(_node.entity);
-    		}
-
-            _node.sceneNode.stateInSceneEditor = expanded;
-
-            if(!expanded)
-                return;
-
-    		imguiIndent();
-    		foreach(n; _node.children)
-    		{
-    			renderSceneNode(n);
-    		}
-    		imguiUnindent();
-        }
-        else
-        {
-            if(imguiItem(_node.entity.name))
-            {
-                if(_currentEntity is _node.entity)
-                    selectEntity(null);
-                else
-                    selectEntity(_node.entity);
-            }
-        }
-	}
 }

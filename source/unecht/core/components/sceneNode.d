@@ -15,15 +15,18 @@ version(UEIncludeEditor)
         {
             auto thisT = cast(UESceneNode)_component;
             
-            import imgui;
+            import derelict.imgui.imgui;
+            import unecht.core.components.internal.gui;
             import std.format;
-            
-            imguiLabel(format("pos: %s",thisT.position));
-            imguiLabel(format("rot: %s",thisT.rotation));
-            imguiLabel(format("scale: %s",thisT.scaling));
-            imguiLabel(format("angles: %s",thisT.angles));
-            imguiLabel(format("to: %s",thisT.forward));
-            imguiLabel(format("up: %s",thisT.up));
+
+            UEGui.InputFloat3("pos", thisT.position.vector);
+            //UEGui.InputFloat3("rot", thisT.rotation.vector);
+            //imguiLabel(format("pos: %s",thisT.position));
+            //imguiLabel(format("rot: %s",thisT.rotation));
+            //imguiLabel(format("scale: %s",thisT.scaling));
+            //imguiLabel(format("angles: %s",thisT.angles));
+            //imguiLabel(format("to: %s",thisT.forward));
+            //imguiLabel(format("up: %s",thisT.up));
         }
         
         mixin UERegisterInspector!UESceneNodeInspector;
