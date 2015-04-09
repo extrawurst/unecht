@@ -309,7 +309,7 @@ final class UEEditorGUI : UEComponent
         else
         {
             ig_Bullet();
-            ig_PushID2(cast(void*)(_node.entity));
+            ig_PushIdPtr(cast(void*)(_node.entity));
             auto isSelected = EditorRootComponent._currentEntity is _node.entity;
             if(UEGui.Selectable(_node.entity.name,isSelected))
             {
@@ -352,7 +352,7 @@ final class UEEditorGUI : UEComponent
             if(c.enabled)
                 subtext = "X";
 
-            ig_PushID3(i);
+            ig_PushIdInt(i);
             if(UEGui.TreeNode(c.name))
             {
                 ig_SameLine();
