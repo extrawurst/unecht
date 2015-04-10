@@ -70,24 +70,32 @@ final class UEPhysicsBody : UEComponent
     
     ///
     override void onUpdate() {
+        auto doEnable = lastPos != sceneNode.position ||
+            lastAngles != sceneNode.angles;
+
+        if(doEnable)
+            dBodyEnable(Body);
+
         if(lastPos != sceneNode.position)
             dBodySetPosition(Body, sceneNode.position.x,sceneNode.position.y,sceneNode.position.z);
-        
-        if(lastRot != sceneNode.rotation)
+
+        if(lastAngles != sceneNode.angles)
             dBodySetQuaternion(Body, sceneNode.rotation.quaternion);
-        
+
+        //TODO: use CopyPosition to save mem traffic
         auto pos = dBodyGetPosition(Body);
-        auto qrot = dBodyGetQuaternion(Body);
-        
-        quat rot = quat(qrot[0],qrot[1],qrot[2],qrot[3]);
+        quat rot;
+        dBodyCopyQuaternion(Body, rot.quaternion);
         
         this.sceneNode.position = lastPos = vec3(pos[0..3]);
-        this.sceneNode.rotation = lastRot = rot;
+        this.sceneNode.rotation = rot;
+
+        lastAngles = sceneNode.angles;
     }
     
 private:
     vec3 lastPos;
-    quat lastRot;
+    vec3 lastAngles;
     
     package dBodyID Body;  // the dynamics body
 }

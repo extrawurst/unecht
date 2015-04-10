@@ -103,14 +103,39 @@ private:
     }
 
     ///
-    private void setAngles(vec3 v)
+    private void setAngles(in vec3 v)
     {
         _angles = v;
-
+        
         auto anglesInRad = v * (PI/180.0f);
+        
+        _rotation = quat.euler_rotation(anglesInRad.y,anglesInRad.z,anglesInRad.x).normalized();
+        
+        updateDirections(anglesInRad);
+    }
+    
+    ///
+    private void setRotation(in quat v)
+    {
+        _rotation = v;
 
-        _rotation = quat.euler_rotation(anglesInRad.y,anglesInRad.z,anglesInRad.x);
+        _angles.z = v.yaw;
+        _angles.y = v.pitch;
+        _angles.x = v.roll;
+        
+        const anglesInRad = _angles;
 
+        //_rotation = quat.euler_rotation(pitch,yaw,roll);
+
+        import gl3n.math:_180_PI;
+        _angles *= _180_PI;
+
+        updateDirections(anglesInRad);
+    }
+    
+    ///
+    private void updateDirections(in ref vec3 anglesInRad)
+    {
         _dir = ORIG_DIR;
         _dir = _dir * quat.xrotation(anglesInRad.x);
         _dir = _dir * quat.yrotation(anglesInRad.y);
@@ -119,16 +144,8 @@ private:
         _up = _up * quat.zrotation(anglesInRad.z);
         _up = _up * quat.xrotation(anglesInRad.x);
         _up = _up * quat.yrotation(anglesInRad.y);
-
+        
         _right = cross(_dir,_up);
-    }
-
-    ///
-    private void setRotation(quat v)
-    {
-        _rotation = v;
-
-        //TODO: update 
     }
     
 private:
@@ -140,7 +157,7 @@ private:
     vec3 _up = ORIG_UP;
     vec3 _right = cross(ORIG_DIR,ORIG_UP);
     vec3 _angles = vec3(0);
-    
+
     static immutable vec3 ORIG_DIR = vec3(0,0,1);
     static immutable vec3 ORIG_UP = vec3(0,1,0);
 }

@@ -31,7 +31,7 @@ final class TestLogic : UEComponent
     {
         auto newE = UEEntity.create("obj");
         import std.random:uniform;
-        newE.sceneNode.position = vec3(uniform(0.0f,1),15,uniform(0.0f,1));
+        newE.sceneNode.position = vec3(uniform(0.0f,2),15,uniform(0.0f,2));
         newE.addComponent!UEPhysicsBody;
         newE.addComponent!UEPhysicsColliderBox;
         newE.addComponent!UEShapeBox;
