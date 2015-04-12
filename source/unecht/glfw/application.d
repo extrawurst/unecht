@@ -201,6 +201,16 @@ package:
 		ue.mouseDown = action == GLFW_PRESS;
 	}
 
+    void glfwOnMouseScroll(double xoffset, double yoffset)
+    {
+        UEEvent ev;
+        ev.eventType = UEEventType.mouseScroll;
+        ev.mouseScrollEvent.xoffset = xoffset;
+        ev.mouseScrollEvent.yoffset = yoffset;
+        
+        events.trigger(ev);
+    }
+
 	void glfwOnChar(uint codepoint)
 	{
 		UEEvent ev;

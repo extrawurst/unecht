@@ -25,6 +25,7 @@ public:
 
         registerEvent(UEEventType.text, &OnCharInput);
         registerEvent(UEEventType.key, &OnKeyInput);
+        registerEvent(UEEventType.mouseScroll, &OnScrollInput);
 
         g_window = ue.application.mainWindow.window;
 
@@ -74,6 +75,14 @@ public:
         if (utfchar > 0 && utfchar < 0x10000)
         {
             ImGuiIO_AddInputCharacter(cast(ushort)utfchar);
+        }
+    }
+
+    private void OnScrollInput(UEEvent event)
+    {
+        if(event.mouseScrollEvent.yoffset != 0)
+        {
+            g_MouseWheel += cast(float)event.mouseScrollEvent.yoffset;
         }
     }
 
@@ -204,7 +213,7 @@ private:
     static GLFWwindow*  g_window;
     static double       g_Time = 0.0f;
     static bool[3]      g_MousePressed;
-    static float        g_MouseWheel = 0.0f;
+    static double       g_MouseWheel = 0.0f;
     static GLuint       g_FontTexture = 0;
     static int          g_ShaderHandle = 0, g_VertHandle = 0, g_FragHandle = 0;
     static int          g_AttribLocationTex = 0, g_AttribLocationProjMtx = 0;

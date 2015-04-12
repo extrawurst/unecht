@@ -10,6 +10,7 @@ enum UEEventType
 	windowSize,
 	framebufferSize,
 	windowFocus,
+    mouseScroll,
 }
 
 ///
@@ -58,6 +59,13 @@ struct UEEvent
 		bool gainedFocus;
 	}
 	FocusEvent focusEvent;
+
+    struct MouseScrollEvent
+    {
+        double xoffset;
+        double yoffset;
+    }
+    MouseScrollEvent mouseScrollEvent;
 }
 
 ///

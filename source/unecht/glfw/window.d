@@ -52,6 +52,7 @@ package:
 		glfwSetCharCallback(glfwWindow, &character_callback);
 		glfwSetFramebufferSizeCallback(glfwWindow, &framebuffer_size_callback);
 		glfwSetWindowFocusCallback(glfwWindow, &window_focus_callback);
+        glfwSetScrollCallback(window, &mouse_scroll_callback);
 		
 		return true;
 	}
@@ -103,6 +104,12 @@ private nothrow extern(C)
 		try ue.application.glfwOnMouseButton(button, action, mods);
 		catch{}
 	}
+
+    void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+    {
+        try ue.application.glfwOnMouseScroll(xoffset, yoffset);
+        catch{}
+    }
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
