@@ -11,6 +11,8 @@ enum UEEventType
 	framebufferSize,
 	windowFocus,
     mouseScroll,
+    mouseButton,
+    mousePos,
 }
 
 ///
@@ -66,6 +68,32 @@ struct UEEvent
         double yoffset;
     }
     MouseScrollEvent mouseScrollEvent;
+
+    struct MouseButtonEvent
+    {
+        enum Action 
+        {
+            down,
+            up
+        }
+
+        int button;
+        Action action;
+        bool modShift;
+        bool modAlt;
+        bool modCtrl;
+
+        ///
+        @property bool isDown() const {return action==Action.down;}
+    }
+    MouseButtonEvent mouseButtonEvent;
+
+    struct MousePosEvent
+    {
+        double x;
+        double y;
+    }
+    MousePosEvent mousePosEvent;
 }
 
 ///

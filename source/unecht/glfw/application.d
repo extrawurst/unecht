@@ -191,14 +191,26 @@ package:
 
 	void glfwOnMouseMove(double x, double y)
 	{
-		//TODO: impl events
-		ue.mousePos = vec2(x,y);
+        UEEvent ev;
+        ev.eventType = UEEventType.mousePos;
+        ev.mousePosEvent.x = x;
+        ev.mousePosEvent.y = y;
+
+        events.trigger(ev);
 	}
 
 	void glfwOnMouseButton(int button, int action, int mods)
 	{
-		//TODO: impl events
-		ue.mouseDown = action == GLFW_PRESS;
+        UEEvent ev;
+        ev.eventType = UEEventType.mouseButton;
+        ev.mouseButtonEvent.button = button;
+        ev.mouseButtonEvent.action = (action == GLFW_PRESS) ? UEEvent.MouseButtonEvent.Action.down : UEEvent.MouseButtonEvent.Action.up;
+
+        ev.mouseButtonEvent.modShift = (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT;
+        ev.mouseButtonEvent.modCtrl = (mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL;
+        ev.mouseButtonEvent.modAlt = (mods & GLFW_MOD_ALT) == GLFW_MOD_ALT;
+
+        events.trigger(ev);
 	}
 
     void glfwOnMouseScroll(double xoffset, double yoffset)

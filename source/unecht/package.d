@@ -40,8 +40,6 @@ struct Unecht
 	UEEvents events;
 	ActionFunc hookStartup;
 	float tickTime = 0;
-	vec2 mousePos;
-	bool mouseDown;
 }
 
 __gshared Unecht ue;
