@@ -8,6 +8,7 @@ public import unecht.core.component;
 public import unecht.core.components.physics;
 public import unecht.core.components.shapes;
 public import unecht.core.components.material;
+public import unecht.core.components.internal.gui;
 
 public import unecht.glfw.application;
 

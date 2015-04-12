@@ -6,6 +6,8 @@ import ball;
 import paddle;
 import field;
 
+import derelict.imgui.imgui;
+
 ///
 final class TestControls : UEComponent
 {
@@ -14,10 +16,17 @@ final class TestControls : UEComponent
     static UEEntity balls;
     static int ballCount;
 
+    Field field;
+
     float lastBallCreated;
+
+    int scoreLeft;
+    int scoreRight;
 
     override void onCreate() {
         super.onCreate;
+
+        field = entity.addComponent!Field;
 
         registerEvent(UEEventType.key, &OnKeyEvent);
 
@@ -33,6 +42,13 @@ final class TestControls : UEComponent
 
         if(ue.tickTime - lastBallCreated > ballCount*2)
             spawnBall();
+
+        auto labelWidth = 100;
+        ig_SetNextWindowPos(ImVec2((ue.application.mainWindow.size.width-labelWidth)/2));
+        ig_SetNextWindowSize(ImVec2(labelWidth,-1),ImGuiSetCond_Once);
+        ig_Begin("",null,ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize);
+        UEGui.Text(.format("%s - %s",scoreLeft,scoreRight));
+        ig_End();
     }
 
     void OnKeyEvent(UEEvent _ev)
@@ -49,10 +65,19 @@ final class TestControls : UEComponent
         auto newE = UEEntity.create("ball",balls.sceneNode);
         import std.random:uniform;
         newE.sceneNode.position = vec3(uniform(0.0f,1),1,uniform(0.0f,1));
-        newE.addComponent!BallLogic;
+        auto ballLogic = newE.addComponent!BallLogic;
+        ballLogic.controls = this;
 
         lastBallCreated = ue.tickTime;
         ballCount++;
+    }
+
+    void onBallOut(UEEntity border)
+    {
+        if(field.isLeft(border))
+            scoreRight++;
+        else
+            scoreLeft++;
     }
 
     static void spawnPaddle(bool rightSide)
@@ -85,7 +110,6 @@ shared static this()
 
 		auto newE = UEEntity.create("game");
         newE.addComponent!TestControls;
-        newE.addComponent!Field;
 
         import unecht.core.components.camera;
 		auto newE2 = UEEntity.create("camera entity");

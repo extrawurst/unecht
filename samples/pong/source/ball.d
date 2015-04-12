@@ -2,11 +2,14 @@
 
 import unecht;
 
+import app;
+
 ///
 final class BallLogic : UEComponent
 {
     mixin(UERegisterComponent!());
-    
+
+    TestControls controls;
     static UEMaterial sharedMaterial;
     
     override void onCreate() {
@@ -35,6 +38,7 @@ final class BallLogic : UEComponent
     override void onCollision(UEComponent _collider) {
         if(_collider && _collider.entity.name == "border-out")
         {
+            controls.onBallOut(_collider.entity);
             reset();
         }
     }

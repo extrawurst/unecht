@@ -10,7 +10,7 @@ final class PaddleLogic : UEComponent
     auto keyUp = UEKey.u;
     auto keyDown = UEKey.j;
     
-    static border = 7.2f;
+    static immutable BORDER = 7.2f;
     
     static UEMaterial sharedMaterial;
     
@@ -40,7 +40,7 @@ final class PaddleLogic : UEComponent
         
         auto pos = sceneNode.position;
         pos.z += 0.3f * control;
-        pos.z = pos.z.clamp(-border,border);
+        pos.z = pos.z.clamp(-BORDER,BORDER);
         
         sceneNode.position = pos;
     }
