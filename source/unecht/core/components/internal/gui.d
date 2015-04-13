@@ -149,7 +149,7 @@ public:
     
     static void DragFloat(string label, ref float v, float min, float max)
     {
-        ig_DragFloat(toStringz(label),&v,min,max);
+        ig_DragFloat(toStringz(label),&v,1,min,max);
     }
 
     static bool InputFloat3(string label, ref float[3] v)
