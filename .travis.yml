@@ -10,7 +10,7 @@ d:
 script:
   - dub test --compiler=$DC || exit 1
   - cd samples/pong/
-  - dub build --compiler=$DC
+  - dub test --compiler=$DC
 
 notifications:
   webhooks:
