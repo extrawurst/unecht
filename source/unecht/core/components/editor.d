@@ -240,12 +240,17 @@ final class UEEditorGUI : UEComponent
         {
             ig_SetNextWindowPos(ImVec2(0,ue.application.mainWindow.size.height-25),ImGuiSetCond_Always);
 
+            ig_PushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
             ig_Begin("editor",null,
                 ImGuiWindowFlags_AlwaysAutoResize|
                 ImGuiWindowFlags_NoTitleBar|
                 ImGuiWindowFlags_NoMove);
 
-            scope(exit) ig_End();
+            scope(exit) 
+            { 
+                ig_End();
+                ig_PopStyleColor();
+            }
 
             if(EditorRootComponent._editorVisible)
                 ig_Text("EditorMode (hide with F1)");
