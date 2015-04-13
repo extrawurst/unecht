@@ -2,8 +2,6 @@ module unecht.core.entity;
 
 import derelict.util.system;
 
-import gl3n.linalg:vec3;
-
 import unecht;
 import unecht.core.components.sceneNode;
 
