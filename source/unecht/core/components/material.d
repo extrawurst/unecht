@@ -54,7 +54,7 @@ static class UEMaterialInspector : IComponentEditor
 
         ig_Checkbox("polygonFill",&thisT.polygonFill);
         ig_Checkbox("depthTest",&thisT.depthTest);
-        UEGui.Text(.format("cull: %s",thisT.cullMode));
+        UEGui.EnumCombo("cull",thisT.cullMode);
         UEGui.Text("texture:");
         if(thisT._tex)
             ig_Image(cast(void*)thisT._tex.tex,ImVec2(TEX_SIZE,TEX_SIZE));

@@ -97,6 +97,36 @@ public:
         return ig_TreeNodePtr(pid, toStringz(txt));
     }
 
+    ///
+    static bool EnumCombo(T)(string label, ref T v) 
+        if(is(T == enum))
+    {
+        enum enumMembers = __traits(allMembers, T);
+        enum enumElemCount = enumMembers.length;
+
+        static string[enumElemCount] enumMemberNames = void;
+        foreach(i,enumMember; enumMembers)
+            enumMemberNames[i] = enumMember;
+
+        static extern(C) bool getItemText(void* data, int idx, const(char)** outText) nothrow
+        {
+            *outText = toStringz(enumMemberNames[idx]);
+            return true;
+        }
+
+        int currentItem = 0;
+
+        import std.traits;
+        foreach(i,enumMember; EnumMembers!T)
+            if(enumMember == v)
+                currentItem = i;
+
+        auto res = ig_Combo3(toStringz(label),&currentItem,&getItemText,null,enumElemCount);
+
+        v = cast(T)currentItem;
+        return res;
+    }
+
     static bool InputVec(string label, ref vec3 v)
     {
         static immutable ITEMWIDTH = 80;
