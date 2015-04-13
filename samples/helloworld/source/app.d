@@ -35,6 +35,7 @@ final class TestLogic : UEComponent
         newE.addComponent!UEPhysicsBody;
         newE.addComponent!UEPhysicsColliderBox;
         newE.addComponent!UEShapeBox;
+        newE.addComponent!UEPhysicsMaterial;
     }
 }
 
@@ -48,6 +49,7 @@ shared static this()
 		auto newE = UEEntity.create("game");
         newE.addComponent!TestLogic;
         newE.addComponent!UEPhysicsColliderPlane;
+        newE.addComponent!UEPhysicsMaterial;
 
 		auto newE2 = UEEntity.create("camera entity");
 		newE2.sceneNode.position = vec3(0,15,-20);
