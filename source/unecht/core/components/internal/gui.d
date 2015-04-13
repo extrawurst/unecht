@@ -54,6 +54,9 @@ public:
         io.RenderDrawListsFn = &renderDrawLists;
     }
 
+    ///
+    public static @property bool capturesMouse() { return g_capturesMouse; }
+
     private void OnKeyInput(UEEvent event)
     {
         auto io = ig_GetIO();
@@ -202,6 +205,8 @@ public:
         g_MouseWheel = 0.0f;
 
         ig_NewFrame();
+
+        g_capturesMouse = io.WantCaptureMouse;
     }
 
     static void renderGUI()
@@ -220,6 +225,7 @@ private:
     static int          g_AttribLocationPosition = 0, g_AttribLocationUV = 0, g_AttribLocationColor = 0;
     static size_t       g_VboMaxSize = 20000;
     static uint         g_VboHandle, g_VaoHandle;
+    static bool         g_capturesMouse;
 
     static extern(C) nothrow 
     void renderDrawLists(ImDrawList** cmd_lists, int count)
