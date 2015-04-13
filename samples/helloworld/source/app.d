@@ -12,7 +12,10 @@ final class TestLogic : UEComponent
 
         registerEvent(UEEventType.key, &OnKeyEvent);
 
-        spawnBall();
+        //spawnBall();
+
+        auto newE = UEEntity.create("box");
+        newE.addComponent!UEShapeBox;
     }
 
     void OnKeyEvent(UEEvent _ev)

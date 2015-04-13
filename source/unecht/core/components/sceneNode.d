@@ -109,8 +109,8 @@ private:
         
         auto anglesInRad = v * (PI/180.0f);
         
-        _rotation = quat.euler_rotation(anglesInRad.y,anglesInRad.z,anglesInRad.x).normalized();
-        
+        _rotation = quat.euler_rotation(anglesInRad.x,anglesInRad.y,anglesInRad.z);
+
         updateDirections(anglesInRad);
     }
     
@@ -125,7 +125,7 @@ private:
         
         const anglesInRad = _angles;
 
-        //_rotation = quat.euler_rotation(pitch,yaw,roll);
+        //_rotation = quat.euler_rotation(v.pitch,v.yaw,v.roll);
 
         import gl3n.math:_180_PI;
         _angles *= _180_PI;
@@ -136,14 +136,14 @@ private:
     ///
     private void updateDirections(in ref vec3 anglesInRad)
     {
-        _dir = ORIG_DIR;
-        _dir = _dir * quat.xrotation(anglesInRad.x);
-        _dir = _dir * quat.yrotation(anglesInRad.y);
+        _dir = ORIG_DIR * _rotation;
+        //_dir = _dir * quat.xrotation(anglesInRad.x);
+        //_dir = _dir * quat.yrotation(anglesInRad.y);
         
-        _up = ORIG_UP;
-        _up = _up * quat.zrotation(anglesInRad.z);
-        _up = _up * quat.xrotation(anglesInRad.x);
-        _up = _up * quat.yrotation(anglesInRad.y);
+        _up = ORIG_UP * _rotation;
+        //_up = _up * quat.zrotation(anglesInRad.z);
+        //_up = _up * quat.xrotation(anglesInRad.x);
+        //_up = _up * quat.yrotation(anglesInRad.y);
         
         _right = cross(_dir,_up);
     }

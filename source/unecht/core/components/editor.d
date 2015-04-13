@@ -99,6 +99,75 @@ final class UEEditorGismo : UEComponent {
 	}
 }
 
+
+///
+final class UEEditorMouseControls : UEComponent
+{
+    mixin(UERegisterComponent!());
+
+    float speed = 0.1f;
+
+    private bool mouseDown;
+    private bool moveMode;
+    private vec2 lastMousePos;
+
+    override void onCreate() {
+        super.onCreate;
+
+        registerEvent(UEEventType.mouseButton, &onMouseEvent);
+        registerEvent(UEEventType.mousePos, &onMouseEvent);
+        registerEvent(UEEventType.mouseScroll, &onMouseEvent);
+    }
+
+    private void onMouseEvent(UEEvent _ev)
+    {
+        if(_ev.eventType == UEEventType.mouseButton)
+        {
+            if(_ev.mouseButtonEvent.button == 0 &&
+                !UEGui.capturesMouse)
+            {
+                mouseDown = _ev.mouseButtonEvent.isDown;
+                moveMode = !_ev.mouseButtonEvent.modAlt;
+            }
+        }
+        else if(_ev.eventType == UEEventType.mousePos)
+        {
+            auto curPos = vec2(_ev.mousePosEvent.x,_ev.mousePosEvent.y);
+            auto delta = curPos - lastMousePos;
+
+            if(mouseDown)
+            {
+                onDrag(delta);
+            }
+
+            lastMousePos = curPos;
+        }
+        else if(_ev.eventType == UEEventType.mouseScroll)
+        {
+            onDrag(vec2(0), _ev.mouseScrollEvent.yoffset);
+        }
+    }
+
+    private void onDrag(vec2 delta, double scroll=0)
+    {
+        //TODO: support shift to speedup
+        auto speedNow = speed;
+
+        //TODO: only zoom like this in move mode and move cam in direction of the ray (eye, cursorPosDir-from-screen-to-frustum)
+        sceneNode.position = sceneNode.position + (sceneNode.forward * scroll * speedNow);
+
+        if(moveMode)
+        {
+            sceneNode.position = sceneNode.position + (sceneNode.right * delta.x * -speedNow);
+            sceneNode.position = sceneNode.position + (sceneNode.up * delta.y * speedNow);
+        }
+        else
+        {
+            sceneNode.angles = sceneNode.angles + vec3(delta.y*speedNow,delta.x*-speedNow,0);
+        }
+    }
+}
+
 ///
 final class UEEditorNodeKeyControls : UEComponent
 {
@@ -115,7 +184,7 @@ final class UEEditorNodeKeyControls : UEComponent
         target.position = target.position + (target.right * move.x * speed);
         target.position = target.position + (target.forward * move.z * speed);
 
-        target.angles = target.angles + (rotate * speed);
+        //target.angles = target.angles + (rotate * speed);
     }
 
     //TODO: register this by it self once recursive enable/disable works
@@ -411,6 +480,7 @@ final class UEEditorGUI : UEComponent
         ig_End();
     }
 }
+
 ///
 final class EditorRootComponent : UEComponent {
 
@@ -435,6 +505,8 @@ final class EditorRootComponent : UEComponent {
 		//this.entity.hideInEditor = true;
 
         _editorGUI = entity.addComponent!UEEditorGUI;
+
+        entity.addComponent!UEEditorMouseControls;
 
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.clearColor = vec4(0.1,0.1,0.1,1.0);
