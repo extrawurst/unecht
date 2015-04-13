@@ -5,11 +5,10 @@ d:
   - dmd-2.065.0
   - dmd-2.066.1
   - ldc-0.15.1
-  - gdc
 
 script:
   - dub test --compiler=$DC || exit 1
-  - cd samples/helloworld/
+  - cd samples/pong/
   - dub build --compiler=$DC
 
 notifications:
