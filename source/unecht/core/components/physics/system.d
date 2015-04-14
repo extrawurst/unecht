@@ -10,18 +10,6 @@ import gl3n.linalg;
 
 version(UEProfiling)import unecht.core.profiler;
 
-
-shared static this()
-{
-    DerelictODE.load();
-    dInitODE ();
-}
-
-shared static ~this()
-{
-    dCloseODE();
-}
-
 ///
 final class UEPhysicsSystem : UEComponent {
     
@@ -43,6 +31,9 @@ final class UEPhysicsSystem : UEComponent {
     override void onCreate() {
         if(!initialised)
         {
+            DerelictODE.load();
+            dInitODE ();
+
             // Create a new, empty world and assign its ID number to World. Most applications will only need one world.
             world = dWorldCreate();
             
@@ -101,6 +92,8 @@ final class UEPhysicsSystem : UEComponent {
             contactgroup = null;
 
             initialised = false;
+
+            dCloseODE();
         }
     }
     
