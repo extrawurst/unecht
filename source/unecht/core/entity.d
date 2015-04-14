@@ -134,6 +134,7 @@ private:
         foreach(component; _components)
         {
             component.setEntity(null);
+            ue.events.removeComponent(component);
             .destroy(component);
         }
         _components.length = 0;
