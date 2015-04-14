@@ -28,6 +28,8 @@ abstract class UEComponent
     ///
 	void onCreate() {}
     ///
+    void onDestroy() {}
+    ///
     void onCollision(UEComponent _collider) {}
 	
     @nogc nothrow {

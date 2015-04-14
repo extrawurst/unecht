@@ -67,6 +67,26 @@ final class UEPhysicsBody : UEComponent
         // We can then apply this mass to our objects body.
         dBodySetMass(Body, &m);
     }
+
+    override void onDestroy() {
+        super.onDestroy;
+
+        //reactivate connected bodies
+        auto n = dBodyGetNumJoints(Body);
+
+        foreach(i; 0..n)
+        {
+            auto joint = dBodyGetJoint(Body, i);
+            auto body0 = dJointGetBody(joint,0);
+            auto body1 = dJointGetBody(joint,1);
+            if(body0)
+                dBodyEnable(body0);
+            if(body1)
+                dBodyEnable(body1);
+        }
+
+        dBodyDestroy(Body);
+    }
     
     ///
     override void onUpdate() {

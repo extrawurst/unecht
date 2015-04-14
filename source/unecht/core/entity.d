@@ -12,10 +12,12 @@ final class UEEntity
 	bool hideInEditor;
 	///
     @nogc @property UESceneNode sceneNode() nothrow { return _sceneNode; } 
+    ///
+    @nogc @property bool destroyed() nothrow { return _destroyed; } 
 	///
-	@property string name() { return _name; } 
+    @nogc @property string name() { return _name; } 
 	///
-	@property UEComponent[] components() { return _components; } 
+    @nogc @property UEComponent[] components() { return _components; } 
 
     ///
     void broadcast(string _method,ARG)(ARG _arg)
@@ -24,6 +26,18 @@ final class UEEntity
         foreach(component; _components)
         {
             enum mix = .format("component.%s(_arg);",_method);
+            //pragma(msg, mix);
+            mixin(mix);
+        }
+    }
+
+    ///
+    void broadcast(string _method)()
+    {
+        import std.string:format;
+        foreach(component; _components)
+        {
+            enum mix = .format("component.%s();",_method);
             //pragma(msg, mix);
             mixin(mix);
         }
@@ -71,6 +85,18 @@ final class UEEntity
         return new UEEntity(_parent ? _parent : ue.scene.root, _name);
 	}
 
+    ///
+    static void destroy(UEEntity entity)
+    {
+        entity._destroyed = true;
+    }
+
+    ///
+    static void destroyImmediate(UEEntity entity)
+    {
+        entity.doDestroy();
+    }
+
 private:
 
 	this(UESceneNode _parent, string _name)
@@ -92,9 +118,31 @@ private:
 
 		_comp.onCreate();
 	}
+
+    void doDestroy()
+    {
+        foreach(child; this._sceneNode.children)
+            child.entity.doDestroy();
+
+        //unparenting of local components
+        broadcast!("onDestroy")();
+
+        _destroyed = true;
+        _sceneNode = null;
+        _name = null;
+
+        foreach(component; _components)
+        {
+            component.setEntity(null);
+            .destroy(component);
+        }
+        _components.length = 0;
+    }
 	
 private:
 	string _name = "entity";
+
+    bool _destroyed = false;
 
 	UESceneNode _sceneNode;
 	

@@ -535,6 +535,9 @@ final class EditorRootComponent : UEComponent {
     override void onUpdate() {
         super.onUpdate;
 
+        if(_currentEntity && _currentEntity.destroyed)
+            _currentEntity = null;
+
         if(_currentEntity)
         {
             gismo.sceneNode.enabled = true;

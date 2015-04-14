@@ -3,6 +3,7 @@
 import gl3n.linalg;
 
 import unecht.core.component;
+import unecht.core.entity;
 import unecht.core.components.sceneNode;
 
 ///
@@ -23,6 +24,11 @@ public:
 	void update()
 	{
 		updateNode(_root);
+
+        foreach(toDestroy; _destroyedEntites)
+            UEEntity.destroyImmediate(toDestroy);
+
+        _destroyedEntites.length = 0;
 
 		if(_playing || _singleStep)
 		{
@@ -71,12 +77,16 @@ public:
 			_node.invalidated = false;
 		}+/
 
+        if(_node.entity && _node.entity.destroyed)
+            _destroyedEntites ~= _node.entity;
+
 		foreach(node; _node.children)
 			updateNode(node);
 	}
 
 private:
 	UESceneNode _root = new UESceneNode();
+    UEEntity[] _destroyedEntites;
 	bool _playing=true;
 	bool _singleStep=false;
 }

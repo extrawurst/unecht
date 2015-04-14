@@ -84,6 +84,9 @@ final class UEPhysicsSystem : UEComponent {
             auto profZone = Zone(profiler, "physics update");
         
         _collisionsThisFrame = 0;
+
+        // Remove all temporary collision joints
+        dJointGroupEmpty(contactgroup);
         
         {
             version(UEProfiling)
@@ -113,9 +116,6 @@ final class UEPhysicsSystem : UEComponent {
             +/
             dWorldQuickStep(world, 0.05);
         }
-        
-        // Remove all temporary collision joints now that the world has been stepped
-        dJointGroupEmpty(contactgroup);
         
         propagateCollisions();
     }

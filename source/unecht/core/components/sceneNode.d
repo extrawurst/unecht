@@ -44,6 +44,14 @@ public:
 
     ///
     UESceneNode[] children;
+
+    ///
+    override void onDestroy() {
+        if(_parent)
+            _parent.detachChild(this);
+
+        _parent = null;
+    }
     
     ///
     @property const(UESceneNode) parent() const { return _parent; }
@@ -90,7 +98,7 @@ private:
     }
     
     ///
-    void detachChild(UESceneNode _node)
+    public void detachChild(UESceneNode _node)
     {
         import unecht.core.stdex;
         children = children.removeElement(_node);

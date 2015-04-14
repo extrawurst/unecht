@@ -7,15 +7,16 @@ final class TestLogic : UEComponent
 {
     mixin(UERegisterComponent!());
 
+    private UEEntity ballRoot;
+
     override void onCreate() {
         super.onCreate;
 
         registerEvent(UEEventType.key, &OnKeyEvent);
 
-        //spawnBall();
+        ballRoot = UEEntity.create("balls");
 
-        auto newE = UEEntity.create("box");
-        newE.addComponent!UEShapeBox;
+        spawnBall();
     }
 
     void OnKeyEvent(UEEvent _ev)
@@ -25,14 +26,24 @@ final class TestLogic : UEComponent
             if(_ev.keyEvent.key == UEKey.esc)
                 ue.application.terminate();
 
-            if(_ev.keyEvent.key == UEKey.num2)
+            if(_ev.keyEvent.key == UEKey.num1)
                 spawnBall();
+            if(_ev.keyEvent.key == UEKey.num2)
+                removeBall();
         }
+    }
+
+    void removeBall()
+    {
+        import std.random;
+        auto rnd = uniform(0,ballRoot.sceneNode.children.length);
+
+        UEEntity.destroy(ballRoot.sceneNode.children[rnd].entity);
     }
 
     void spawnBall()
     {
-        auto newE = UEEntity.create("obj");
+        auto newE = UEEntity.create("ball",ballRoot.sceneNode);
         import std.random:uniform;
         newE.sceneNode.position = vec3(uniform(0.0f,2),15,uniform(0.0f,2));
         newE.addComponent!UEPhysicsBody;

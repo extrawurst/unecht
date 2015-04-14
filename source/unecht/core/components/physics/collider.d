@@ -60,6 +60,12 @@ final class UEPhysicsColliderBox : UEComponent
             dGeomSetPosition(_geom, pos.x, pos.y, pos.z);
         }
     }
+
+    override void onDestroy() {
+        super.onDestroy;
+
+        dGeomDestroy(_geom);
+    }
     
     override void onUpdate() {
         if(!_rigidBody)
