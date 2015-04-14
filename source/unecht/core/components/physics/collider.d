@@ -9,12 +9,27 @@ import unecht.core.components.physics.dynamic;
 
 import gl3n.linalg;
 
-///
-final class UEPhysicsColliderPlane : UEComponent
+abstract class UEPhysicsGeometry : UEComponent
 {
     mixin(UERegisterComponent!());
-    
-    dGeomID Geom;
+
+    protected dGeomID _geom;
+
+    ///
+    override void onDestroy() {
+        super.onDestroy;
+
+        if(_geom)
+            dGeomDestroy(_geom);
+
+        _geom = null;
+    }
+}
+
+///
+final class UEPhysicsColliderPlane : UEPhysicsGeometry
+{
+    mixin(UERegisterComponent!());
     
     override void onCreate() {
         super.onCreate;
@@ -22,19 +37,18 @@ final class UEPhysicsColliderPlane : UEComponent
         // Create a ground plane in our collision space by passing Space as the first argument to dCreatePlane.
         // The next four parameters are the planes normal (a, b, c) and distance (d) according to the plane
         // equation a*x+b*y+c*z=d and must have length 1
-        Geom = dCreatePlane(UEPhysicsSystem.space, 0, 1, 0, 0);
+        _geom = dCreatePlane(UEPhysicsSystem.space, 0, 1, 0, 0);
     }
 }
 
 ///
-final class UEPhysicsColliderBox : UEComponent
+final class UEPhysicsColliderBox : UEPhysicsGeometry
 {
     mixin(UERegisterComponent!());
     
-    dGeomID _geom;
-    
     vec3 size = vec3(2);
-    
+
+    ///
     override void onCreate() {
         super.onCreate;
         
@@ -61,12 +75,7 @@ final class UEPhysicsColliderBox : UEComponent
         }
     }
 
-    override void onDestroy() {
-        super.onDestroy;
-
-        dGeomDestroy(_geom);
-    }
-    
+    ///
     override void onUpdate() {
         if(!_rigidBody)
         {
@@ -95,13 +104,11 @@ private:
 }
 
 ///
-final class UEPhysicsColliderSphere : UEComponent
+final class UEPhysicsColliderSphere : UEPhysicsGeometry
 {
     mixin(UERegisterComponent!());
     
     float rad=1.0f;
-    
-    bool isTrigger = false;
     
     override void onCreate() {
         super.onCreate;
@@ -115,7 +122,4 @@ final class UEPhysicsColliderSphere : UEComponent
         if(rigidBody)
             dGeomSetBody(_geom, rigidBody.Body);
     }
-    
-private:
-    dGeomID _geom;
 }

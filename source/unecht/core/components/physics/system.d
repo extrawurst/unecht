@@ -10,6 +10,18 @@ import gl3n.linalg;
 
 version(UEProfiling)import unecht.core.profiler;
 
+
+shared static this()
+{
+    DerelictODE.load();
+    dInitODE ();
+}
+
+shared static ~this()
+{
+    dCloseODE();
+}
+
 ///
 final class UEPhysicsSystem : UEComponent {
     
@@ -26,14 +38,11 @@ final class UEPhysicsSystem : UEComponent {
     {
         dWorldSetGravity(world, _v.x,_v.y,_v.z);
     }
-    
+
+    ///
     override void onCreate() {
         if(!initialised)
         {
-            DerelictODE.load();
-            
-            dInitODE ();
-            
             // Create a new, empty world and assign its ID number to World. Most applications will only need one world.
             world = dWorldCreate();
             
@@ -77,11 +86,28 @@ final class UEPhysicsSystem : UEComponent {
             initialised = true;
         }
     }
+
+    ///
+    override void onDestroy() {
+        if(initialised)
+        {
+            if(world)
+                dWorldDestroy(world);
+
+            if(contactgroup)
+                dJointGroupDestroy(contactgroup);
+
+            world = null;
+            contactgroup = null;
+
+            initialised = false;
+        }
+    }
     
     ///
     override void onUpdate() {
         version(UEProfiling)
-            auto profZone = Zone(profiler, "physics update");
+        auto profZone = Zone(profiler, "physics update");
         
         _collisionsThisFrame = 0;
 

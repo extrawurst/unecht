@@ -120,7 +120,18 @@ final class UEMaterial : UEComponent
         
         setProgram(vs_flat,fs_flat, "flat");
     }
-    
+
+    ///
+    override void onDestroy() {
+        super.onDestroy;
+        
+        if(_program) _program.destroy();
+        if(_tex) _tex.destroy();
+
+        _program   = null;
+        _tex       = null;
+    }
+
     ///
     void setProgram(string _vs, string _fs, string _name)
     {

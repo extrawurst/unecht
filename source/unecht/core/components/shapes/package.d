@@ -116,6 +116,13 @@ final class UEShapeBox : UEComponent {
             ]);
         mesh.vertexArrayObject.unbind();
     }
+
+    ///
+    override void onDestroy() {
+        super.onDestroy;
+        
+        renderer = null;
+    }
 }
 
 ///
@@ -141,6 +148,13 @@ final class UEShapeSphere : UEComponent {
         createSphereMesh(mesh,24,24);
 
         mesh.vertexArrayObject.unbind();
+    }
+
+    ///
+    override void onDestroy() {
+        super.onDestroy;
+        
+        renderer = null;
     }
 
     ///

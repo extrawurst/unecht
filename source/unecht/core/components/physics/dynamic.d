@@ -86,6 +86,7 @@ final class UEPhysicsBody : UEComponent
         }
 
         dBodyDestroy(Body);
+        Body = null;
     }
     
     ///
