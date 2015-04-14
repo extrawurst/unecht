@@ -527,7 +527,7 @@ final class EditorRootComponent : UEComponent {
         editorMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat, "color");
         editorMaterial.depthTest = false;
         editorMaterial.polygonFill = false;
-        //editorMaterial.cullMode = UEMaterial.CullMode.cullBack;
+        editorMaterial.cullMode = UEMaterial.CullMode.cullBack;
 
         selectEntity(null);
 	}

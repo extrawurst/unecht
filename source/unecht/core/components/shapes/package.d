@@ -108,11 +108,11 @@ final class UEShapeBox : UEComponent {
                 8,9,10,
                 9,11,10,
                 //left
-                12,13,14, 13,14,15,
+                12,14,13, 13,14,15,
                 //back
-                16,17,18, 17,18,19,
+                16,17,18, 17,19,18,
                 //right
-                20,21,22, 21,23,22
+                20,22,21, 21,22,23
             ]);
         mesh.vertexArrayObject.unbind();
     }
