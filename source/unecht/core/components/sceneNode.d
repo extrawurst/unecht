@@ -145,15 +145,8 @@ private:
     private void updateDirections(in ref vec3 anglesInRad)
     {
         _dir = ORIG_DIR * _rotation;
-        //_dir = _dir * quat.xrotation(anglesInRad.x);
-        //_dir = _dir * quat.yrotation(anglesInRad.y);
-        
         _up = ORIG_UP * _rotation;
-        //_up = _up * quat.zrotation(anglesInRad.z);
-        //_up = _up * quat.xrotation(anglesInRad.x);
-        //_up = _up * quat.yrotation(anglesInRad.y);
-        
-        _right = cross(_dir,_up);
+        _right = ORIG_RIGHT * _rotation;
     }
     
 private:
@@ -161,6 +154,7 @@ private:
     vec3 _position = vec3(0);
     vec3 _scaling = vec3(1);
     quat _rotation = quat.identity;
+    //TODO: calc on the fly
     vec3 _dir = ORIG_DIR;
     vec3 _up = ORIG_UP;
     vec3 _right = cross(ORIG_DIR,ORIG_UP);
@@ -168,4 +162,5 @@ private:
 
     static immutable vec3 ORIG_DIR = vec3(0,0,1);
     static immutable vec3 ORIG_UP = vec3(0,1,0);
+    static immutable vec3 ORIG_RIGHT = vec3(1,0,0);
 }
