@@ -6,7 +6,7 @@ import derelict.util.system;
 import unecht.core.component;
 import unecht.core.components.physics.system;
 import unecht.core.components.physics.dynamic;
-import unecht.core.componentManager;
+import unecht.core.defaultInspector;
 
 import gl3n.linalg;
 
