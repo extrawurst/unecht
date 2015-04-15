@@ -154,11 +154,12 @@ private:
     vec3 _position = vec3(0);
     vec3 _scaling = vec3(1);
     quat _rotation = quat.identity;
-    //TODO: calc on the fly
+    //TODO: calc on the fly ->
     vec3 _dir = ORIG_DIR;
     vec3 _up = ORIG_UP;
     vec3 _right = cross(ORIG_DIR,ORIG_UP);
     vec3 _angles = vec3(0);
+    //<-
 
     static immutable vec3 ORIG_DIR = vec3(0,0,1);
     static immutable vec3 ORIG_UP = vec3(0,1,0);
