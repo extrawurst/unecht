@@ -4,11 +4,13 @@ import derelict.ode.ode;
 import derelict.util.system;
 
 import unecht.core.component;
+import unecht.core.componentManager;
 import unecht.core.components.physics.system;
 
 import gl3n.linalg;
 
 ///
+@UEDefaultInspector!UEPhysicsBody
 final class UEPhysicsBody : UEComponent 
 {
     mixin(UERegisterComponent!());

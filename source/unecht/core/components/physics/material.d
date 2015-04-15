@@ -7,6 +7,7 @@ import unecht.core.component;
 
 import gl3n.linalg;
 
+//TODO: support POD types in default inspectors automatically
 ///
 struct UEPhysicsMaterialInfo
 {

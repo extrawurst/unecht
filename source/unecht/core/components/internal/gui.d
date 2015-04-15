@@ -152,9 +152,14 @@ public:
         return res;
     }
     
-    static void DragFloat(string label, ref float v, float min, float max)
+    static void DragFloat(string label, ref float v, float min=-float.infinity, float max=float.infinity)
     {
         ig_DragFloat(toStringz(label),&v,1,min,max);
+    }
+
+    static void DragInt(string label, ref int v, int min=int.min, int max=int.max)
+    {
+        ig_DragInt(toStringz(label),&v,1,min,max);
     }
 
     static bool InputFloat3(string label, ref float[3] v)

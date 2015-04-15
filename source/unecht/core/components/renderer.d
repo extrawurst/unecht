@@ -6,10 +6,12 @@ import unecht.core.component;
 import unecht.core.components.camera;
 import unecht.core.components.material;
 import unecht.core.components.misc;
+import unecht.core.componentManager;
 
 import unecht.gl.program;
 
 /// 
+@UEDefaultInspector!UERenderer
 final class UERenderer : UEComponent
 {
 private:

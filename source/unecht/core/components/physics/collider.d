@@ -6,6 +6,7 @@ import derelict.util.system;
 import unecht.core.component;
 import unecht.core.components.physics.system;
 import unecht.core.components.physics.dynamic;
+import unecht.core.componentManager;
 
 import gl3n.linalg;
 
@@ -27,6 +28,7 @@ abstract class UEPhysicsGeometry : UEComponent
 }
 
 ///
+@UEDefaultInspector!UEPhysicsColliderPlane
 final class UEPhysicsColliderPlane : UEPhysicsGeometry
 {
     mixin(UERegisterComponent!());
@@ -42,6 +44,7 @@ final class UEPhysicsColliderPlane : UEPhysicsGeometry
 }
 
 ///
+@UEDefaultInspector!UEPhysicsColliderBox
 final class UEPhysicsColliderBox : UEPhysicsGeometry
 {
     mixin(UERegisterComponent!());
@@ -104,6 +107,7 @@ private:
 }
 
 ///
+@UEDefaultInspector!UEPhysicsColliderSphere
 final class UEPhysicsColliderSphere : UEPhysicsGeometry
 {
     mixin(UERegisterComponent!());

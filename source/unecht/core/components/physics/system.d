@@ -4,6 +4,7 @@ import derelict.ode.ode;
 import derelict.util.system;
 
 import unecht.core.component;
+import unecht.core.componentManager;
 import unecht.core.components.physics.material;
 
 import gl3n.linalg;
@@ -11,6 +12,7 @@ import gl3n.linalg;
 version(UEProfiling)import unecht.core.profiler;
 
 ///
+@UEDefaultInspector!UEPhysicsSystem
 final class UEPhysicsSystem : UEComponent {
     
     mixin(UERegisterComponent!());

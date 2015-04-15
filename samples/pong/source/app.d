@@ -9,6 +9,7 @@ import field;
 import derelict.imgui.imgui;
 
 ///
+@UEDefaultInspector!TestControls
 final class TestControls : UEComponent
 {
     mixin(UERegisterComponent!());

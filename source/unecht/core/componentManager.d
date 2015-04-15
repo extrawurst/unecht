@@ -56,9 +56,11 @@ struct UEDefaultInspector(T)
             import unecht.core.components.internal.gui;
             import std.string:format;
 
+            //pragma(msg, T.stringof);
+
             foreach(memberName; __traits(allMembers, T))
             {
-                //pragma(msg, memberName);
+                //pragma(msg, ">"~memberName);
 
                 static if(__traits(compiles, mixin("T."~memberName)))
                 {
@@ -72,6 +74,32 @@ struct UEDefaultInspector(T)
 
                         UEGui.checkbox(member.stringof, mixin("thisT."~memberName));
 
+                        static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                        {
+                            enum txt = getUDATemplate!(member,UEInspectorTooltip).txt;
+                            if (ig_IsItemHovered())
+                                ig_SetTooltip(txt);
+                        }
+                    }
+                    else static if(is(typeof(member) : int))
+                    {
+                        //pragma(msg, " -->int");
+                        
+                        UEGui.DragInt(member.stringof, mixin("thisT."~memberName));
+                        
+                        static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                        {
+                            enum txt = getUDATemplate!(member,UEInspectorTooltip).txt;
+                            if (ig_IsItemHovered())
+                                ig_SetTooltip(txt);
+                        }
+                    }
+                    else static if(is(typeof(member) : float))
+                    {
+                        //pragma(msg, " -->float");
+                        
+                        UEGui.DragFloat(member.stringof, mixin("thisT."~memberName));
+                        
                         static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
                         {
                             enum txt = getUDATemplate!(member,UEInspectorTooltip).txt;

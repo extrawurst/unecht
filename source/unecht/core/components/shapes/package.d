@@ -4,6 +4,7 @@ import unecht.core.component;
 import unecht.core.components.material;
 import unecht.core.components.renderer;
 import unecht.core.components.misc;
+import unecht.core.componentManager;
 
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
@@ -12,6 +13,7 @@ import unecht.gl.texture;
 import gl3n.linalg;
 
 ///
+@UEDefaultInspector!UEShapeBox
 final class UEShapeBox : UEComponent {
     
     mixin(UERegisterComponent!());
@@ -126,6 +128,7 @@ final class UEShapeBox : UEComponent {
 }
 
 ///
+@UEDefaultInspector!UEShapeSphere
 final class UEShapeSphere : UEComponent {
     
     mixin(UERegisterComponent!());
