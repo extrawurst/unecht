@@ -6,7 +6,6 @@
 Game Engine Framework for the D programming language
 
 ![editor inspectors](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-04-15 editorInspectors.png)
-![scaling](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-03-30 scaling.png)
 ![newui](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-04-09 newui.png)
 
 # features
