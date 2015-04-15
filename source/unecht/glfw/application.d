@@ -101,9 +101,6 @@ struct UEApplication
         		    render();
                 }
 
-        		foreach(f; ue.debugTick)
-        			f(glfwGetTime());
-
         		version(UEIncludeEditor)
         		{
                     {

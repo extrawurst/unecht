@@ -35,7 +35,6 @@ alias ActionFunc = void function ();
 struct Unecht
 {
 	UEWindowSettings windowSettings;
-	DebugTickFunc[] debugTick;
 	UEScenegraph scene;
 	UEApplication application;
 	UEEvents events;
