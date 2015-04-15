@@ -168,10 +168,10 @@ package:
 		else if(action == GLFW_REPEAT)
 			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
 
-        ev.keyEvent.shiftDown = testBit(mods,GLFW_MOD_SHIFT);
-        ev.keyEvent.ctrlDown = testBit(mods,GLFW_MOD_CONTROL);
-        ev.keyEvent.altDown = testBit(mods,GLFW_MOD_ALT);
-        ev.keyEvent.superDown = testBit(mods,GLFW_MOD_SUPER);
+        ev.keyEvent.shiftDown = testBitMask(mods,GLFW_MOD_SHIFT);
+        ev.keyEvent.ctrlDown = testBitMask(mods,GLFW_MOD_CONTROL);
+        ev.keyEvent.altDown = testBitMask(mods,GLFW_MOD_ALT);
+        ev.keyEvent.superDown = testBitMask(mods,GLFW_MOD_SUPER);
 
         version(UEProfiling)
         {
@@ -204,9 +204,9 @@ package:
         ev.mouseButtonEvent.button = button;
         ev.mouseButtonEvent.action = (action == GLFW_PRESS) ? UEEvent.MouseButtonEvent.Action.down : UEEvent.MouseButtonEvent.Action.up;
 
-        ev.mouseButtonEvent.modShift = testBit(mods,GLFW_MOD_SHIFT);
-        ev.mouseButtonEvent.modCtrl = testBit(mods,GLFW_MOD_CONTROL);
-        ev.mouseButtonEvent.modAlt = testBit(mods,GLFW_MOD_ALT);
+        ev.mouseButtonEvent.modShift = testBitMask(mods,GLFW_MOD_SHIFT);
+        ev.mouseButtonEvent.modCtrl = testBitMask(mods,GLFW_MOD_CONTROL);
+        ev.mouseButtonEvent.modAlt = testBitMask(mods,GLFW_MOD_ALT);
 
         events.trigger(ev);
 	}
