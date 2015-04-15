@@ -501,6 +501,8 @@ final class EditorRootComponent : UEComponent {
         editorMaterial.cullMode = UEMaterial.CullMode.cullBack;
 
         selectEntity(null);
+
+        toggleEditor();
 	}
 
     override void onUpdate() {
@@ -525,10 +527,15 @@ final class EditorRootComponent : UEComponent {
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
 			_ev.keyEvent.key == UEKey.f1)
 		{
-			_editorVisible = !_editorVisible;
-			editorComponent.sceneNode.enabled = _editorVisible;
+            toggleEditor();
 		}
 	}
+
+    private void toggleEditor()
+    {
+        _editorVisible = !_editorVisible;
+        editorComponent.sceneNode.enabled = _editorVisible;
+    }
 
 	///
 	static void renderEditor()
