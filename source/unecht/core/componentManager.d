@@ -22,11 +22,6 @@ struct EditorInspector
     string componentName;
 }
 
-struct UEInspectorTooltip
-{
-    string txt;
-}
-
 ///
 interface IComponentEditor
 {	

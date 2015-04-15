@@ -7,7 +7,13 @@ version(UEIncludeEditor)
 
     alias aliasHelper(alias T) = T;
     alias aliasHelper(T) = T;
-    
+
+    ///
+    struct UEInspectorTooltip
+    {
+        string txt;
+    }
+
     ///
     struct UEDefaultInspector(T)
     {
