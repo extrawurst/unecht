@@ -4,14 +4,13 @@ version(UEIncludeEditor):
 
 import unecht.core.component:UEComponent;
 
-import unecht.meta.uda:getUDA;
-
 ///
 mixin template UERegisterInspector(T)
 {
     shared static this()
     {
-        enum componentName = getUDA!(T,EditorInspector)().componentName;
+        import unecht.meta.uda:getUDA;
+        enum componentName = getUDA!(T,EditorInspector).componentName;
         UEComponentsManager.editors[componentName] = new T();
     }
 }

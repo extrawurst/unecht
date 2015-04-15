@@ -1,83 +1,83 @@
 ﻿module unecht.meta.uda;
 
-import std.string:format;
+alias aliasHelper(alias T) = T;
+alias aliasHelper(T) = T;
 
 ///
-private struct UDASearchResult(alias UDA)
+private template getUDAIndex(alias UDA, ATTR...)
 {
-    alias value = UDA;
-    bool found = false;
-    value val;
+    template findUDA(int i)
+    {
+        static if(ATTR.length == 0)
+        {
+            enum findUDA = -1;
+        }
+        else static if(i >= ATTR.length)
+        {
+            enum findUDA = -1;
+        }
+        else
+        {
+            static if(is(aliasHelper!(ATTR[i]) == UDA) || is(typeof(ATTR[i]) == UDA))
+            {
+                enum findUDA = i;
+            }
+            else
+            {
+                enum findUDA = findUDA!(i+1);
+            }
+        }
+    }
+
+    enum getUDAIndex = findUDA!(0);
 }
 
 ///
 template hasUDA(alias T, alias UDA)
 {
-    template isAny(ATTR...)
+    enum hasUDA = getUDAIndex!(UDA,__traits(getAttributes, T)) != -1;
+}
+
+///
+template getUDA(alias T, alias UDA)
+{
+    template findUDA(ATTR...)
     {
-        static if(ATTR.length == 0)
+        static if(hasUDA!(T, UDA))
         {
-            enum isAny=false;
-        }
-        else static if(ATTR.length == 1)
-        {
-            enum isAny = is(typeof(ATTR[0]) == UDA);
+            enum findUDA = ATTR[getUDAIndex!(UDA, ATTR)];
         }
         else
         {
-            enum isAny = isAny!(ATTR[0]) || isAny!(ATTR[1..$]);
+            import std.string:format;
+            static assert(0, format("UDA '%s' not found for Type '%s'", UDA.stringof, T.stringof));
         }
     }
-
-    enum hasUDA = isAny!(__traits(getAttributes, T));
+    enum getUDA = findUDA!(__traits(getAttributes, T));
 }
 
-///
-template getUDATemplate(alias T, alias UDA)
+unittest
 {
-    template idx(int i, ATTR...)
-    {
-        static if(ATTR.length == 0)
-        {
-            enum idx = -1;
-        }
-        else static if(i >= ATTR.length)
-        {
-            enum idx = -1;
-        }
-        else
-        {
-            enum idx = is(typeof(ATTR[i]) == UDA) ? i : idx!(i+1,ATTR);
-        }
-    }
-    //static assert(idx!(0,__traits(getAttributes, T)) != -1);
-    enum getUDATemplate = __traits(getAttributes, T)[idx!(0,__traits(getAttributes, T))];
-}
+    struct e{}
 
-///
-auto getUDA(alias T, alias UDA)()
-{
-    enum res = findUDA!(T,UDA);
-    static if(res.found)
-    {
-        return res.val;
+    struct A{
+        @A
+        string bar;
     }
-    else
-    {
-        static assert(0,.format("UDA '%s' not found for Type '%s'", UDA.stringof, T.stringof));
-    }
-}
 
-///
-private auto findUDA(alias T,alias UDA)()
-{
-    foreach(attr; __traits(getAttributes, T))
+    @e
+    struct Foo
     {
-        static if(is(typeof(attr) == UDA))
-        {
-            return UDASearchResult!UDA(true,attr);
-        }
+        @A("foo")
+        int i;
     }
-    
-    return UDASearchResult!UDA(false,UDA.init);
+
+    static assert(!hasUDA!(Foo, A));
+    static assert(hasUDA!(Foo, e));
+    static assert(hasUDA!(Foo.i, A));
+    static assert(getUDA!(Foo.i, A).bar == "foo");
+
+    //even UDA-Inception works :P
+    static assert(hasUDA!(getUDA!(Foo.i, A).bar, A));
+    static assert(!hasUDA!(getUDA!(Foo.i, A).bar, e));
 }
