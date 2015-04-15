@@ -4,7 +4,7 @@ version(UEIncludeEditor):
 
 import unecht.core.component:UEComponent;
 
-public import unecht.meta.uda:getUDA;
+public import unecht.meta.uda;
 
 ///
 mixin template UERegisterInspector(T)
@@ -22,6 +22,11 @@ struct EditorInspector
     string componentName;
 }
 
+struct UEInspectorTooltip
+{
+    string txt;
+}
+
 ///
 interface IComponentEditor
 {	
@@ -34,11 +39,53 @@ static struct UEComponentsManager
 	static IComponentEditor[string] editors;
 }
 
-/+ find all modules 
-foreach(member; __traits(allMembers, someModule)) 
-    static if(is(__traits(getMember, someModule, member))) { /* member is a type declaration */ } 
-    else static if(member.startsWith("import ")) { /* member is an import declaration */ } 
- +/
+alias aliasHelper(alias T) = T;
+alias aliasHelper(T) = T;
+
+///
+struct UEDefaultInspector(T)
+{
+    @EditorInspector(T.stringof)
+    static class UEDefaultInspector(T) : IComponentEditor
+    {
+        override void render(UEComponent _component)
+        {
+            auto thisT = cast(T)_component;
+            
+            import derelict.imgui.imgui;
+            import unecht.core.components.internal.gui;
+            import std.string:format;
+
+            foreach(memberName; __traits(allMembers, T))
+            {
+                //pragma(msg, memberName);
+
+                static if(__traits(compiles, mixin("T."~memberName)))
+                {
+                    //pragma(msg, " ->access allowed");
+
+                    alias member = aliasHelper!(__traits(getMember, T, memberName));
+
+                    static if(is(typeof(member) : bool))
+                    {
+                        //pragma(msg, " -->bool");
+
+                        UEGui.checkbox(member.stringof, mixin("thisT."~memberName));
+
+                        static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                        {
+                            enum txt = getUDATemplate!(member,UEInspectorTooltip).txt;
+                            if (ig_IsItemHovered())
+                                ig_SetTooltip(txt);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    mixin UERegisterInspector!(UEDefaultInspector!T);
+}
 
 /+shared static this()
 {

@@ -1,6 +1,6 @@
 module unecht.core.types;
 
-import unecht;
+import gl3n.linalg;
 
 ///
 struct UEPos

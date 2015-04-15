@@ -97,6 +97,11 @@ public:
         return ig_TreeNodePtr(pid, toStringz(txt));
     }
 
+    static bool checkbox(string label, ref bool v)
+    {
+        return ig_Checkbox(toStringz(label), &v);
+    }
+
     ///
     static bool EnumCombo(T)(string label, ref T v) 
         if(is(T == enum))

@@ -3,11 +3,15 @@ module app;
 import unecht;
 
 ///
+@UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
 {
     mixin(UERegisterComponent!());
 
     private UEEntity ballRoot;
+
+    @UEInspectorTooltip("try me")
+    bool editable;
 
     override void onCreate() {
         super.onCreate;
@@ -17,6 +21,15 @@ final class TestLogic : UEComponent
         ballRoot = UEEntity.create("balls");
 
         spawnBall();
+    }
+
+    override void onUpdate() {
+        super.onUpdate;
+
+        if(editable)
+            spawnBall();
+
+        editable = false;
     }
 
     void OnKeyEvent(UEEvent _ev)
