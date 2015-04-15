@@ -400,7 +400,7 @@ final class UEEditorGUI : UEComponent
             ig_PushIdInt(i);
             if(UEGui.TreeNode(c.name))
             {
-                ig_SameLine();
+                ig_SameLine(cast(int)ig_GetWindowWidth()-30);
                 if(UEGui.SmallButton(subtext))
                     c.enabled = !c.enabled;
 
@@ -414,7 +414,7 @@ final class UEEditorGUI : UEComponent
             }
             else
             {
-                ig_SameLine();
+                ig_SameLine(cast(int)ig_GetWindowWidth()-30);
                 if(UEGui.SmallButton(subtext))
                     c.enabled = !c.enabled;
             }
