@@ -28,6 +28,8 @@ final class UEEditorGismo : UEComponent {
 		super.onCreate;
 		
 		import unecht.core.components.misc;
+
+        entity.layer = UELayer.editor;
 		
 		auto renderer = this.entity.addComponent!UERenderer;
 		auto mesh = this.entity.addComponent!UEMesh;
@@ -550,14 +552,25 @@ final class EditorRootComponent : UEComponent {
 	{
 		if(_editorVisible)
 		{
+            // render regular but from editor camera pov
 			_editorCam.render();
 
-            import unecht.core.components.misc;
-            UERenderer.editorMaterial = editorMaterial;
+            {
+                // render wireframes
+                UERenderer.editorMaterial = editorMaterial;
+                scope(exit)UERenderer.editorMaterial = null;
+                _editorCam.clearBitColor=false;
+                scope(exit)_editorCam.clearBitColor=true;
+
+                _editorCam.render();
+            }
+
+            // render gismo
+            _editorCam.visibleLayers = 1<<UELayer.editor;
             _editorCam.clearBitColor=false;
             _editorCam.render();
             _editorCam.clearBitColor=true;
-            UERenderer.editorMaterial = null;
+            _editorCam.visibleLayers = UECameraDefaultLayers;
 		}
 
         _editorGUI.render();

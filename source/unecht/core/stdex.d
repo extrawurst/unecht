@@ -19,17 +19,24 @@ unittest
 }
 
 ///
-auto testBit(T)(in T v, size_t bit)
+auto testBit(T)(in T v, size_t bitIdx)
 {
-    return (v & bit) == bit;
+    auto bitMask = 1<<bitIdx;
+    return (v & bitMask) == bitMask;
+}
+
+///
+auto testBitMask(T)(in T v, size_t bitMask)
+{
+    return (v & bitMask) == bitMask;
 }
 
 unittest
 {
-    assert(testBit(0,1) == false);
-    assert(testBit(1,1) == true);
-    assert(testBit(0b10,0b10) == true);
-    assert(testBit(0b1010,0b10) == true);
-    assert(testBit(0b1010,0b1) == false);
-    assert(testBit(0b1010,0b100) == false);
+    assert(testBitMask(0,1) == false);
+    assert(testBitMask(1,1) == true);
+    assert(testBitMask(0b10,0b10) == true);
+    assert(testBitMask(0b1010,0b10) == true);
+    assert(testBitMask(0b1010,0b1) == false);
+    assert(testBitMask(0b1010,0b100) == false);
 }

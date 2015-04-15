@@ -4,6 +4,7 @@ import unecht.core.components.misc;
 import unecht.core.components.renderer;
 import unecht.core.component;
 import unecht.core.componentManager;
+import unecht.core.entity;
 
 import unecht.core.types;
 
@@ -53,6 +54,7 @@ final class UECamera : UEComponent
 	vec4 clearColor = vec4(0,0,0,1);
 	bool clearBitColor = true;
 	bool clearBitDepth = true;
+    int visibleLayers = UECameraDefaultLayers;
 
     bool isOrthographic=false;
     float orthoSize=1;
@@ -90,8 +92,11 @@ final class UECamera : UEComponent
 		if(clearBitColor) clearBits |= GL_COLOR_BUFFER_BIT;
 		if(clearBitDepth) clearBits |= GL_DEPTH_BUFFER_BIT;
 		
-		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-		glClear(clearBits);
+        if(clearBits!=0)
+        {
+    		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    		glClear(clearBits);
+        }
 
 		UESize viewportSize = UESize(
 			cast(int)(viewport.size.x * ue.application.mainWindow.size.width),
@@ -101,7 +106,11 @@ final class UECamera : UEComponent
 		foreach(r; renderers)
 		{
 			if(r.enabled && r.sceneNode.enabled)
-				r.render(this);
+            {
+                import unecht.core.stdex;
+                if(testBit(visibleLayers, r.entity.layer))
+				    r.render(this);
+            }
 		}
 	}
 

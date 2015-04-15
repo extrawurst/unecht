@@ -5,21 +5,41 @@ import derelict.util.system;
 import unecht;
 import unecht.core.components.sceneNode;
 
+///
+enum UELayer : uint
+{
+    all=0,
+    editor,
+}
+
+static immutable uint UECameraDefaultLayers = 0xffffffff ^ (1<<UELayer.editor);
+
+import unecht.core.stdex;
+static assert(false == testBit(UECameraDefaultLayers,UELayer.editor));
+static assert(true == testBit(UECameraDefaultLayers,UELayer.all));
+
 /// 
 final class UEEntity
 {
     ///
 	bool hideInEditor;
-	///
-    @nogc @property UESceneNode sceneNode() nothrow { return _sceneNode; } 
-    ///
-    @nogc @property bool destroyed() nothrow { return _destroyed; } 
-	///
-    @nogc @property string name() const { return _name; } 
-    ///
-    @nogc @property void name(string v) { _name = v; } 
-	///
-    @nogc @property UEComponent[] components() { return _components; } 
+
+    @nogc @property{
+    	///
+        UESceneNode sceneNode() nothrow { return _sceneNode; } 
+        ///
+        bool destroyed() nothrow { return _destroyed; } 
+    	///
+        string name() const { return _name; } 
+        ///
+        void name(string v) { _name = v; } 
+        ///
+        UELayer layer() const { return _layer; }
+        ///
+        void layer(UELayer layer) { _layer = layer; }
+    	///
+        UEComponent[] components() { return _components; } 
+    }
 
     ///
     void broadcast(string _method,ARG)(ARG _arg)
@@ -146,6 +166,8 @@ private:
 	string _name = "entity";
 
     bool _destroyed = false;
+
+    UELayer _layer = UELayer.all;
 
 	UESceneNode _sceneNode;
 	
