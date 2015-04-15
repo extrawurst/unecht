@@ -16,6 +16,7 @@ import unecht;
 import unecht.core.components.camera;
 import unecht.core.components.misc;
 import unecht.core.components.internal.gui;
+import unecht.core.stdex;
 
 version(UEProfiling) import unecht.core.profiler;
 
@@ -167,10 +168,10 @@ package:
 		else if(action == GLFW_REPEAT)
 			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
 
-        ev.keyEvent.shiftDown = (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT;
-        ev.keyEvent.ctrlDown = (mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL;
-        ev.keyEvent.altDown = (mods & GLFW_MOD_ALT) == GLFW_MOD_ALT;
-        auto superDown = (mods & GLFW_MOD_SUPER) == GLFW_MOD_SUPER;
+        ev.keyEvent.shiftDown = testBit(mods,GLFW_MOD_SHIFT);
+        ev.keyEvent.ctrlDown = testBit(mods,GLFW_MOD_CONTROL);
+        ev.keyEvent.altDown = testBit(mods,GLFW_MOD_ALT);
+        auto superDown = testBit(mods,GLFW_MOD_SUPER);
 
         version(UEProfiling)
         {
@@ -203,9 +204,9 @@ package:
         ev.mouseButtonEvent.button = button;
         ev.mouseButtonEvent.action = (action == GLFW_PRESS) ? UEEvent.MouseButtonEvent.Action.down : UEEvent.MouseButtonEvent.Action.up;
 
-        ev.mouseButtonEvent.modShift = (mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT;
-        ev.mouseButtonEvent.modCtrl = (mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL;
-        ev.mouseButtonEvent.modAlt = (mods & GLFW_MOD_ALT) == GLFW_MOD_ALT;
+        ev.mouseButtonEvent.modShift = testBit(mods,GLFW_MOD_SHIFT);
+        ev.mouseButtonEvent.modCtrl = testBit(mods,GLFW_MOD_CONTROL);
+        ev.mouseButtonEvent.modAlt = testBit(mods,GLFW_MOD_ALT);
 
         events.trigger(ev);
 	}

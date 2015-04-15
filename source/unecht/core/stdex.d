@@ -17,3 +17,19 @@ unittest
 	arr = arr.removeElement(5);
 	assert(arr == [1,10]);
 }
+
+///
+auto testBit(T)(in T v, size_t bit)
+{
+    return (v & bit) == bit;
+}
+
+unittest
+{
+    assert(testBit(0,1) == false);
+    assert(testBit(1,1) == true);
+    assert(testBit(0b10,0b10) == true);
+    assert(testBit(0b1010,0b10) == true);
+    assert(testBit(0b1010,0b1) == false);
+    assert(testBit(0b1010,0b100) == false);
+}
