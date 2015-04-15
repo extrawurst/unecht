@@ -171,13 +171,13 @@ package:
         ev.keyEvent.shiftDown = testBit(mods,GLFW_MOD_SHIFT);
         ev.keyEvent.ctrlDown = testBit(mods,GLFW_MOD_CONTROL);
         ev.keyEvent.altDown = testBit(mods,GLFW_MOD_ALT);
-        auto superDown = testBit(mods,GLFW_MOD_SUPER);
+        ev.keyEvent.superDown = testBit(mods,GLFW_MOD_SUPER);
 
         version(UEProfiling)
         {
             if( action == GLFW_PRESS && 
                 key == GLFW_KEY_P && 
-                ev.keyEvent.shiftDown && superDown)
+                ev.keyEvent.shiftDown && ev.keyEvent.isModSuper)
             {
                 if(!sender.sending)
                     sender.startDespiker();

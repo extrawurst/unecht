@@ -35,6 +35,7 @@ struct UEEvent
 		bool shiftDown;
         bool ctrlDown;
         bool altDown;
+        bool superDown;
 
 		/// is shift mod set
 		@property bool isModShift() const { return shiftDown; }
@@ -42,6 +43,8 @@ struct UEEvent
         @property bool isModCtrl() const { return ctrlDown; }
         ///
         @property bool isModAlt() const { return altDown; }
+        ///
+        @property bool isModSuper() const { return superDown; }
 	}
 	KeyEvent keyEvent;
 

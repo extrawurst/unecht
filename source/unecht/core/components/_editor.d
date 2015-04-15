@@ -261,6 +261,14 @@ final class UEEditorComponent : UEComponent {
 			{
 				ue.scene.playing = !ue.scene.playing;
 			}
+
+            if(EditorRootComponent._currentEntity && 
+                (_ev.keyEvent.key == UEKey.backspace && _ev.keyEvent.isModSuper) ||
+                _ev.keyEvent.key == UEKey.del)
+            {
+                UEEntity.destroy(EditorRootComponent._currentEntity);
+                EditorRootComponent.selectEntity(null);
+            }
 		}
 
         keyControls.OnKeyEvent(_ev);
