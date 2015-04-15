@@ -27,7 +27,7 @@ final class UEShapeBox : UEComponent {
         auto mesh = this.entity.addComponent!UEMesh;
         
         auto tex = new GLTexture();
-        tex.create("data/green.png",false);
+        tex.create(import("tex/rgb.png"),true);
 
         renderer.mesh = mesh;
 
@@ -71,7 +71,7 @@ final class UEShapeBox : UEComponent {
         
         mesh.uvBuffer = new GLVertexBufferObject([
                 //top
-                ul,ur,ll,lr,
+                ul,ur,lr,ll,
                 //front
                 ul,ur,ll,lr,
                 //bottom
