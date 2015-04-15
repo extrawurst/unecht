@@ -183,10 +183,13 @@ public:
 
         ig_InputText(toStringz(label), buf.ptr, MaxLength);
 
+        import std.c.string:strlen;
+        auto newLength = strlen(buf.ptr);
+
         //note: try to avoid alloc when nothing changed
-        if(buf[0..v.length] != v)
+        if(v.length != newLength || buf[0..v.length] != v)
         {
-            v = to!string(buf).idup;
+            v = cast(string)buf[0..newLength].idup;
         }
     }
 
