@@ -1,4 +1,4 @@
-﻿module unecht.core.components.editor;
+﻿module unecht.core.components._editor;
 
 version(UEIncludeEditor):
 
@@ -12,41 +12,12 @@ import unecht.core.components.misc;
 import unecht.core.components.renderer;
 import unecht.core.components.internal.gui;
 
+import unecht.core.components.editor.grid;
+
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
 
 import derelict.opengl3.gl3;
-
-///
-final class UEEditorgridComponent : UEComponent {
-
-	mixin(UERegisterComponent!());
-
-	override void onCreate() {
-		super.onCreate;
-		
-		auto renderer = this.entity.addComponent!UERenderer;
-		auto mesh = this.entity.addComponent!UEMesh;
-		
-		renderer.mesh = mesh;
-		auto material = renderer.material = this.entity.addComponent!UEMaterial;
-		material.polygonFill = false;
-
-		mesh.vertexArrayObject = new GLVertexArrayObject();
-		mesh.vertexArrayObject.bind();
-
-        enum size = 100;
-		mesh.vertexBuffer = new GLVertexBufferObject([
-				vec3(-size,0,-size),
-				vec3(size,0,-size),
-				vec3(size,0,size),
-				vec3(-size,0,size),
-			]);
-
-		mesh.indexBuffer = new GLVertexBufferObject([0,1,2, 0,2,3]);
-		mesh.vertexArrayObject.unbind();
-	}
-}
 
 ///
 final class UEEditorGismo : UEComponent {
@@ -416,8 +387,9 @@ final class UEEditorGUI : UEComponent
             return;
         }
 
-        import std.string:format;
-        UEGui.Text(.format("'%s'",EditorRootComponent._currentEntity.name));
+        string name = EditorRootComponent._currentEntity.name;
+        UEGui.InputText("name",name);
+        EditorRootComponent._currentEntity.name = name;
 
         foreach(int i, c; EditorRootComponent._currentEntity.components)
         {

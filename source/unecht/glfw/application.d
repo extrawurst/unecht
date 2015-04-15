@@ -107,7 +107,7 @@ struct UEApplication
                         version(UEProfiling)
                         auto profZone = Zone(profiler, "render editor");
 
-        			    import unecht.core.components.editor;
+        			    import unecht.core.components._editor:EditorRootComponent;
         			    EditorRootComponent.renderEditor();
                     }
         		}
@@ -303,7 +303,7 @@ private:
 	version(UEIncludeEditor)void insertEditorEntity()
 	{
 		auto newE = UEEntity.create("editor");
-		import unecht.core.components.editor;
+		import unecht.core.components._editor:EditorRootComponent;
 		newE.addComponent!EditorRootComponent;
 	}
 

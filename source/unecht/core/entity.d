@@ -15,7 +15,9 @@ final class UEEntity
     ///
     @nogc @property bool destroyed() nothrow { return _destroyed; } 
 	///
-    @nogc @property string name() { return _name; } 
+    @nogc @property string name() const { return _name; } 
+    ///
+    @nogc @property void name(string v) { _name = v; } 
 	///
     @nogc @property UEComponent[] components() { return _components; } 
 

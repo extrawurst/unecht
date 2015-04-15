@@ -172,6 +172,24 @@ public:
         return ig_InputFloat4(toStringz(label), v, 2);
     }
 
+    static void InputText(int MaxLength=64)(string label, ref string v)
+    {
+        assert(v.length <= MaxLength);
+
+        static char[MaxLength] buf;
+
+        buf[] = '\0';
+        buf[0..v.length] = v[];
+
+        ig_InputText(toStringz(label), buf.ptr, MaxLength);
+
+        //note: try to avoid alloc when nothing changed
+        if(buf[0..v.length] != v)
+        {
+            v = to!string(buf).idup;
+        }
+    }
+
     static void Text(string txt)
     {
         ig_Text(toStringz(txt));
