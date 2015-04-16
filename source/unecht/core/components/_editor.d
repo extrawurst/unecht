@@ -381,7 +381,7 @@ final class UEEditorGUI : UEComponent
         if(!EditorRootComponent._currentEntity)
             return;
 
-        ig_SetNextWindowPos(ImVec2(sceneWindowWidth,0),ImGuiSetCond_Always);
+        ig_SetNextWindowPos(ImVec2(sceneWindowWidth+1,0),ImGuiSetCond_Always);
         bool closed;
         ig_Begin("inspector",&closed,
             ImGuiWindowFlags_AlwaysAutoResize|
@@ -406,10 +406,23 @@ final class UEEditorGUI : UEComponent
             auto subtext = " ";
             if(c.enabled)
                 subtext = "X";
-
-            ig_PushIdInt(i);
-            if(UEGui.TreeNode(c.name))
+                
+            auto openNode = false;
+            const isSceneNode = i == 0;
+            if(!isSceneNode)
             {
+                ig_PushIdPtr(cast(void*)c);
+                openNode = UEGui.TreeNode(c.name);
+            }
+            else
+            {
+                UEGui.Text("UESceneNode");
+            }
+            if(openNode || i==0)
+            {
+                if(!openNode)
+                    ig_Indent();
+
                 ig_SameLine(cast(int)ig_GetWindowWidth()-30);
                 if(UEGui.SmallButton(subtext))
                     c.enabled = !c.enabled;
@@ -420,7 +433,10 @@ final class UEEditorGUI : UEComponent
                     renderer.render(c);
                 }
 
-                ig_TreePop();
+                if(openNode)
+                    ig_TreePop();
+                else
+                    ig_Unindent();
             }
             else
             {
@@ -428,6 +444,9 @@ final class UEEditorGUI : UEComponent
                 if(UEGui.SmallButton(subtext))
                     c.enabled = !c.enabled;
             }
+
+            if(isSceneNode)
+                ig_Separator();
         }
     }
 
