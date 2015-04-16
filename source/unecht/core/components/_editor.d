@@ -427,11 +427,7 @@ final class UEEditorGUI : UEComponent
         EditorRootComponent._currentEntity.name = name;
 
         foreach(int i, c; EditorRootComponent._currentEntity.components)
-        {
-            auto subtext = " ";
-            if(c.enabled)
-                subtext = "X";
-                
+        {                
             auto openNode = false;
             const isSceneNode = i == 0;
             if(!isSceneNode)
@@ -448,9 +444,7 @@ final class UEEditorGUI : UEComponent
                 if(!openNode)
                     ig_Indent();
 
-                ig_SameLine(cast(int)ig_GetWindowWidth()-30);
-                if(UEGui.SmallButton(subtext))
-                    c.enabled = !c.enabled;
+                renderInspectorSameline(c);
 
                 import unecht.core.componentManager;
                 if(auto renderer = c.name in UEComponentsManager.editors)
@@ -465,13 +459,39 @@ final class UEEditorGUI : UEComponent
             }
             else
             {
-                ig_SameLine(cast(int)ig_GetWindowWidth()-30);
-                if(UEGui.SmallButton(subtext))
-                    c.enabled = !c.enabled;
+                renderInspectorSameline(c);
             }
 
             if(isSceneNode)
                 ig_Separator();
+        }
+
+        renderInspectorFooter();
+    }
+           
+    private static void renderInspectorSameline(UEComponent c)
+    {
+        auto subtext = " ";
+        if(c.enabled)
+            subtext = "X";
+                    
+        ig_SameLine(cast(int)ig_GetWindowWidth()-50);
+        if(UEGui.SmallButton(subtext))
+            c.enabled = !c.enabled;
+        
+        ig_SameLine(cast(int)ig_GetWindowWidth()-25);
+        if(UEGui.SmallButton("#"))
+        {
+            //renderComponentEdit();
+        }
+    }
+
+    private static void renderInspectorFooter()
+    {
+        ig_Separator();
+        if(UEGui.Button("add  component..."))
+        {
+            //TODO:
         }
     }
 
