@@ -323,6 +323,26 @@ final class UEEditorGUI : UEComponent
 
         ig_Begin("scene",null,ImGuiWindowFlags_NoMove);
 
+        static bool menuOpen=false;
+        if(UEGui.Button("menu"))
+            menuOpen = true;
+
+        if(menuOpen)
+        {
+            ig_BeginPopup(&menuOpen);
+            UEGui.Text("menu");
+            ig_Separator();
+
+            if(UEGui.Button("add entity"))
+            {
+                addEmptyEntity();
+                menuOpen = false;
+            }
+            ig_EndPopup();
+        }
+        
+        ig_Separator();
+        
         foreach(n; ue.scene.root.children)
         {
             renderSceneNode(n);
@@ -330,6 +350,11 @@ final class UEEditorGUI : UEComponent
 
         sceneWindowWidth = ig_GetWindowWidth();
         ig_End();
+    }
+
+    private static void addEmptyEntity()
+    {
+        UEEntity.create("new entity",EditorRootComponent._currentEntity?EditorRootComponent._currentEntity.sceneNode:null);
     }
 
     ///
