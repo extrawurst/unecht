@@ -248,10 +248,7 @@ final class UEEditorGUI : UEComponent
                 ig_PopStyleColor();
             }
 
-            if(EditorRootComponent._editorVisible)
-                ig_Text("EditorMode (hide with F1)");
-            else
-                ig_Text("EditorMode (show with F1)");
+            UEGui.Text(format("EditorMode (%s with F1) [%0.1f fps]",EditorRootComponent._editorVisible?"hide":"show",ig_GetIO().Framerate));
         }
 
         if(EditorRootComponent._editorVisible)
