@@ -161,6 +161,12 @@ final class UEEditorGUI : UEComponent
         }
         
         renderInspectorFooter();
+
+		if(component2Remove)
+		{
+			component2Remove.entity.removeComponent(component2Remove);
+			component2Remove = null;
+		}
     }
 
     ///
@@ -203,6 +209,7 @@ final class UEEditorGUI : UEComponent
             ig_Separator();
     }
     
+	static UEComponent componentEdit;
     private static void renderInspectorSameline(UEComponent c)
     {
         auto subtext = " ";
@@ -211,14 +218,39 @@ final class UEEditorGUI : UEComponent
 
         ig_SameLine(cast(int)ig_GetWindowWidth()-60);
         if(UEGui.SmallButton("#"))
-        {
-            //renderComponentEdit();
-        }
+			componentEdit = c;
+
+		if(componentEdit == c)
+			renderComponentEdit();
 
         ig_SameLine(cast(int)ig_GetWindowWidth()-40);
         if(UEGui.SmallButton(subtext))
             c.enabled = !c.enabled;
     }
+
+	static UEComponent component2Remove;
+
+	private static void renderComponentEdit()
+	{
+		bool menuOpen=true;
+		ig_BeginPopup(&menuOpen);
+		scope(exit)ig_EndPopup();
+
+		if(!menuOpen)
+		{
+			componentEdit = null;
+			return;
+		}
+
+		UEGui.Text("edit");
+		ig_Separator();
+
+		if(UEGui.Button("remove"))
+		{
+			component2Remove = componentEdit;
+			componentEdit = null;
+		}
+	}
     
     private static void renderInspectorFooter()
     {

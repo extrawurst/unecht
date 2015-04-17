@@ -101,6 +101,19 @@ final class UEEntity
 		return newcomp;
 	}
 
+	void removeComponent(UEComponent c)
+	{
+		import std.algorithm:countUntil,remove;
+		auto idx = _components.countUntil(c);
+		if(idx > -1)
+		{
+			c.onDestroy();
+			.destroy(c);
+
+			_components = _components.remove(idx);
+		}
+	}
+
 	/// factory method
 	static auto create(string _name = null, UESceneNode _parent = null)
 	{
