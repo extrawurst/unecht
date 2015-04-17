@@ -85,13 +85,6 @@ final class UEEditorGUI : UEComponent
     {
         UEEntity.create("new entity",EditorRootComponent.currentEntity?EditorRootComponent.currentEntity.sceneNode:null);
     }
-    
-	///
-	private static void lookAtEntity(UESceneNode node)
-	{
-		//import std.stdio;
-		//writefln("look at: %s",node.entity.name);
-	}
 
     ///
     private static void renderSceneNode(UESceneNode _node)
@@ -104,14 +97,14 @@ final class UEEditorGUI : UEComponent
         if(canExpand)
         {
             const expanded = UEGui.TreeNode(cast(void*)(_node.entity), _node.entity.name);
-			if(ig_IsMouseDoubleClicked(0))
-				lookAtEntity(_node);
             
             if(ig_IsItemActive())
             {
                 if(EditorRootComponent.currentEntity !is _node.entity)
                     EditorRootComponent.selectEntity(_node.entity);
             }
+			if(ig_IsItemHovered() && ig_IsMouseDoubleClicked(0))
+					EditorRootComponent.lookAtNode(_node);
             
             if(!expanded)
                 return;
@@ -135,6 +128,9 @@ final class UEEditorGUI : UEComponent
                 else
                     EditorRootComponent.selectEntity(_node.entity);
             }
+
+			if(ig_IsItemHovered() && ig_IsMouseDoubleClicked(0))
+				EditorRootComponent.lookAtNode(_node);
         }
     }
 

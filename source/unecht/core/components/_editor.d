@@ -311,6 +311,17 @@ final class EditorRootComponent : UEComponent {
 		}
 	}
 
+	///
+	package static void lookAtNode(UESceneNode node)
+	{
+		auto camNode = _editorCam.sceneNode;
+
+		import std.stdio;
+		writefln("look at: %s %s",node.entity.name,node.position);
+		camNode.position = node.position + (camNode.forward*-10.0f);
+	}
+
+	///
     private void toggleEditor()
     {
         _editorVisible = !_editorVisible;
