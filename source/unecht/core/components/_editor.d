@@ -65,7 +65,8 @@ final class UEEditorMouseControls : UEComponent
         }
         else if(_ev.eventType == UEEventType.mouseScroll)
         {
-            onDrag(vec2(0), _ev.mouseScrollEvent.yoffset,_ev.mouseScrollEvent.mods.isModShift);
+			if(!UEGui.capturesMouse)
+				onDrag(vec2(0), _ev.mouseScrollEvent.yoffset,_ev.mouseScrollEvent.mods.isModShift);
         }
     }
 
