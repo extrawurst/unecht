@@ -168,16 +168,13 @@ package:
 		else if(action == GLFW_REPEAT)
 			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
 
-        ev.keyEvent.shiftDown = testBitMask(mods,GLFW_MOD_SHIFT);
-        ev.keyEvent.ctrlDown = testBitMask(mods,GLFW_MOD_CONTROL);
-        ev.keyEvent.altDown = testBitMask(mods,GLFW_MOD_ALT);
-        ev.keyEvent.superDown = testBitMask(mods,GLFW_MOD_SUPER);
+        ev.keyEvent.mods.setFromBitMaskGLFW(mods);
 
         version(UEProfiling)
         {
             if( action == GLFW_PRESS && 
                 key == GLFW_KEY_P && 
-                ev.keyEvent.shiftDown && ev.keyEvent.isModSuper)
+                ev.keyEvent.mods.isModShift && ev.keyEvent.mods.isModSuper)
             {
                 if(!sender.sending)
                     sender.startDespiker();
@@ -194,6 +191,14 @@ package:
         ev.mousePosEvent.x = x;
         ev.mousePosEvent.y = y;
 
+
+        //TODO: buffer all keyDown/keyUp and just lookup from array here
+        auto isAltDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS;
+        auto isCtrlDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
+        auto isShiftDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
+        auto isSuperDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS;
+        ev.mousePosEvent.mods.set(isShiftDown,isCtrlDown,isAltDown,isSuperDown);
+
         events.trigger(ev);
 	}
 
@@ -204,9 +209,7 @@ package:
         ev.mouseButtonEvent.button = button;
         ev.mouseButtonEvent.action = (action == GLFW_PRESS) ? UEEvent.MouseButtonEvent.Action.down : UEEvent.MouseButtonEvent.Action.up;
 
-        ev.mouseButtonEvent.modShift = testBitMask(mods,GLFW_MOD_SHIFT);
-        ev.mouseButtonEvent.modCtrl = testBitMask(mods,GLFW_MOD_CONTROL);
-        ev.mouseButtonEvent.modAlt = testBitMask(mods,GLFW_MOD_ALT);
+        ev.mouseButtonEvent.mods.setFromBitMaskGLFW(mods);
 
         events.trigger(ev);
 	}
@@ -217,6 +220,13 @@ package:
         ev.eventType = UEEventType.mouseScroll;
         ev.mouseScrollEvent.xoffset = xoffset;
         ev.mouseScrollEvent.yoffset = yoffset;
+
+        //TODO: buffer all keyDown/keyUp and just lookup from array here
+        auto isAltDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS;
+        auto isCtrlDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
+        auto isShiftDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
+        auto isSuperDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS;
+        ev.mouseScrollEvent.mods.set(isShiftDown,isCtrlDown,isAltDown,isSuperDown);
         
         events.trigger(ev);
     }

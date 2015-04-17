@@ -76,7 +76,7 @@ public:
     ///
     @property vec3 forward() const { return _dir; }
     ///
-    @property vec3 right() const { return _right; }
+    @property vec3 right() const { return cross(_dir,_up); }
     ///
     @property vec3 up() const { return _up; }
     
@@ -146,7 +146,6 @@ private:
     {
         _dir = ORIG_DIR * _rotation;
         _up = ORIG_UP * _rotation;
-        _right = ORIG_RIGHT * _rotation;
     }
     
 private:
@@ -157,11 +156,9 @@ private:
     //TODO: calc on the fly ->
     vec3 _dir = ORIG_DIR;
     vec3 _up = ORIG_UP;
-    vec3 _right = cross(ORIG_DIR,ORIG_UP);
     vec3 _angles = vec3(0);
     //<-
 
     static immutable vec3 ORIG_DIR = vec3(0,0,1);
     static immutable vec3 ORIG_UP = vec3(0,1,0);
-    static immutable vec3 ORIG_RIGHT = vec3(1,0,0);
 }

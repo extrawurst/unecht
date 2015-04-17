@@ -18,6 +18,44 @@ enum UEEventType
 }
 
 ///
+struct EventModKeys
+{
+	private bool shiftDown;
+	private bool ctrlDown;
+	private bool altDown;
+	private bool superDown;
+
+    void set(bool modShift,bool modCtrl,bool modAlt,bool modSuper)
+    {
+        shiftDown = modShift;
+        ctrlDown = modCtrl;
+        superDown = modSuper;
+        altDown = modAlt;
+    }
+
+    ///
+    void setFromBitMaskGLFW(int mask)
+    {
+
+        import unecht.core.stdex:testBitMask;
+        import derelict.glfw3.glfw3;
+        shiftDown = testBitMask(mask,GLFW_MOD_SHIFT);
+        ctrlDown = testBitMask(mask,GLFW_MOD_CONTROL);
+        altDown = testBitMask(mask,GLFW_MOD_ALT);
+        superDown = testBitMask(mask,GLFW_MOD_SUPER);
+    }
+
+	/// is shift mod set
+	@property bool isModShift() const { return shiftDown; }
+	///
+	@property bool isModCtrl() const { return ctrlDown; }
+	///
+	@property bool isModAlt() const { return altDown; }
+	///
+	@property bool isModSuper() const { return superDown; }
+}
+
+///
 struct UEEvent
 {
 	UEEventType eventType;
@@ -32,19 +70,7 @@ struct UEEvent
 
 		UEKey key;
 		Action action;
-		bool shiftDown;
-        bool ctrlDown;
-        bool altDown;
-        bool superDown;
-
-		/// is shift mod set
-		@property bool isModShift() const { return shiftDown; }
-        ///
-        @property bool isModCtrl() const { return ctrlDown; }
-        ///
-        @property bool isModAlt() const { return altDown; }
-        ///
-        @property bool isModSuper() const { return superDown; }
+		EventModKeys mods;
 	}
 	KeyEvent keyEvent;
 
@@ -71,6 +97,7 @@ struct UEEvent
     {
         double xoffset;
         double yoffset;
+        EventModKeys mods;
     }
     MouseScrollEvent mouseScrollEvent;
 
@@ -84,9 +111,7 @@ struct UEEvent
 
         int button;
         Action action;
-        bool modShift;
-        bool modAlt;
-        bool modCtrl;
+		EventModKeys mods;
 
         ///
         @property bool isDown() const {return action==Action.down;}
@@ -97,6 +122,8 @@ struct UEEvent
     {
         double x;
         double y;
+
+		EventModKeys mods;
     }
     MousePosEvent mousePosEvent;
 }

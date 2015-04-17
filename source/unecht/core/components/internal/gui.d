@@ -64,9 +64,9 @@ public:
         if (UEEvent.KeyEvent.Action.Up == event.keyEvent.action)
             io.KeysDown[event.keyEvent.key] = false;
 
-        io.KeyCtrl = event.keyEvent.isModCtrl;
-        io.KeyShift = event.keyEvent.isModShift;
-        io.KeyAlt = event.keyEvent.isModAlt;
+        io.KeyCtrl = event.keyEvent.mods.isModCtrl;
+        io.KeyShift = event.keyEvent.mods.isModShift;
+        io.KeyAlt = event.keyEvent.mods.isModAlt;
     }
 
     private void OnCharInput(UEEvent event)

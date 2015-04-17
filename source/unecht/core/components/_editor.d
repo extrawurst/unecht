@@ -77,7 +77,8 @@ final class UEEditorMouseControls : UEComponent
 {
     mixin(UERegisterComponent!());
 
-    float speed = 0.1f;
+	static immutable SPEED_NORMAL = 0.02f;
+	static immutable SPEED_FAST = 0.25f;
 
     private bool mouseDown;
     private bool moveMode;
@@ -99,7 +100,7 @@ final class UEEditorMouseControls : UEComponent
                 !UEGui.capturesMouse)
             {
                 mouseDown = _ev.mouseButtonEvent.isDown;
-                moveMode = !_ev.mouseButtonEvent.modAlt;
+                moveMode = !_ev.mouseButtonEvent.mods.isModAlt;
             }
         }
         else if(_ev.eventType == UEEventType.mousePos)
@@ -109,24 +110,23 @@ final class UEEditorMouseControls : UEComponent
 
             if(mouseDown)
             {
-                onDrag(delta);
+                onDrag(delta,0,_ev.mousePosEvent.mods.isModShift);
             }
 
             lastMousePos = curPos;
         }
         else if(_ev.eventType == UEEventType.mouseScroll)
         {
-            onDrag(vec2(0), _ev.mouseScrollEvent.yoffset);
+            onDrag(vec2(0), _ev.mouseScrollEvent.yoffset,_ev.mouseScrollEvent.mods.isModShift);
         }
     }
 
-    private void onDrag(vec2 delta, double scroll=0)
+    private void onDrag(vec2 delta, double scroll=0, bool fastMode=false)
     {
-        //TODO: support shift to speedup
-        auto speedNow = speed;
+		auto speedNow = fastMode?SPEED_FAST:SPEED_NORMAL;
 
         //TODO: only zoom like this in move mode and move cam in direction of the ray (eye, cursorPosDir-from-screen-to-frustum)
-        sceneNode.position = sceneNode.position + (sceneNode.forward * scroll * speedNow);
+        sceneNode.position = sceneNode.position + (sceneNode.forward * scroll * speedNow * 10.0f);
 
         if(moveMode)
         {
@@ -135,7 +135,7 @@ final class UEEditorMouseControls : UEComponent
         }
         else
         {
-            sceneNode.angles = sceneNode.angles + vec3(delta.y*speedNow,delta.x*-speedNow,0);
+            sceneNode.angles = sceneNode.angles + vec3(delta.y*speedNow*3,delta.x*-speedNow*3,0);
         }
     }
 }
@@ -165,7 +165,7 @@ final class UEEditorNodeKeyControls : UEComponent
     {
         if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
         {
-            if(_ev.keyEvent.isModShift)
+            if(_ev.keyEvent.mods.isModShift)
             {
                 if(_ev.keyEvent.key == UEKey.up)
                     move.y = 1;
@@ -265,7 +265,7 @@ final class UEEditorComponent : UEComponent {
 			}
 
             if(EditorRootComponent._currentEntity && 
-                (_ev.keyEvent.key == UEKey.backspace && _ev.keyEvent.isModSuper) ||
+                (_ev.keyEvent.key == UEKey.backspace && _ev.keyEvent.mods.isModSuper) ||
                 _ev.keyEvent.key == UEKey.del)
             {
                 UEEntity.destroy(EditorRootComponent._currentEntity);
