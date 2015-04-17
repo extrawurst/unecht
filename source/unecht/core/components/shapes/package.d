@@ -27,7 +27,7 @@ final class UEShapeBox : UEComponent {
         auto mesh = this.entity.addComponent!UEMesh;
         
         auto tex = new GLTexture();
-        tex.create(import("tex/rgb.png"),true);
+        tex.create(import("rgb.png"),true);
 
         renderer.mesh = mesh;
 
