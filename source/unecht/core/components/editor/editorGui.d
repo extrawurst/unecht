@@ -43,7 +43,7 @@ final class UEEditorGUI : UEComponent
         }
     }
     
-    static float sceneWindowWidth;
+    private static float sceneWindowWidth;
     ///
     private static void renderScene()
     {
@@ -127,13 +127,13 @@ final class UEEditorGUI : UEComponent
             }
         }
     }
-    
+
     ///
     private static void renderInspector()
     {
         if(!EditorRootComponent.currentEntity)
             return;
-        
+
         ig_SetNextWindowPos(ImVec2(sceneWindowWidth+1,0),ImGuiSetCond_Always);
         bool closed;
         ig_Begin("inspector",&closed,
@@ -156,45 +156,51 @@ final class UEEditorGUI : UEComponent
         
         foreach(int i, c; EditorRootComponent.currentEntity.components)
         {                
-            auto openNode = false;
             const isSceneNode = i == 0;
-            if(!isSceneNode)
-            {
-                ig_PushIdPtr(cast(void*)c);
-                openNode = UEGui.TreeNode(c.name);
-            }
-            else
-            {
-                UEGui.Text("UESceneNode");
-            }
-            if(openNode || i==0)
-            {
-                if(!openNode)
-                    ig_Indent();
-                
-                renderInspectorSameline(c);
-                
-                import unecht.core.componentManager;
-                if(auto renderer = c.name in UEComponentsManager.editors)
-                {
-                    renderer.render(c);
-                }
-                
-                if(openNode)
-                    ig_TreePop();
-                else
-                    ig_Unindent();
-            }
-            else
-            {
-                renderInspectorSameline(c);
-            }
-            
-            if(isSceneNode)
-                ig_Separator();
+            renderInspectorComponent(c,isSceneNode);
         }
         
         renderInspectorFooter();
+    }
+
+    ///
+    private static void renderInspectorComponent(UEComponent c, bool isSceneNode)
+    {
+        auto openNode = false;
+        if(!isSceneNode)
+        {
+            ig_PushIdPtr(cast(void*)c);
+            openNode = UEGui.TreeNode(c.name);
+        }
+        else
+        {
+            UEGui.Text("UESceneNode");
+        }
+        if(openNode || isSceneNode)
+        {
+            if(!openNode)
+                ig_Indent();
+            
+            renderInspectorSameline(c);
+            
+            import unecht.core.componentManager;
+            if(auto renderer = c.name in UEComponentsManager.editors)
+            {
+                renderer.render(c);
+            }
+            
+            if(openNode)
+                ig_TreePop();
+            else
+                ig_Unindent();
+        }
+        else
+        {
+            renderInspectorSameline(c);
+        }
+        
+        if(isSceneNode)
+            ig_Separator();
     }
     
     private static void renderInspectorSameline(UEComponent c)
@@ -202,16 +208,16 @@ final class UEEditorGUI : UEComponent
         auto subtext = " ";
         if(c.enabled)
             subtext = "X";
-        
-        ig_SameLine(cast(int)ig_GetWindowWidth()-50);
-        if(UEGui.SmallButton(subtext))
-            c.enabled = !c.enabled;
-        
-        ig_SameLine(cast(int)ig_GetWindowWidth()-25);
+
+        ig_SameLine(cast(int)ig_GetWindowWidth()-60);
         if(UEGui.SmallButton("#"))
         {
             //renderComponentEdit();
         }
+
+        ig_SameLine(cast(int)ig_GetWindowWidth()-40);
+        if(UEGui.SmallButton(subtext))
+            c.enabled = !c.enabled;
     }
     
     private static void renderInspectorFooter()
