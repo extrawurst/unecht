@@ -222,14 +222,18 @@ final class UEEditorGUI : UEComponent
         if(c.enabled)
             subtext = "X";
 
-        ig_SameLine(cast(int)ig_GetWindowWidth()-60);
+        ImVec2 size;
+        ig_GetWindowContentRegionMax(&size);
+        const wndWidth = cast(int)size.x;
+
+        ig_SameLine(wndWidth-32);
         if(UEGui.SmallButton("#"))
 			componentEdit = c;
 
 		if(componentEdit == c)
 			renderComponentEdit();
 
-        ig_SameLine(cast(int)ig_GetWindowWidth()-40);
+        ig_SameLine(wndWidth-15);
         if(UEGui.SmallButton(subtext))
             c.enabled = !c.enabled;
     }
