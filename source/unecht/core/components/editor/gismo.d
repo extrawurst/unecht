@@ -1,5 +1,7 @@
 ﻿module unecht.core.components.editor.gismo;
 
+version(UEIncludeEditor):
+
 import unecht.core.component;
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;
