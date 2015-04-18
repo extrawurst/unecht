@@ -246,6 +246,7 @@ final class EditorRootComponent : UEComponent {
     ///
     static @property bool visible() { return _editorVisible; }
 
+    ///
 	override void onCreate() {
 		super.onCreate;
 		
@@ -286,6 +287,7 @@ final class EditorRootComponent : UEComponent {
         toggleEditor();
 	}
 
+    ///
     override void onUpdate() {
         super.onUpdate;
 
@@ -302,6 +304,7 @@ final class EditorRootComponent : UEComponent {
             gismo.sceneNode.enabled = false;
     }
 
+    ///
     private void onEditorUpdate(UEEvent ev)
     {
         onUpdate();
