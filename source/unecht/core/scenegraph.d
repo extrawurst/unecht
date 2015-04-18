@@ -39,6 +39,13 @@ public:
 			foreach(c; allComponents)
 				c.onUpdate();
 		}
+        else
+        {
+            import unecht;
+            UEEvent ev;
+            ev.eventType = UEEventType.updateEditMode;
+            ue.events.trigger(ev);
+        }
 	}
 
 	///
@@ -69,13 +76,6 @@ public:
 	{
 		if(!_node)
 			return;
-
-		/+if(_node.parent && _node.invalidated)
-		{
-			//TODO: update matrix
-
-			_node.invalidated = false;
-		}+/
 
         if(_node.entity && _node.entity.destroyed)
             _destroyedEntites ~= _node.entity;

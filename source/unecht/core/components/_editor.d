@@ -250,6 +250,7 @@ final class EditorRootComponent : UEComponent {
 		super.onCreate;
 		
 		registerEvent(UEEventType.key, &OnKeyEvent);
+        registerEvent(UEEventType.updateEditMode, &onEditorUpdate);
 
 		// hide the whole entity with its hirarchie
 		//this.entity.hideInEditor = true;
@@ -299,6 +300,11 @@ final class EditorRootComponent : UEComponent {
         }
         else
             gismo.sceneNode.enabled = false;
+    }
+
+    private void onEditorUpdate(UEEvent ev)
+    {
+        onUpdate();
     }
     
     ///

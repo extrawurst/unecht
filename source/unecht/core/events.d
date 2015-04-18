@@ -7,6 +7,7 @@ import unecht.core.types:UESize;
 ///
 enum UEEventType
 {
+    updateEditMode,
 	key,
 	text,
 	windowSize,
@@ -150,6 +151,8 @@ interface UEEvents
 	void unRegister(UEEventReceiver);
 	///
 	void removeComponent(UEComponent);
+    ///
+    void trigger(UEEvent);
 }
 
 ///
@@ -191,7 +194,7 @@ final class UEEventsSystem : UEEvents
 	bool dirty=false;
 
 	///
-	void trigger(UEEvent _ev)
+	override void trigger(UEEvent _ev)
 	{
 		foreach(r; receiver)
 		{
