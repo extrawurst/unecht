@@ -31,30 +31,35 @@ interface IComponentEditor
 static struct UEComponentsManager
 {
 	static IComponentEditor[string] editors;
+    static string[] componentNames;
 }
 
-/+shared static this()
+bool hasBaseClass(in TypeInfo_Class v, in TypeInfo_Class base)
 {
-    auto tid = typeid(IComponentEditor);
+    if(v is base)
+        return true;
+    else if(v && v !is typeid(Object))
+        return hasBaseClass(v.base, base);
+    else
+        return false;
+}
 
-    //TODO: find and register all IComponentEditor's generically here
+shared static this()
+{
+    auto tid = typeid(UEComponent);
    
     import std.stdio;
     foreach(m; ModuleInfo)
     {
-        writefln("scan mod: %s",m.name);
+        //writefln("scan mod: %s",m.name);
 
         foreach(cla; m.localClasses)
         {
-            writefln("class: %s",cla.name);
-            foreach(i; cla.interfaces)
+            if(hasBaseClass(cla, tid))
             {
-                if(i.classinfo is tid.info)
-                {
-                    writefln("found: %s",cla.name);
-                    break;
-                }
+                writefln("component: %s",cla.name);
+                UEComponentsManager.componentNames ~= cla.name;
             }
         }       
     }
-}+/
+}

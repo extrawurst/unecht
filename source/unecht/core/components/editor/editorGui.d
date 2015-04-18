@@ -173,6 +173,11 @@ final class UEEditorGUI : UEComponent
 			component2Remove.entity.removeComponent(component2Remove);
 			component2Remove = null;
 		}
+        if(componentToAdd.length>0)
+        {
+            EditorRootComponent.currentEntity.addComponent(componentToAdd);
+            componentToAdd.length = 0;
+        }
     }
 
     ///
@@ -261,13 +266,33 @@ final class UEEditorGUI : UEComponent
 			componentEdit = null;
 		}
 	}
-    
+
+    static bool addComponentOpen;
+    static string componentToAdd;
+
     private static void renderInspectorFooter()
     {
         ig_Separator();
         if(UEGui.Button("add  component..."))
+            addComponentOpen = true;
+
+        if(addComponentOpen)
         {
-            //TODO:
+            bool menuOpen=true;
+            ig_BeginPopup(&menuOpen);
+            scope(exit)ig_EndPopup();
+            if(!menuOpen)
+                addComponentOpen=false;
+
+            import unecht.core.componentManager;
+            foreach(c; UEComponentsManager.componentNames)
+            {
+                if(UEGui.Selectable(c,false))
+                {
+                    componentToAdd = c;
+                    addComponentOpen=false;
+                }
+            }
         }
     }
     
