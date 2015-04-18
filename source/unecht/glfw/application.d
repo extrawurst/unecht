@@ -8,6 +8,7 @@ import derelict.imgui.imgui;
 import derelict.freeimage.freeimage;
 
 import unecht.glfw.window;
+import unecht.glfw.joysticks;
 import unecht.core.types;
 
 public import unecht.glfw.types;
@@ -26,6 +27,7 @@ struct UEApplication
 	UEWindow mainWindow;
 	UEEventsSystem events;
 	UEEntity rootEntity;
+    private GLFWJoysticks joysticks;
 
     version(UEProfiling)
     {
@@ -125,6 +127,13 @@ struct UEApplication
                     auto profZone = Zone(profiler, "vertical sync");
 
                     mainWindow.swapBuffers();
+                }
+
+                {
+                    version(UEProfiling)
+                    auto profZone = Zone(profiler, "update joysticks");
+
+                    joysticks.update();
                 }
 
                 {
@@ -285,6 +294,8 @@ private:
 		ue.events = events;
 
 		ue.scene = new UEScenegraph();
+
+        joysticks.init(events);
 
         insertGuiObj();
 

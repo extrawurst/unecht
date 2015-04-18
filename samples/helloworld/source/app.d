@@ -17,6 +17,9 @@ final class TestLogic : UEComponent
         super.onCreate;
 
         registerEvent(UEEventType.key, &OnKeyEvent);
+        registerEvent(UEEventType.joystickStatus, &OnJoystick);
+        registerEvent(UEEventType.joystickButton, &OnJoystick);
+        registerEvent(UEEventType.joystickAxes, &OnJoystick);
 
         ballRoot = UEEntity.create("balls");
 
@@ -30,6 +33,17 @@ final class TestLogic : UEComponent
             spawnBall();
 
         editable = false;
+    }
+
+    void OnJoystick(UEEvent _ev)
+    {
+        import std.stdio;
+        if(_ev.eventType == UEEventType.joystickStatus)
+            writefln("joystatus: %s",_ev.joystickStatus);
+        if(_ev.eventType == UEEventType.joystickButton)
+            writefln("joybutton: %s",_ev.joystickButton);
+        if(_ev.eventType == UEEventType.joystickAxes)
+            writefln("joyaxes: %s",_ev.joystickAxes);
     }
 
     void OnKeyEvent(UEEvent _ev)

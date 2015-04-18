@@ -16,6 +16,9 @@ enum UEEventType
     mouseScroll,
     mouseButton,
     mousePos,
+    joystickStatus,
+    joystickAxes,
+    joystickButton
 }
 
 ///
@@ -127,6 +130,29 @@ struct UEEvent
 		EventModKeys mods;
     }
     MousePosEvent mousePosEvent;
+
+    struct JoystickStatus
+    {
+        uint id;
+        string name;
+        uint buttonCount;
+        uint axesCount;
+        bool connected;
+    }
+    JoystickStatus joystickStatus;
+
+    struct JoystickButton
+    {
+        uint buttonId;
+        bool pressed;
+    }
+    JoystickButton joystickButton;
+
+    struct JoystickAxes
+    {
+        float[] axes;
+    }
+    JoystickAxes joystickAxes;
 }
 
 ///
