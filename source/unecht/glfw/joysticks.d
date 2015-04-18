@@ -81,17 +81,18 @@ struct GLFWJoysticks
                 if(axesState != state.axesState[0..state.info.axesCount])
                 {
                     state.axesState[0..state.info.axesCount] = axesState;
-                    triggerAxesEvent(axesState,state);
+                    triggerAxesEvent(id,axesState,state);
                 }
             }
         }
     }
 
-    void triggerAxesEvent(float[] newState, in UEJoystickState state)
+    void triggerAxesEvent(int id, float[] newState, in UEJoystickState state)
     {
         UEEvent ev;
         ev.eventType = UEEventType.joystickAxes;
         ev.joystickAxes.axes = newState;
+        ev.joystickAxes.id = id;
 
         _events.trigger(ev);
     }

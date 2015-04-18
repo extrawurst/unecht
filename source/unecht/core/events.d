@@ -150,6 +150,7 @@ struct UEEvent
 
     struct JoystickAxes
     {
+        uint id;
         float[] axes;
     }
     JoystickAxes joystickAxes;
