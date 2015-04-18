@@ -27,6 +27,8 @@ package:
 	{
 		import std.string:toStringz;
 
+        //TODO: support multisampling
+        //glfwWindowHint(GLFW_SAMPLES, 4);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -36,14 +38,16 @@ package:
 			_size.width, 
 			_size.height, 
 			toStringz(_title), null, null);
-		
+
 		size = _size;
 		
 		if (!glfwWindow)
 			return false;
 		
 		glfwMakeContextCurrent(glfwWindow);
-		glfwSwapInterval(1);
+        //TODO: support for fixed updates befor disabling vsync
+		//glfwSwapInterval(0);
+        glfwSwapInterval(1);
 
 		glfwSetCursorPosCallback(glfwWindow, &cursor_pos_callback);
 		glfwSetMouseButtonCallback(glfwWindow, &mouse_button_callback);
