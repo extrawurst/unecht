@@ -9,6 +9,8 @@ final class PaddleLogic : UEComponent
     
     auto keyUp = UEKey.u;
     auto keyDown = UEKey.j;
+
+    auto joystickId = 0;
     
     static immutable BORDER = 7.2f;
     
@@ -18,6 +20,7 @@ final class PaddleLogic : UEComponent
         super.onCreate;
         
         registerEvent(UEEventType.key, &OnKeyEvent);
+        registerEvent(UEEventType.joystickAxes, &onJoystick);
         
         auto shape = entity.addComponent!UEShapeBox;
         entity.addComponent!UEPhysicsColliderBox;
@@ -43,6 +46,14 @@ final class PaddleLogic : UEComponent
         pos.z = pos.z.clamp(-BORDER,BORDER);
         
         sceneNode.position = pos;
+    }
+
+    void onJoystick(UEEvent _ev)
+    {
+        if(_ev.joystickAxes.id == joystickId)
+        {
+            control = -_ev.joystickAxes.axes[1];
+        }
     }
     
     private void OnKeyEvent(UEEvent _ev)

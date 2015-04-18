@@ -96,6 +96,7 @@ final class TestControls : UEComponent
 
         if(!rightSide)
         {
+            paddleLogic.joystickId = 1;
             paddleLogic.keyUp = UEKey.r;
             paddleLogic.keyDown = UEKey.f;
         }
