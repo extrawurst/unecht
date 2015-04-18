@@ -182,10 +182,11 @@ final class UEEventsSystem : UEEvents
 	{
 		foreach(ref r; receiver)
 		{
-			if(r.component == _comp)
+			if(r.component is _comp)
 			{
 				r.removed = true;
 				dirty = true;
+                r.component = null;
 			}
 		}
 	}

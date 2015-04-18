@@ -108,6 +108,7 @@ final class UEEntity
 		if(idx > -1)
 		{
 			c.onDestroy();
+            ue.application.events.removeComponent(c);
 			.destroy(c);
 
 			_components = _components.remove(idx);
