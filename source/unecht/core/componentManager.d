@@ -57,7 +57,7 @@ shared static this()
         {
             if(hasBaseClass(cla, tid))
             {
-                writefln("component: %s",cla.name);
+                //writefln("component: %s",cla.name);
                 UEComponentsManager.componentNames ~= cla.name;
             }
         }       
