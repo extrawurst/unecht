@@ -64,9 +64,13 @@ struct GLFWJoysticks
 
             if(presentNow)
             {
-                auto axesState = state.glfwAxesPtr[0..state.info.axesCount];
+                int axesCount;
+                auto axesPtr = glfwGetJoystickAxes (id, &axesCount);
+                auto axesState = axesPtr[0..state.info.axesCount];
 
-                auto buttonState = state.glfwButtonPtr[0..state.info.buttonCount];
+                int buttonCount;
+                auto buttonPtr = glfwGetJoystickButtons (id, &buttonCount);
+                auto buttonState = buttonPtr[0..state.info.buttonCount];
 
                 if(buttonState != state.buttonState[0..state.info.buttonCount])
                 {
