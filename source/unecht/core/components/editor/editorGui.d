@@ -278,19 +278,32 @@ final class UEEditorGUI : UEComponent
 
         if(addComponentOpen)
         {
+            static string filterString;
+
             bool menuOpen=true;
             ig_BeginPopup(&menuOpen);
             scope(exit)ig_EndPopup();
             if(!menuOpen)
+            {
                 addComponentOpen=false;
+                filterString.length=0;
+            }
+
+            UEGui.InputText("filter",filterString);
+            ig_Separator();
 
             import unecht.core.componentManager;
             foreach(c; UEComponentsManager.componentNames)
             {
+                import std.string;
+                if(c.indexOf(filterString,CaseSensitive.no)==-1)
+                    continue;
+
                 if(UEGui.Selectable(c,false))
                 {
                     componentToAdd = c;
                     addComponentOpen=false;
+                    filterString.length=0;
                 }
             }
         }
