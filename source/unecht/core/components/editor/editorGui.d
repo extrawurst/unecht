@@ -66,6 +66,12 @@ final class UEEditorGUI : UEComponent
                 addEmptyEntity();
                 menuOpen = false;
             }
+
+            if(UEGui.Button("save Entity"))
+            {
+                //addEmptyEntity();
+                menuOpen = false;
+            }
             ig_EndPopup();
         }
         

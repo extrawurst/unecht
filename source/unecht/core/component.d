@@ -2,6 +2,7 @@ module unecht.core.component;
 
 import derelict.util.system;
 
+public import unecht.core.componentSerialization;
 import unecht.core.events:UEEventType;
 import unecht.core.entity;
 import unecht.core.components.sceneNode;
@@ -11,7 +12,10 @@ import unecht;
 template UERegisterComponent()
 {
 	enum UERegisterComponent = q{
-		version(UEIncludeEditor)override @property string name() { return typeof(this).stringof; }
+        alias T = typeof(this);
+        static UESerialization!T serialization;
+
+		version(UEIncludeEditor)override @property string name() { return T.stringof; }
 	};
 }
 
