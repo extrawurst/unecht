@@ -12,6 +12,7 @@ static struct UESerialization(T)
             (MEM != T.stringof) && 
                 (MEM != "this") && 
                 (MEM != "T") && 
+                (MEM != "Monitor") && 
                 (MEM != "serialization");
     }
     
@@ -72,8 +73,10 @@ static struct UESerialization(T)
         //pragma (msg, T.stringof~": ----------------------------------------");
         //pragma (msg, __traits(derivedMembers, T));
         import std.typetuple:Filter;
-        foreach(m; Filter!(isSerializable, __traits(derivedMembers, T)))
+        foreach(m; Filter!(isSerializable, __traits(allMembers, T)))
         {
+            //pragma(msg, "> "~m);
+
             alias memberType = typeof(mixin("v."~m));
             
             Tag memberTag = new Tag(parent);
@@ -93,7 +96,9 @@ static struct UESerialization(T)
             }
             else static if(is(memberType == enum))
             {
+                //TODO: support other enum base types
                 //pragma(msg, "enum: "~m);
+                memberTag.add(Value(cast(int)mixin("v."~m)));
             }
             else
             {
@@ -118,11 +123,13 @@ unittest
     final class TestComp : UEComponent
     {
         mixin(UERegisterComponent!());
-        
+     
+        enum LocalEnum{foo,bar}
         struct LocalStruct{}
         
         alias AliasInt = int;
-        
+
+        LocalEnum e=LocalEnum.bar;
         bool foo;
         float baz=0;
         private int bar;
