@@ -146,7 +146,7 @@ unittest
     //writefln("\nSERIALIZATION TESTING:\n");
     
     TestComp.serialization.serialize(tc,root);
-    writefln("%s",root.toSDLDocument);
+    writefln("'%s'",root.toSDLDocument);
     
-    //assert(UECamera.serialization.serialize(cam) == "UECamera");
+    assert(root.toSDLDocument == "e 1\nfoo false\nbaz 0F\n");
 }
