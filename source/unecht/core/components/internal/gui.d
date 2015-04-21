@@ -134,42 +134,17 @@ public:
 
     static bool InputVec(string label, ref vec3 v)
     {
-        static immutable ITEMWIDTH = 80;
-        bool res = false;
-        ig_Text("%s:",toStringz(label));
-
-        ig_PushIdPtr(v.vector.ptr);
-        ig_PushItemWidth(ITEMWIDTH);
-        scope(exit)ig_PopItemWidth();
-        res = ig_DragFloat("x",&v.vector[0]);
-        ig_SameLine();
-        ig_PushIdPtr(v.vector.ptr+1);
-        res = ig_DragFloat("y",&v.vector[1]) || res;
-        ig_SameLine();
-        ig_PushIdPtr(v.vector.ptr+2);
-        res = ig_DragFloat("z",&v.vector[2]) || res;
-
-        return res;
+        return ig_DragFloat3(toStringz(label), v.vector);
     }
     
-    static void DragFloat(string label, ref float v, float min=-float.infinity, float max=float.infinity)
+    static void DragFloat(string label, ref float v, float min=0.0f, float max=0.0f)
     {
         ig_DragFloat(toStringz(label),&v,1,min,max);
     }
 
-    static void DragInt(string label, ref int v, int min=int.min, int max=int.max)
+    static void DragInt(string label, ref int v, int min=0, int max=0)
     {
         ig_DragInt(toStringz(label),&v,1,min,max);
-    }
-
-    static bool InputFloat3(string label, ref float[3] v)
-    {
-        return ig_InputFloat3(toStringz(label), v, 2);
-    }
-
-    static bool InputFloat4(string label, ref float[4] v)
-    {
-        return ig_InputFloat4(toStringz(label), v, 2);
     }
 
     static void InputText(int MaxLength=64)(string label, ref string v)

@@ -25,13 +25,13 @@ static class UECameraInspector : IComponentEditor
 
         ig_ColorEdit4("clearColor",thisT.clearColor.vector,true);
         UEGui.DragFloat("fov",thisT.fieldOfView,1,360);
-        UEGui.DragFloat("near",thisT.clipNear,0.01f,float.max);
-        UEGui.DragFloat("far",thisT.clipFar,0.01f,float.max);
+        UEGui.DragFloat("near",thisT.clipNear,0.01f);
+        UEGui.DragFloat("far",thisT.clipFar,0.01f);
 
         ig_Checkbox("isOrthographic",&thisT.isOrthographic);
         if(thisT.isOrthographic)
         {
-            UEGui.DragFloat("orthoSize",thisT.orthoSize,0.01f,float.max);
+            UEGui.DragFloat("orthoSize",thisT.orthoSize,0.01f);
         }
     }
 
