@@ -47,7 +47,8 @@ static struct UESerialization(T)
     template isSerializable(alias MEM)
     {
         enum TdotMember="T."~MEM;
-        static if(isSerializationMemberName!MEM && !isNestedType!MEM)
+        enum compiles = __traits(compiles, mixin(TdotMember)); //NOTE: compiler bug: when removing this it wont compile under dmd<2.067
+        static if(isSerializationMemberName!MEM && !isNestedType!MEM && __traits(compiles, mixin(TdotMember)))
         {
             static if(__traits(getProtection, mixin(TdotMember)) == "public")
             {
