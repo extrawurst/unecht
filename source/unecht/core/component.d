@@ -57,7 +57,7 @@ abstract class UEComponent
         memberTag.add(Value(_enabled));
     }
 	
-    final @nogc nothrow {
+    @nogc final nothrow {
     	///
     	@property bool enabled() const { return _enabled; }
     	///
