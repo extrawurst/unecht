@@ -71,12 +71,12 @@ static struct UESerialization(T)
     
     static void serialize(T v, Tag parent)
     {
-        //pragma (msg, T.stringof~": ----------------------------------------");
-        //pragma (msg, __traits(derivedMembers, T));
+        pragma (msg, T.stringof~": ----------------------------------------");
+        pragma (msg, __traits(derivedMembers, T));
         import std.typetuple:Filter;
-        foreach(m; Filter!(isSerializable, __traits(allMembers, T)))
+        foreach(m; Filter!(isSerializable, __traits(derivedMembers, T)))
         {
-            //pragma(msg, "> "~m);
+            pragma(msg, "> "~m);
 
             alias memberType = typeof(mixin("v."~m));
             
@@ -118,10 +118,16 @@ static struct UESerialization(T)
 unittest
 {   
     import std.stdio;
-    import sdlang;
     import unecht;
-    
-    final class TestComp : UEComponent
+
+    class TestCompBase : UEComponent
+    {
+        mixin(UERegisterComponent!());
+
+        bool base;
+    }
+
+    final class TestComp : TestCompBase
     {
         mixin(UERegisterComponent!());
      
@@ -145,8 +151,8 @@ unittest
     
     //writefln("\nSERIALIZATION TESTING:\n");
     
-    TestComp.serialization.serialize(tc,root);
+    tc.serialize(root);
     writefln("'%s'",root.toSDLDocument);
     
-    assert(root.toSDLDocument == "e 1\nfoo false\nbaz 0F\n");
+    assert(root.toSDLDocument == "super {\n\tsuper {\n\t\tenabled true\n\t}\n\tbase false\n}\ne 1\nfoo false\nbaz 0F\n");
 }

@@ -1,6 +1,7 @@
 module unecht.core.component;
 
 import derelict.util.system;
+public import sdlang;
 
 public import unecht.core.componentSerialization;
 import unecht.core.events:UEEventType;
@@ -12,10 +13,20 @@ import unecht;
 template UERegisterComponent()
 {
 	enum UERegisterComponent = q{
+        //private import sdlang; unfortunately hell breaks loose if we mixin the import
         alias T = typeof(this);
         static UESerialization!T serialization;
 
 		version(UEIncludeEditor)override @property string name() { return T.stringof; }
+
+        override void serialize(Tag sdlTag) 
+        {
+            Tag memberTag = new Tag(sdlTag);
+            memberTag.name = "super";
+            super.serialize(memberTag);
+
+            serialization.serialize(this, sdlTag); 
+        }
 	};
 }
 
@@ -23,7 +34,7 @@ template UERegisterComponent()
 abstract class UEComponent
 {
 	///
-	version(UEIncludeEditor)@property string name();
+	version(UEIncludeEditor)abstract @property string name();
 
 	//void OnEnable() {}
 	void onUpdate() {}
@@ -35,8 +46,18 @@ abstract class UEComponent
     void onDestroy() {}
     ///
     void onCollision(UEComponent _collider) {}
+
+    ///
+    void serialize(Tag sdlTag)
+    {
+        //TODO: serialize entity
+
+        Tag memberTag = new Tag(sdlTag);
+        memberTag.name = "enabled";
+        memberTag.add(Value(_enabled));
+    }
 	
-    @nogc nothrow {
+    final @nogc nothrow {
     	///
     	@property bool enabled() const { return _enabled; }
     	///
@@ -48,13 +69,13 @@ abstract class UEComponent
     }
 	
 	/// helper
-	void registerEvent(UEEventType _type, UEEventCallback _callback)
+	final void registerEvent(UEEventType _type, UEEventCallback _callback)
 	{
 		ue.events.register(UEEventReceiver(this,_type,_callback));
 	}
 
 package:
-	void setEntity(UEEntity _entity) { this._entity = _entity; }
+	final void setEntity(UEEntity _entity) { this._entity = _entity; }
 
 private:
 	UEEntity _entity;
