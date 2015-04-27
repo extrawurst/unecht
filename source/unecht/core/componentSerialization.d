@@ -1,5 +1,9 @@
 ﻿module unecht.core.componentSerialization;
 
+import unecht.meta.uda;
+///
+struct Serialize{}
+
 ///
 static struct UESerialization(T)
 {
@@ -50,7 +54,9 @@ static struct UESerialization(T)
         enum compiles = __traits(compiles, mixin(TdotMember)); //NOTE: compiler bug: when removing this it wont compile under dmd<2.067
         static if(isSerializationMemberName!MEM && !isNestedType!MEM && __traits(compiles, mixin(TdotMember)))
         {
-            static if(__traits(getProtection, mixin(TdotMember)) == "public")
+            enum protection=__traits(getProtection, mixin(TdotMember));
+            enum hasSerializeUDA = hasUDA!(mixin(TdotMember),Serialize);
+            static if(protection == "public" || hasSerializeUDA)
             {
                 static if(!isAnyFunction!(MEM) && !isTemplate!MEM)
                 {
@@ -139,6 +145,9 @@ unittest
         LocalEnum e=LocalEnum.bar;
         bool foo;
         float baz=0;
+
+        @Serialize
+        private int priv;
         private int bar;
         
         void otherMethod(int a){}
@@ -154,5 +163,5 @@ unittest
     tc.serialize(root);
     writefln("'%s'",root.toSDLDocument);
     
-    assert(root.toSDLDocument == "super {\n\tsuper {\n\t\tenabled true\n\t}\n\tbase false\n}\ne 1\nfoo false\nbaz 0F\n");
+    assert(root.toSDLDocument == "super {\n\tsuper {\n\t\tenabled true\n\t}\n\tbase false\n}\ne 1\nfoo false\nbaz 0F\npriv 0\n");
 }
