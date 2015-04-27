@@ -1,8 +1,35 @@
 ﻿module unecht.core.componentSerialization;
 
+import std.conv;
+
+import unecht.core.component;
 import unecht.meta.uda;
+
 ///
 struct Serialize{}
+
+///
+private static void serializeBase(T)(T v, Tag parent)
+{
+    //pragma(msg, "other:"~m);
+    parent.add(Value(v));
+}
+
+///
+private static void serializeType(T)(T v, Tag parent)
+    if (is(T : UEComponent))
+{
+    //pragma(msg, "UEComponent: ");
+    v.serialize(parent);
+}
+
+///
+private static void serializeType(T)(T v, Tag parent)
+    if (is(T : UEComponent) == false)
+{
+    //TODO:
+    //pragma(msg, "UEComponent: ");
+}
 
 ///
 static struct UESerialization(T)
@@ -91,15 +118,17 @@ static struct UESerialization(T)
             
             static if(is(memberType == class) || is(memberType == struct) || is(memberType == function) || is(memberType == delegate))
             {
-                //pragma(msg, "struct or class: "~m);
+                serializeType!memberType(mixin("v."~m),memberTag);
             }
             else static if(isArray!(memberType))
             {
-                //pragma(msg, "array: "~m);
+                pragma(msg, "array: "~m);
+                mixin("foreach(i, c; v." ~m~ ") { Tag childTag = new Tag(memberTag); childTag.name=to!string(i); c.serialize(childTag); }");
             }
             else static if(isPointer!(memberType))
             {
                 //pragma(msg, "pointer: "~m);
+                memberTag.add(Value("pointers not implemented yet!"));
             }
             else static if(is(memberType == enum))
             {
@@ -109,8 +138,7 @@ static struct UESerialization(T)
             }
             else
             {
-                //pragma(msg, "other:"~m);
-                memberTag.add(Value(mixin("v."~m)));
+                serializeBase!memberType(mixin("v."~m),memberTag);
             }
         }
     }
@@ -158,10 +186,68 @@ unittest
     TestComp tc = new TestComp();
     Tag root = new Tag();
     
-    //writefln("\nSERIALIZATION TESTING:\n");
-    
     tc.serialize(root);
-    writefln("'%s'",root.toSDLDocument);
+    //writefln("'%s'",root.toSDLDocument);
     
     assert(root.toSDLDocument == "super {\n\tsuper {\n\t\tenabled true\n\t}\n\tbase false\n}\ne 1\nfoo false\nbaz 0F\npriv 0\n");
+}
+
+unittest
+{   
+    import std.stdio;
+    import unecht;
+    
+    final class TestComp1 : UEComponent
+    {
+        mixin(UERegisterComponent!());
+        
+        bool foo;
+    }
+    
+    final class TestComp2 : UEComponent
+    {
+        mixin(UERegisterComponent!());
+        
+        TestComp1 comp;
+    }
+    
+    auto tc1 = new TestComp1();
+    auto tc2 = new TestComp2();
+    tc2.comp = tc1;
+
+    Tag root = new Tag();
+
+    tc2.serialize(root);
+    //writefln("'%s'",root.toSDLDocument);
+    
+    assert(root.toSDLDocument == "super {\n\tenabled true\n}\ncomp {\n\tsuper {\n\t\tenabled true\n\t}\n\tfoo false\n}\n");
+}
+
+unittest
+{   
+    import std.stdio;
+    import unecht;
+    
+    final class TestComp1 : UEComponent
+    {
+        mixin(UERegisterComponent!());
+    }
+    
+    final class TestComp2 : UEComponent
+    {
+        mixin(UERegisterComponent!());
+        
+        TestComp1[] comps;
+    }
+    
+    auto tc1 = new TestComp1();
+    auto tc2 = new TestComp2();
+    tc2.comps = [tc1, tc1];
+    
+    Tag root = new Tag();
+    
+    tc2.serialize(root);
+    writefln("'%s'",root.toSDLDocument);
+    
+    //assert(root.toSDLDocument == "super {\n\tenabled true\n}\ncomp {\n\tsuper {\n\t\tenabled true\n\t}\n\tfoo false\n}\n");
 }
