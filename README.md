@@ -19,3 +19,4 @@ Game Engine Framework for the D programming language
 * ODE physics library ([link](http://ode-wiki.org/wiki/index.php?title=Manual:_Install_and_Use))
 * freeimage library ([link](http://freeimage.sourceforge.net/))
 * frame profiling: despiker binary right besides engine binary ([guide](despiker_guide.md))
+* cimgui library ([link](https://github.com/Extrawurst/cimgui))
