@@ -5,6 +5,7 @@ Game Engine Framework for the D programming language
 
 ![editor inspectors](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-04-15 editorInspectors.png)
 ![newui](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-04-09 newui.png)
+![openassimp](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-05-01.png)
 
 # features
 
@@ -20,3 +21,4 @@ Game Engine Framework for the D programming language
 * freeimage library ([link](http://freeimage.sourceforge.net/))
 * frame profiling: despiker binary right besides engine binary ([guide](despiker_guide.md))
 * cimgui library ([link](https://github.com/Extrawurst/cimgui))
+* openassimp library ([link](http://assimp.sourceforge.net/))
