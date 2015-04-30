@@ -38,6 +38,7 @@ final class UEShapeBox : UEComponent {
         
         mesh.vertexArrayObject = new GLVertexArrayObject();
         mesh.vertexArrayObject.bind();
+        scope(exit) mesh.vertexArrayObject.unbind();
         
         auto upLF = vec3(-1,1,-1);
         auto upLB = vec3(-1,1,1);
@@ -116,7 +117,6 @@ final class UEShapeBox : UEComponent {
                 //right
                 20,22,21, 21,22,23
             ]);
-        mesh.vertexArrayObject.unbind();
     }
 
     ///
