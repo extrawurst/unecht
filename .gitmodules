@@ -16,3 +16,6 @@
 [submodule "submodules/SDLang-D"]
 	path = submodules/SDLang-D
 	url = https://github.com/Extrawurst/SDLang-D.git
+[submodule "submodules/DerelictENet"]
+	path = submodules/DerelictENet
+	url = https://github.com/Extrawurst/DerelictENet
