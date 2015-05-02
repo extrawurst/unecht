@@ -6,6 +6,8 @@ import unecht;
 import derelict.enet.enet;
 import derelict.imgui.imgui;
 
+alias OnDataCallback = void delegate(ubyte*,size_t);
+
 ///
 @UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
@@ -79,7 +81,7 @@ final class TestLogic : UEComponent
         }
         else if(isServer && server)
         {
-            updatePeer(server);
+            updatePeer(server, &onDataServer);
 
             renderEnetHostGUI(server, "server");
         }
@@ -104,7 +106,7 @@ final class TestLogic : UEComponent
         }
         else
         {
-            updatePeer(client);
+            updatePeer(client, &onDataClient);
 
             renderEnetHostGUI(client,"client");
 
@@ -120,6 +122,27 @@ final class TestLogic : UEComponent
 
             UEGui.Text(chat);
         }
+    }
+
+    private void onDataServer(ubyte* data, size_t length)
+    {
+        /* Create a reliable packet */
+        ENetPacket* packet = enet_packet_create (data, 
+            length, 
+            ENET_PACKET_FLAG_RELIABLE);
+        
+        /* Send the packet to the peer over channel id 0. */
+        /* One could also broadcast the packet by         */
+        /* enet_host_broadcast (host, 0, packet);         */
+        enet_host_broadcast (server, 0, packet);
+        
+        /* One could just use enet_host_service() instead. */
+        enet_host_flush (server);
+    }
+
+    private void onDataClient(ubyte* data, size_t length)
+    {
+        chat = to!string(cast(char[])data[0..length]) ~ "\n" ~ chat;
     }
 
     private void sendChat(string text)
@@ -152,14 +175,16 @@ final class TestLogic : UEComponent
         ig_Text("totalReceivedData: %d",        host.totalReceivedData);
         ig_Text("totalReceivedPackets: %d",     host.totalReceivedPackets);
         ig_Text("connectedPeers: %d",           host.connectedPeers);
+        ig_Text("peerCount: %d",                host.peerCount);
         ig_Text("bandwidthLimitedPeers: %d",    host.bandwidthLimitedPeers);
 
         foreach(i, p; host.peers[0..host.peerCount])
         {
-            if(p.state == ENET_PEER_STATE_CONNECTED)
+            if(p.state != ENET_PEER_STATE_DISCONNECTED)
             {
                 if(UEGui.TreeNode(format("peer %s",i)))
                 {
+                    UEGui.Text(format("state: %s",p.state));
                     ig_Text("incomingBandwidth: %d", p.incomingBandwidth);
                     ig_Text("outgoingBandwidth: %d", p.outgoingBandwidth);
                     ig_Text("incomingDataTotal: %d", p.incomingDataTotal);
@@ -180,7 +205,7 @@ final class TestLogic : UEComponent
         }
     }
 
-    private void updatePeer(ENetHost* peer)
+    private void updatePeer(ENetHost* peer, scope OnDataCallback onData)
     {
         ENetEvent event;
         while (enet_host_service (peer, &event, 0) > 0)
@@ -192,7 +217,7 @@ final class TestLogic : UEComponent
                     break;
 
                 case ENET_EVENT_TYPE_RECEIVE:
-                    chat = to!string(cast(char[])event.packet.data[0..event.packet.dataLength]) ~ "\n" ~ chat;
+                    onData(event.packet.data, event.packet.dataLength);
 
                     /* Clean up the packet now that we're done using it. */
                     enet_packet_destroy (event.packet);
