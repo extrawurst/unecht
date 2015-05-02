@@ -4,6 +4,7 @@ import std.stdio;
 
 import unecht;
 import derelict.enet.enet;
+import derelict.imgui.imgui;
 
 ///
 @UEDefaultInspector!TestLogic
@@ -16,6 +17,7 @@ final class TestLogic : UEComponent
     private ENetHost* server=null;
     private ENetHost* client=null;
     private ENetPeer* clientPeer=null;
+    private string chat;
 
     override void onCreate() {
         super.onCreate;
@@ -37,12 +39,15 @@ final class TestLogic : UEComponent
         if(server)
         {
             enet_host_destroy(server);
+            server = null;
         }
 
         if(client)
         {
             enet_host_destroy(client);
             enet_peer_reset (clientPeer);
+
+            client = null;
         }
 
         enet_deinitialize();
@@ -102,12 +107,39 @@ final class TestLogic : UEComponent
             updatePeer(client);
 
             renderEnetHostGUI(client,"client");
+
+            ig_Begin("chat");
+            scope(exit) ig_End();
+
+            static string currentInput;
+            if(UEGui.InputText!128("send",currentInput))
+            {
+                sendChat(currentInput);
+                currentInput.length = 0;
+            }
+
+            UEGui.Text(chat);
         }
+    }
+
+    private void sendChat(string text)
+    {
+        /* Create a reliable packet */
+        ENetPacket* packet = enet_packet_create (text.ptr, 
+            text.length, 
+            ENET_PACKET_FLAG_RELIABLE);
+            
+        /* Send the packet to the peer over channel id 0. */
+        /* One could also broadcast the packet by         */
+        /* enet_host_broadcast (host, 0, packet);         */
+        enet_peer_send (clientPeer, 0, packet);
+
+        /* One could just use enet_host_service() instead. */
+        enet_host_flush (client);
     }
 
     private void renderEnetHostGUI(ENetHost* host, const(char)* name)
     {
-        import derelict.imgui.imgui;
         ig_Begin(name);
         scope(exit) ig_End();
         
@@ -151,7 +183,6 @@ final class TestLogic : UEComponent
     private void updatePeer(ENetHost* peer)
     {
         ENetEvent event;
-        /* Wait up to 1000 milliseconds for an event. */
         while (enet_host_service (peer, &event, 0) > 0)
         {
             final switch (event.type)
@@ -159,17 +190,14 @@ final class TestLogic : UEComponent
                 case ENET_EVENT_TYPE_CONNECT:
                     writefln("peer connected: %s",event.peer.address);
                     break;
-                /+case ENET_EVENT_TYPE_RECEIVE:
-                    printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                        event.packet -> dataLength,
-                        event.packet -> data,
-                        event.peer -> data,
-                        event.channelID);
+
+                case ENET_EVENT_TYPE_RECEIVE:
+                    chat = to!string(cast(char[])event.packet.data[0..event.packet.dataLength]) ~ "\n" ~ chat;
+
                     /* Clean up the packet now that we're done using it. */
                     enet_packet_destroy (event.packet);
-                    
                     break;
-                +/    
+
                 case ENET_EVENT_TYPE_DISCONNECT:
                     writefln("peer disconnected: %s",event.peer.address);
                     /* Reset the peer's client information. */
@@ -177,8 +205,6 @@ final class TestLogic : UEComponent
                     break;
 
                 case ENET_EVENT_TYPE_NONE:
-                    goto case;
-                case ENET_EVENT_TYPE_RECEIVE:
                     writefln("peer event: %s",event.type);
                     enet_packet_destroy (event.packet);
                     break;

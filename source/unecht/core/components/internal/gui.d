@@ -147,7 +147,7 @@ public:
         ig_DragInt(toStringz(label),&v,1,min,max);
     }
 
-    static void InputText(int MaxLength=64)(string label, ref string v)
+    static bool InputText(int MaxLength=64)(string label, ref string v)
     {
         assert(v.length <= MaxLength);
 
@@ -156,7 +156,7 @@ public:
         buf[] = '\0';
         buf[0..v.length] = v[];
 
-        ig_InputText(toStringz(label), buf.ptr, MaxLength);
+        auto res = ig_InputText(toStringz(label), buf.ptr, MaxLength, ImGuiInputTextFlags_EnterReturnsTrue);
 
         import std.c.string:strlen;
         auto newLength = strlen(buf.ptr);
@@ -166,6 +166,8 @@ public:
         {
             v = cast(string)buf[0..newLength].idup;
         }
+
+        return res;
     }
 
     static void Text(string txt)
