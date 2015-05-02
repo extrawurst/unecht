@@ -121,6 +121,31 @@ final class TestLogic : UEComponent
         ig_Text("totalReceivedPackets: %d",     host.totalReceivedPackets);
         ig_Text("connectedPeers: %d",           host.connectedPeers);
         ig_Text("bandwidthLimitedPeers: %d",    host.bandwidthLimitedPeers);
+
+        foreach(i, p; host.peers[0..host.peerCount])
+        {
+            if(p.state == ENET_PEER_STATE_CONNECTED)
+            {
+                if(UEGui.TreeNode(format("peer %s",i)))
+                {
+                    ig_Text("incomingBandwidth: %d", p.incomingBandwidth);
+                    ig_Text("outgoingBandwidth: %d", p.outgoingBandwidth);
+                    ig_Text("incomingDataTotal: %d", p.incomingDataTotal);
+                    ig_Text("outgoingDataTotal: %d", p.outgoingDataTotal);
+                    ig_Text("packetsSent: %d", p.packetsSent);
+                    ig_Text("packetsLost: %d", p.packetsLost);
+                    ig_Text("pingInterval: %d", p.pingInterval);
+                    ig_Text("lastRoundTripTime: %d", p.lastRoundTripTime);
+                    ig_Text("lowestRoundTripTime: %d", p.lowestRoundTripTime);
+                    ig_Text("lastRoundTripTimeVariance: %d", p.lastRoundTripTimeVariance);
+                    ig_Text("highestRoundTripTimeVariance: %d", p.highestRoundTripTimeVariance);
+                    ig_Text("roundTripTime: %d", p.roundTripTime);
+                    ig_Text("mtu: %d", p.mtu);
+
+                    ig_TreePop();
+                }
+            }
+        }
     }
 
     private void updatePeer(ENetHost* peer)
