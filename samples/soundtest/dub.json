@@ -6,8 +6,6 @@
 	"dependencies": {
 		"unecht" : {"version": "~master", "path": "../../"},
         "derelict-al" : "~>1.0.0",
-        "derelict-vorbis": "~>1.0.1",
-        "derelict-ogg": "~>1.0.1",
 	},
 	
     "versions": ["UEIncludeEditor","UEProfiling"],
