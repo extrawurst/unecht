@@ -3,7 +3,7 @@ module app;
 import std.stdio;
 
 import unecht;
-import derelict.openal.al;
+import derelict.fmod.fmod;
 
 ///
 final class CloseLogic : UEComponent
@@ -40,77 +40,34 @@ final class SoundSource : UEComponent
     mixin(UERegisterComponent!());
 
     static immutable string testSound = import("beep.wav");
-    
-    private uint al_source;
-    private uint al_buffer;
+
+    FMOD_SOUND* snd;
+    FMOD_CHANNEL* channel;
     
     override void onCreate() {
         super.onCreate;
 
-        alGenSources(1, &al_source); 
-
-        loadWAV(testSound);
+        load(testSound);
     }
 
     void play()
     {
         writefln("play:");
 
-        alSourcePlay(al_source);
+        auto res = FMOD_System_PlaySound(SoundSystem.fmod,snd,null,false,&channel);
+
+        assert(res==FMOD_RESULT.FMOD_OK);
     }
 
-    struct WAVHeaderData
+    private void load(string content)
     {
-        char[4] chunkType;
-        int chunkSize;
-    }
+        FMOD_CREATESOUNDEXINFO info;
+        info.cbsize = FMOD_CREATESOUNDEXINFO.sizeof;
+        info.length = cast(uint)content.length;
 
-    struct WAVHeaderFormat
-    {
-        char[3] chunkType;
-        int chunkSize;
-        short wFormatTag;
-        ushort wChannels;
-        uint  dwSamplesPerSec;
-        uint  dwAvgBytesPerSec;
-        ushort wBlockAlign;
-        ushort wBitsPerSample;
-    }
+        auto res = FMOD_System_CreateSound(SoundSystem.fmod, content.ptr, FMOD_OPENMEMORY, &info, &snd);
 
-    private void loadWAV(string content)
-    {
-        if (content[0..4] != "RIFF")
-            throw new Exception("Not a WAV file");
-
-        if (content[8..12] != "WAVE")
-            throw new Exception("Not a WAV file");
-
-        WAVHeaderFormat hdr = *cast(WAVHeaderFormat*)&content[12];
-
-        writefln("hdr: %s",hdr);
-
-        WAVHeaderData dat = *cast(WAVHeaderData*)&content[12+WAVHeaderFormat.sizeof];
-
-        writefln("dat: %s",dat);
-
-        auto duration = cast(float)dat.chunkSize / hdr.dwAvgBytesPerSec;
-        writefln("dur: %s",duration);
-
-        ubyte* dataStart = cast(ubyte*)&content[12+WAVHeaderFormat.sizeof+WAVHeaderData.sizeof];
-
-        auto fmt = AL_FORMAT_MONO8;
-        if(hdr.wBitsPerSample == 8 && hdr.wChannels == 2)
-            fmt = AL_FORMAT_STEREO8;
-        else if(hdr.wBitsPerSample == 16 && hdr.wChannels == 1)
-            fmt = AL_FORMAT_MONO16;
-        else if(hdr.wBitsPerSample == 16 && hdr.wChannels == 2)
-            fmt = AL_FORMAT_STEREO16;
-    
-        alGenBuffers(1, &al_buffer);
-
-        alBufferData(al_buffer, fmt, dataStart, dat.chunkSize, hdr.dwSamplesPerSec);
-
-        alSourcei(al_source, AL_BUFFER, al_buffer);
+        assert(res==FMOD_RESULT.FMOD_OK, format("FMOD_System_CreateSound: %s",res));
     }
 }
 
@@ -119,26 +76,37 @@ final class SoundSystem : UEComponent
 {
     mixin(UERegisterComponent!());
 
-    private ALCdevice* al_device;
-    private ALCcontext* al_context;
+    public static FMOD_SYSTEM* fmod;
+
+    void* extradriverData;
 
     override void onCreate() {
         super.onCreate;
 
-        DerelictAL.load();
+        DerelictFmod.load();
 
-        // Initialize OpenAL audio
-        al_device = alcOpenDevice(null);
-        al_context = alcCreateContext(al_device, null);
-        alcMakeContextCurrent(al_context);
+        auto resCreate = FMOD_System_Create(&fmod);
+        assert(resCreate==FMOD_RESULT.FMOD_OK);
+
+        uint fmodversion;
+        FMOD_System_GetVersion(fmod,&fmodversion);
+
+        writefln("fmod v: %s (%s)",fmodversion, FMOD_VERSION);
+
+        assert(fmodversion >= FMOD_VERSION);
+
+        auto resInit = FMOD_System_Init(fmod, 32, FMOD_INIT_NORMAL, extradriverData);
+        assert(resInit==FMOD_RESULT.FMOD_OK);
     }
 
     override void onDestroy() {
         super.onDestroy;
 
-        alcDestroyContext(al_context);
-        alcCloseDevice(al_device);
-        al_context = al_device = null;
+        FMOD_System_Close(fmod);
+
+        FMOD_System_Release(fmod);
+
+        DerelictFmod.unload();
     }
 }
 
