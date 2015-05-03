@@ -47,19 +47,19 @@ final class SoundSource : UEComponent
     override void onCreate() {
         super.onCreate;
 
-        load(testSound);
+        loadMemory(testSound);
     }
 
     void play()
     {
-        writefln("play:");
-
         auto res = FMOD_System_PlaySound(SoundSystem.fmod,snd,null,false,&channel);
 
         assert(res==FMOD_RESULT.FMOD_OK);
+
+        writefln("play: %s",channel);
     }
 
-    private void load(string content)
+    private void loadMemory(string content)
     {
         FMOD_CREATESOUNDEXINFO info;
         info.cbsize = FMOD_CREATESOUNDEXINFO.sizeof;
@@ -97,6 +97,12 @@ final class SoundSystem : UEComponent
 
         auto resInit = FMOD_System_Init(fmod, 32, FMOD_INIT_NORMAL, extradriverData);
         assert(resInit==FMOD_RESULT.FMOD_OK);
+    }
+
+    override void onUpdate() {
+        super.onUpdate;
+
+        FMOD_System_Update(fmod);
     }
 
     override void onDestroy() {
