@@ -95,6 +95,23 @@ final class SoundSystem : UEComponent
 
         assert(fmodversion >= FMOD_VERSION);
 
+        {
+            int drivercnt;
+            FMOD_System_GetNumDrivers(fmod, &drivercnt);
+
+            foreach(i; 0..drivercnt)
+            {
+                char[64] name;
+                FMOD_GUID guid;
+                int sampleRate;
+                FMOD_SPEAKERMODE speakermode;
+                int speakermodeChannels;
+                FMOD_System_GetDriverInfo(fmod,i,name.ptr,64,&guid,&sampleRate,&speakermode,&speakermodeChannels);
+
+                writefln("fmod driver [%s]: (%s,%s,%s,%s)",i,to!string(name),sampleRate,speakermode,speakermodeChannels);
+            }
+        }
+
         auto resInit = FMOD_System_Init(fmod, 32, FMOD_INIT_NORMAL, extradriverData);
         assert(resInit==FMOD_RESULT.FMOD_OK);
     }
