@@ -165,6 +165,7 @@ final class EditorRootComponent : UEComponent {
 
 	private UEEntity editorComponent;
 
+    @NonSerialize {
 	private static UEEntity gismo;
     private static UEMaterial editorMaterial;
 
@@ -172,6 +173,7 @@ final class EditorRootComponent : UEComponent {
 	private static UECamera _editorCam;
 	private static UEEntity _currentEntity;
     private static UEEditorGUI _editorGUI;
+    }
 
     ///
     static @property UEEntity currentEntity() { return _currentEntity; }

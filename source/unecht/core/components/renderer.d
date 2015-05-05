@@ -19,9 +19,9 @@ private:
 
 public:
     mixin(UERegisterComponent!());
-
+   
     UEMesh mesh;
-    
+
     version(UEIncludeEditor)static UEMaterial editorMaterial;
 
     ///

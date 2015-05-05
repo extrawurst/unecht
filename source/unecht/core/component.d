@@ -13,19 +13,11 @@ import unecht;
 template UERegisterComponent()
 {
 	enum UERegisterComponent = q{
-        //private import sdlang; unfortunately hell breaks loose if we mixin the import
-        alias T = typeof(this);
-        static UESerialization!T serialization;
+        version(UEIncludeEditor)override @property string name() { return typeof(this).stringof; }
 
-		version(UEIncludeEditor)override @property string name() { return T.stringof; }
-
-        override void serialize(Tag sdlTag) 
+        override void serialize(ref UESerializer serializer) 
         {
-            Tag memberTag = new Tag(sdlTag);
-            memberTag.name = "super";
-            super.serialize(memberTag);
-
-            serialization.serialize(this, sdlTag); 
+            serializer.serialize(this);
         }
 	};
 }
@@ -48,13 +40,13 @@ abstract class UEComponent
     void onCollision(UEComponent _collider) {}
 
     ///
-    void serialize(Tag sdlTag)
+    void serialize(ref UESerializer serializer)
     {
         //TODO: serialize entity
 
-        Tag memberTag = new Tag(sdlTag);
+        /+Tag memberTag = new Tag(sdlTag);
         memberTag.name = "enabled";
-        memberTag.add(Value(_enabled));
+        memberTag.add(Value(_enabled));+/
     }
 	
     @nogc final nothrow {
@@ -80,5 +72,6 @@ package:
 private:
 	UEEntity _entity;
 	//TODO: disabled by default
+    @Serialize
 	bool _enabled = true;
 }

@@ -13,12 +13,14 @@ final class UEMesh : UEComponent
 {
 	mixin(UERegisterComponent!());
 
+    @NonSerialize{
 	GLVertexArrayObject vertexArrayObject;
 	GLVertexBufferObject vertexBuffer;
 	GLVertexBufferObject uvBuffer;
 	GLVertexBufferObject colorBuffer;
 	GLVertexBufferObject indexBuffer;
 	GLVertexBufferObject normalBuffer;
+    }
 
     override void onDestroy() {
         super.onDestroy;

@@ -1,154 +1,156 @@
 ﻿module unecht.core.componentSerialization;
 
 import std.conv;
+import std.traits:isPointer;
 
 import unecht.core.component;
 import unecht.meta.uda;
+import sdlang;
 
+enum isSerializerBaseType(T) = //is( T : Value        ) ||
+    is( T : bool         ) ||
+        is( T : string       ) ||
+        is( T : dchar        ) ||
+        is( T : int          ) ||
+        is( T : long         ) ||
+        is( T : float        ) ||
+        is( T : double       ) ||
+        is( T : real         ) ||
+        //is( T : Date         ) ||
+        //is( T : DateTimeFrac ) ||
+        //is( T : SysTime      ) ||
+        //is( T : DateTimeFracUnknownZone ) ||
+        //is( T : Duration     ) ||
+        is( T : ubyte[]      )
+        //is( T : typeof(null)
+        ;
+        
 ///
-struct Serialize{}
-
-///
-private static void serializeBase(T)(T v, Tag parent)
+struct UESerializer
 {
-    //pragma(msg, "other:"~m);
-    parent.add(Value(v));
-}
+    Tag root = new Tag();
 
-///
-private static void serializeType(T)(T v, Tag parent)
-    if (is(T : UEComponent))
-{
-    //pragma(msg, "UEComponent: ");
-    v.serialize(parent);
-}
+    void serialize(T)(T v)
+        if(is(T:UEComponent))
+    {
+        Tag componentTag = new Tag(root);
+        componentTag.name = T.stringof;
 
-///
-private static void serializeType(T)(T v, Tag parent)
-    if (is(T : UEComponent) == false)
-{
-    //TODO:
-    //pragma(msg, "UEComponent: ");
-}
-
-///
-static struct UESerialization(T)
-{
-    import sdlang;
-    import std.traits;
-    
-    template isSerializationMemberName(string MEM)
-    {
-        enum isSerializationMemberName = 
-            (MEM != T.stringof) && 
-                (MEM != "this") && 
-                (MEM != "T") && 
-                (MEM != "Monitor") && 
-                (MEM != "serialization");
-    }
-    
-    template isAnyFunction(alias MEM)
-    {
-        enum isAnyFunction =  __traits(isVirtualFunction, mixin("T."~MEM)) || 
-            __traits(isStaticFunction, mixin("T."~MEM)) ||
-                __traits(isOverrideFunction, mixin("T."~MEM)) ||
-                __traits(isFinalFunction, mixin("T."~MEM)) ||
-                __traits(isVirtualMethod, mixin("T."~MEM));
-    }
-    
-    template isTemplate(alias MEM)
-    {
-        enum isTemplate =  is(typeof(mixin("T."~MEM)) == void);
-    }
-    
-    template isNestedType(string MEM)
-    {
-        //TODO: more base types for the cases of aliases
-        enum isNestedType = mixin("is(T."~MEM~" == enum)") || 
-            mixin("is(T."~MEM~" == struct)") || 
-                mixin("is(T."~MEM~" : int)");
-    }
-    
-    template isNonStatic(string MEM)
-    {
-        //cannot take address of non-statics
-        enum isNonStatic = !is(typeof(mixin("&T."~MEM)));
-    }
-    
-    template isSerializable(alias MEM)
-    {
-        enum TdotMember="T."~MEM;
-        enum compiles = __traits(compiles, mixin(TdotMember)); //NOTE: compiler bug: when removing this it wont compile under dmd<2.067
-        static if(isSerializationMemberName!MEM && !isNestedType!MEM && __traits(compiles, mixin(TdotMember)))
-        {
-            enum protection=__traits(getProtection, mixin(TdotMember));
-            enum hasSerializeUDA = hasUDA!(mixin(TdotMember),Serialize);
-            static if(protection == "public" || hasSerializeUDA)
-            {
-                static if(!isAnyFunction!(MEM) && !isTemplate!MEM)
-                {
-                    enum isSerializable = isNonStatic!MEM;
-                }
-                else
-                    enum isSerializable = false;
-            }
-            else
-                enum isSerializable = false;
-        }
-        else 
-            enum isSerializable = false;
-    }
-    
-    alias aliasHelper(alias T) = T;
-    alias aliasHelper(T) = T;
-    
-    static void serialize(T v, Tag parent)
-    {
         pragma (msg, T.stringof~": ----------------------------------------");
         pragma (msg, __traits(derivedMembers, T));
-        import std.typetuple:Filter;
-        foreach(m; Filter!(isSerializable, __traits(derivedMembers, T)))
+        
+        foreach(m; __traits(derivedMembers, T))
         {
-            pragma(msg, "> "~m);
+            enum isMemberVariable = is(typeof(() {
+                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
+                    }));
+            
+            static if(isMemberVariable) {
+            
+                enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
 
-            alias memberType = typeof(mixin("v."~m));
-            
-            Tag memberTag = new Tag(parent);
-            memberTag.name = m;
-            
-            static if(is(memberType == class) || is(memberType == struct) || is(memberType == function) || is(memberType == delegate))
-            {
-                serializeType!memberType(mixin("v."~m),memberTag);
-            }
-            else static if(isArray!(memberType))
-            {
-                pragma(msg, "array: "~m);
-                mixin("foreach(i, c; v." ~m~ ") { Tag childTag = new Tag(memberTag); childTag.name=to!string(i); c.serialize(childTag); }");
-            }
-            else static if(isPointer!(memberType))
-            {
-                //pragma(msg, "pointer: "~m);
-                memberTag.add(Value("pointers not implemented yet!"));
-            }
-            else static if(is(memberType == enum))
-            {
-                //TODO: support other enum base types
-                //pragma(msg, "enum: "~m);
-                memberTag.add(Value(cast(int)mixin("v."~m)));
-            }
-            else
-            {
-                serializeBase!memberType(mixin("v."~m),memberTag);
+                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
+
+                enum hasNonSerializeUDA = hasUDA!(mixin("T."~m), NonSerialize);
+
+                static if((isPublic || hasSerializeUDA) && !hasNonSerializeUDA)
+                {
+                    pragma(msg, "> "~m);
+
+                    serialize(__traits(getMember, v, m), componentTag);
+                }
             }
         }
     }
-    
-    static void deserialize(ref T v, string source)
+
+    static void serialize(T)(in T val, Tag parent)
+        if(is(T : UEComponent))
     {
-        //TODO:
+        //parent.addValue(Value(cast(void*)val));
+    }
+
+    static void serialize(T)(in ref T val, Tag parent)
+        if(is(T : UEComponent))
+    {
+        //parent.addValue(Value(cast(void*)val));
+    }
+
+    static void serialize(T)(in ref T val, Tag parent)
+        if(is(T == enum))
+    {
+        //parent.addValue(Value(cast(void*)val));
+    }
+
+    static void serialize(T)(T val, Tag parent)
+        if(isPointer!T)
+    {
+        //parent.addValue(Value(cast(void*)val));
+    }
+
+    static void serialize(T)(T[] val, Tag parent)
+        if(isSerializerBaseType!T && !is(T : char))
+    {
+        //parent.addValue(Value(cast(void*)val));
+    }
+
+    static void serialize(T)(in ref T val, Tag parent)
+        if(is(T : Arr[],Arr : UEComponent))
+    {
+        //parent.addValue(Value(cast(void*)val));
+    }
+
+    static void serialize(T)(T val, Tag parent)
+        if(is(T == struct) && __traits(isPOD,T))
+    {
+        Tag componentTag = new Tag(parent);
+
+        foreach(m; __traits(allMembers, T))
+        {
+            enum isMemberVariable = is(typeof(() {
+                        __traits(getMember, val, m) = __traits(getMember, val, m).init;
+                    }));
+            
+            static if(isMemberVariable) {
+                serialize(__traits(getMember, val, m), componentTag);
+            }
+        }
+    }
+
+    static void serialize(T)(T val, Tag parent)
+        if( isSerializerBaseType!T && !is(T == enum) )
+    {
+        parent.add(Value(val));
+    }
+
+    string toString() 
+    {
+        return root.toSDLDocument();
     }
 }
 
+/// UDA to mark serialization fields
+struct Serialize{}
+/// UDA to mark serialization fields to not be serialized
+struct NonSerialize{}
+
+unittest
+{
+    import std.stdio;
+    import unecht;
+
+    class BaseComp: UEComponent
+    {
+        mixin(UERegisterComponent!());
+    }
+
+    UESerializer s;
+    BaseComp c = new BaseComp();
+
+    c.serialize(s);
+    writefln("%s",c.toString());
+}
+
+/+
 unittest
 {   
     import std.stdio;
@@ -250,4 +252,4 @@ unittest
     writefln("'%s'",root.toSDLDocument);
     
     //assert(root.toSDLDocument == "super {\n\tenabled true\n}\ncomp {\n\tsuper {\n\t\tenabled true\n\t}\n\tfoo false\n}\n");
-}
+}+/
