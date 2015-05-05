@@ -45,7 +45,7 @@ struct UESerializer
                         __traits(getMember, v, m) = __traits(getMember, v, m).init;
                     }));
 
-            enum isNonStatic = !is(typeof(__traits(getMember, v, m)));
+            enum isNonStatic = !is(typeof(mixin("&T."~m)));
             
             static if(isMemberVariable && isNonStatic) {
             
