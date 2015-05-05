@@ -44,8 +44,10 @@ struct UESerializer
             enum isMemberVariable = is(typeof(() {
                         __traits(getMember, v, m) = __traits(getMember, v, m).init;
                     }));
+
+            enum isNonStatic = !is(typeof(__traits(getMember, v, m)));
             
-            static if(isMemberVariable) {
+            static if(isMemberVariable && isNonStatic) {
             
                 enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
 
