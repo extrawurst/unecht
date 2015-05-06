@@ -54,6 +54,7 @@ public:
     }
     
     ///
+    @NonSerialize
     @property const(UESceneNode) parent() const { return _parent; }
     ///
     @property void parent(UESceneNode _parent) { setParent(_parent); }

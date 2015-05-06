@@ -18,6 +18,7 @@ template UERegisterComponent()
         override void serialize(ref UESerializer serializer) 
         {
             serializer.serialize(this);
+            super.serialize(serializer);
         }
 	};
 }
@@ -42,11 +43,7 @@ abstract class UEComponent
     ///
     void serialize(ref UESerializer serializer)
     {
-        //TODO: serialize entity
-
-        /+Tag memberTag = new Tag(sdlTag);
-        memberTag.name = "enabled";
-        memberTag.add(Value(_enabled));+/
+        serializer.serialize(this);
     }
 	
     @nogc final nothrow {
@@ -70,6 +67,7 @@ package:
 	final void setEntity(UEEntity _entity) { this._entity = _entity; }
 
 private:
+    //@Serialize
 	UEEntity _entity;
 	//TODO: disabled by default
     @Serialize

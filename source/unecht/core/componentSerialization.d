@@ -1,11 +1,13 @@
 ﻿module unecht.core.componentSerialization;
 
 import std.conv;
-import std.traits:isPointer,Unqual;
+import std.traits:isPointer,Unqual,BaseClassesTuple;
 
 import unecht.core.component;
 import unecht.meta.uda;
 import sdlang;
+
+import std.string:format;
 
 enum isSerializerBaseType(T) = //is( T : Value        ) ||
     is( T : bool         ) ||
@@ -25,13 +27,20 @@ enum isSerializerBaseType(T) = //is( T : Value        ) ||
         //is( T : typeof(null)
         ;
 
+struct SerializerUID
+{
+    ubyte[20] nameHash;
+    size_t refId;
+}
+
 ///
 struct UESerializer
 {
-    size_t[] alreadySerialized;
+    SerializerUID[] alreadySerialized;
 
     Tag dependencies = new Tag;
     Tag content = new Tag;
+    bool rootWritten=false;
 
     void serialize(T)(T v)
         if(is(T:UEComponent))
@@ -39,23 +48,36 @@ struct UESerializer
         dependencies.name = "dependencies";
         content.name = "content";
 
-        serializeTo(v, content);
+        if(!rootWritten)
+        {
+            rootWritten = true;
+            serializeTo(v, content);
+        }
+        else
+        {
+            serializeTo(v, dependencies);
+        }
     }
 
     private void serializeTo(T)(T v, Tag parent)
     {
         import std.algorithm:countUntil;
-        
-        auto classId = cast(size_t)cast(void*)v;
-        if(alreadySerialized.countUntil(classId) != -1)
+        import std.digest.sha;
+
+        SerializerUID uid;
+        uid.refId = cast(size_t)cast(void*)v;
+        uid.nameHash = sha1Of(Unqual!(T).stringof);
+
+        if(alreadySerialized.countUntil(uid) != -1)
             return;
-        alreadySerialized ~= classId;
-        
+        alreadySerialized ~= uid;
+
         Tag componentTag = new Tag(parent);
-        componentTag.add(new Attribute("uid", Value(to!string(classId))));
+        componentTag.add(new Attribute("uid", Value(to!string(uid.refId))));
         componentTag.name = Unqual!(T).stringof;
-        
-        //pragma (msg, T.stringof~": ----------------------------------------");
+
+        pragma (msg, "----------------------------------------");
+        pragma (msg, T.stringof);
         //pragma (msg, __traits(derivedMembers, T));
         
         foreach(m; __traits(derivedMembers, T))
@@ -66,17 +88,17 @@ struct UESerializer
             
             enum isNonStatic = !is(typeof(mixin("&T."~m)));
 
-            //pragma(msg, "- "~m);
+            pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
 
             static if(isMemberVariable && isNonStatic) {
 
-                //pragma(msg, "> "~m);
-
                 enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
-                
+
                 enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
                 
                 enum hasNonSerializeUDA = hasUDA!(mixin("T."~m), NonSerialize);
+
+                //pragma(msg, .format("> %s (%s,%s,%s)",m,isPublic,hasSerializeUDA,hasNonSerializeUDA));
                 
                 static if((isPublic || hasSerializeUDA) && !hasNonSerializeUDA)
                 {
@@ -91,10 +113,10 @@ struct UESerializer
         }
     }
 
-    void serializeMember(T)(inout T val, Tag parent)
+    void serializeMember(T)(T val, Tag parent)
         if(is(T : UEComponent))
     {
-        serializeTo(val, dependencies);
+        val.serialize(this);
 
         auto classId = cast(size_t)cast(void*)val;
         parent.add(Value(to!string(classId)));
@@ -109,16 +131,20 @@ struct UESerializer
     static void serializeMember(T)(T val, Tag parent)
         if(isPointer!T)
     {
-        //parent.addValue(Value(cast(void*)val));
+        static assert(false, "TODO");
     }
 
     static void serializeMember(T)(T[] val, Tag parent)
         if(isSerializerBaseType!T && !is(T : char))
     {
-        //parent.addValue(Value(cast(void*)val));
+        foreach(v; val)
+        {
+            auto t = new Tag(parent);
+            serializeMember(v,t);
+        }
     }
 
-    static void serializeMember(T)(in ref T val, Tag parent)
+    static void serializeMember(T)(T val, Tag parent)
         if(is(T : Arr[],Arr : UEComponent))
     {
         //parent.addValue(Value(cast(void*)val));
@@ -168,7 +194,7 @@ unittest
     import std.stdio;
     import unecht;
 
-    class Comp2: UEComponent
+    class Comp1: UEComponent
     {
         mixin(UERegisterComponent!());
     }
@@ -177,10 +203,19 @@ unittest
     {
         mixin(UERegisterComponent!());
 
+        int baseClassMember;
+    }
+
+    class Comp2: BaseComp
+    {
+        mixin(UERegisterComponent!());
+        
         int i;
         bool b;
-        Comp2 base = new Comp2;
-
+        Comp1 comp1 = new Comp1;
+        Comp1 comp1_;
+        int[] intArr = [0,1];
+        
         enum LocalEnum{foo,bar}
         //struct LocalStruct{}
         
@@ -188,18 +223,19 @@ unittest
         
         LocalEnum e=LocalEnum.bar;
         AliasInt ai=2;
-
+        
         @NonSerialize
         int dont;
-
+        
         @Serialize
         private int priv;
         private int bar;
     }
 
     UESerializer s;
-    BaseComp c = new BaseComp();
+    Comp2 c = new Comp2();
+    c.comp1_ = c.comp1;
 
-    s.serialize(c);
+    c.serialize(s);
     writefln("%s",s.toString());
 }
