@@ -5,6 +5,7 @@ import std.traits:isPointer,Unqual,BaseClassesTuple;
 
 import unecht.core.component;
 import unecht.meta.uda;
+import unecht.core.entity;
 import sdlang;
 
 import std.string:format;
@@ -76,8 +77,8 @@ struct UESerializer
         componentTag.add(new Attribute("uid", Value(to!string(uid.refId))));
         componentTag.name = Unqual!(T).stringof;
 
-        pragma (msg, "----------------------------------------");
-        pragma (msg, T.stringof);
+        //pragma (msg, "----------------------------------------");
+        //pragma (msg, T.stringof);
         //pragma (msg, __traits(derivedMembers, T));
         
         foreach(m; __traits(derivedMembers, T))
@@ -88,7 +89,7 @@ struct UESerializer
             
             enum isNonStatic = !is(typeof(mixin("&T."~m)));
 
-            pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
+            //pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
 
             static if(isMemberVariable && isNonStatic) {
 
@@ -113,13 +114,46 @@ struct UESerializer
         }
     }
 
+    private void serializeTo(UEEntity v, Tag parent)
+    {
+        Tag componentTag = new Tag(parent);
+        componentTag.add(new Attribute("uid", Value(to!string(cast(size_t)cast(void*)v))));
+        componentTag.name = "UEEntity";
+
+        //TODO: serialize all relevant members
+        {
+            Tag memberTag = new Tag(componentTag);
+            memberTag.name = "name";
+            serializeMember(v.name, memberTag);
+        }
+        {
+            Tag memberTag = new Tag(componentTag);
+            memberTag.name = "children";
+            serializeMember(v.components, memberTag);
+        }
+    }
+    
     void serializeMember(T)(T val, Tag parent)
         if(is(T : UEComponent))
     {
-        val.serialize(this);
+        if(val !is null)
+        {
+            val.serialize(this);
 
-        auto classId = cast(size_t)cast(void*)val;
-        parent.add(Value(to!string(classId)));
+            auto classId = cast(size_t)cast(void*)val;
+            parent.add(Value(to!string(classId)));
+        }
+    }
+
+    void serializeMember(UEEntity val, Tag parent)
+    {
+        if(val !is null)
+        {
+            serializeTo(val,dependencies);
+            
+            auto classId = cast(size_t)cast(void*)val;
+            parent.add(Value(to!string(classId)));
+        }
     }
 
     static void serializeMember(T)(in ref T val, Tag parent)
@@ -214,6 +248,7 @@ unittest
         bool b;
         Comp1 comp1 = new Comp1;
         Comp1 comp1_;
+        Comp1 compCheckNull;
         int[] intArr = [0,1];
         
         enum LocalEnum{foo,bar}
