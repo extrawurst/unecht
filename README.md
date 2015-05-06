@@ -23,4 +23,5 @@ Game Engine Framework for the D programming language
 * frame profiling: despiker binary right besides engine binary ([guide](despiker_guide.md))
 * cimgui library ([link](https://github.com/Extrawurst/cimgui))
 * openassimp library ([link](http://assimp.sourceforge.net/))
-* enet library
+* fmod library ([link](http://www.fmod.org/download/#StudioAPI))
+* enet library ([link](http://enet.bespin.org/))
