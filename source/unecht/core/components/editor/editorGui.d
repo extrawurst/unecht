@@ -69,7 +69,13 @@ final class UEEditorGUI : UEComponent
 
             if(UEGui.Button("save Entity"))
             {
-                //addEmptyEntity();
+                if(EditorRootComponent.currentEntity)
+                {
+                    UESerializer s;
+                    EditorRootComponent.currentEntity.sceneNode.serialize(s);
+                    import std.stdio;
+                    writefln("serialize: %s",s.toString());
+                }
                 menuOpen = false;
             }
             ig_EndPopup();

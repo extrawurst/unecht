@@ -60,21 +60,32 @@ struct UESerializer
         }
     }
 
-    private void serializeTo(T)(T v, Tag parent)
+    private bool isCachedRefElseCache(T)(T v,ref size_t refId)
     {
         import std.algorithm:countUntil;
         import std.digest.sha;
 
         SerializerUID uid;
-        uid.refId = cast(size_t)cast(void*)v;
+        uid.refId = refId = cast(size_t)cast(void*)v;
         uid.nameHash = sha1Of(Unqual!(T).stringof);
-
+        
         if(alreadySerialized.countUntil(uid) != -1)
-            return;
+        {
+            return true;
+        }
+
         alreadySerialized ~= uid;
+        return false;
+    }
+
+    private void serializeTo(T)(T v, Tag parent)
+    {
+        size_t refId;
+        if(isCachedRefElseCache(v,refId))
+            return;
 
         Tag componentTag = new Tag(parent);
-        componentTag.add(new Attribute("uid", Value(to!string(uid.refId))));
+        componentTag.add(new Attribute("uid", Value(to!string(refId))));
         componentTag.name = Unqual!(T).stringof;
 
         //pragma (msg, "----------------------------------------");
@@ -116,8 +127,12 @@ struct UESerializer
 
     private void serializeTo(UEEntity v, Tag parent)
     {
+        size_t refId;
+        if(isCachedRefElseCache(v,refId))
+            return;
+
         Tag componentTag = new Tag(parent);
-        componentTag.add(new Attribute("uid", Value(to!string(cast(size_t)cast(void*)v))));
+        componentTag.add(new Attribute("uid", Value(to!string(refId))));
         componentTag.name = "UEEntity";
 
         //TODO: serialize all relevant members
@@ -178,10 +193,14 @@ struct UESerializer
         }
     }
 
-    static void serializeMember(T)(T val, Tag parent)
+    void serializeMember(T)(T val, Tag parent)
         if(is(T : Arr[],Arr : UEComponent))
     {
-        //parent.addValue(Value(cast(void*)val));
+        foreach(v; val)
+        {
+            auto t = new Tag(parent);
+            serializeMember(v,t);
+        }
     }
 
     static void serializeMember(T)(T val, Tag parent)
