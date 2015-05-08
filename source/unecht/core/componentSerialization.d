@@ -227,6 +227,7 @@ unittest
 {
     import std.stdio;
     import unecht;
+    import unecht.core.components.sceneNode;
 
     class Comp1: UEComponent
     {
@@ -267,8 +268,11 @@ unittest
         private int bar;
     }
 
+    UESceneNode n = new UESceneNode;
+    UEEntity e = UEEntity.create("test",n);
     UESerializer s;
     Comp2 c = new Comp2();
+    c._entity = e;
     c.comp1_ = c.comp1;
 
     c.serialize(s);
