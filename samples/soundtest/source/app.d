@@ -41,8 +41,8 @@ final class SoundSource : UEComponent
 
     static immutable string testSound = import("beep.wav");
 
-    FMOD_SOUND* snd;
-    FMOD_CHANNEL* channel;
+    private FMOD_SOUND* snd;
+    private FMOD_CHANNEL* channel;
     
     override void onCreate() {
         super.onCreate;
@@ -76,9 +76,8 @@ final class SoundSystem : UEComponent
 {
     mixin(UERegisterComponent!());
 
+    @NonSerialize
     public static FMOD_SYSTEM* fmod;
-
-    void* extradriverData;
 
     override void onCreate() {
         super.onCreate;
@@ -112,6 +111,7 @@ final class SoundSystem : UEComponent
             }
         }
 
+        void* extradriverData;
         auto resInit = FMOD_System_Init(fmod, 32, FMOD_INIT_NORMAL, extradriverData);
         assert(resInit==FMOD_RESULT.FMOD_OK);
     }
