@@ -18,7 +18,7 @@ final class TestLogic : UEComponent
 
         DerelictASSIMP3.load();
 
-        auto scene = aiImportFile("data/cartoon_airplane.obj", aiProcess_Triangulate|aiProcess_GenSmoothNormals);
+        auto scene = aiImportFile("data/teapot.obj", aiProcess_Triangulate|aiProcess_GenSmoothNormals);
         assert(scene);
         scope(exit) aiReleaseImport(scene);
 

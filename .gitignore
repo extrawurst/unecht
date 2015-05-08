@@ -2,7 +2,6 @@
 docs.json
 __dummy.html
 *.o
-*.obj
 dub.userprefs
 libunecht.a
 samples/pong/pong
