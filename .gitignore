@@ -13,3 +13,6 @@ __test__library__
 despiker
 helloworld
 imgui.ini
+samples/enettest/enettest.exe
+samples/pong/pong.exe
+samples/soundtest/soundtest.exe
