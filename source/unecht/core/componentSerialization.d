@@ -39,13 +39,18 @@ struct UESerializer
 {
     SerializerUID[] alreadySerialized;
 
-    Tag dependencies = new Tag;
-    Tag content = new Tag;
+    Tag dependencies;
+    Tag content;
     bool rootWritten=false;
 
     void serialize(T)(T v)
         if(is(T:UEComponent))
     {
+        if(!dependencies)
+            dependencies = new Tag();
+        if(!content)
+            content = new Tag();
+
         dependencies.name = "dependencies";
         content.name = "content";
 
