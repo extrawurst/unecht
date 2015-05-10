@@ -161,18 +161,9 @@ struct UESerializer
         parent.add(Value(cast(int)val));
     }
 
-    static void serializeMember(T)(T[] val, Tag parent)
-        if(isSerializerBaseType!T && !is(T : char))
-    {
-        foreach(v; val)
-        {
-            auto t = new Tag(parent);
-            serializeMember(v,t);
-        }
-    }
-
-    void serializeMember(T)(T val, Tag parent)
-        if(is(T : Arr[],Arr : UEComponent))
+    private void serializeMember(T)(T[] val, Tag parent)
+        if( (isSerializerBaseType!T && !is(T : char)) ||
+            (is(T:UEComponent) || is(T:UEEntity)))
     {
         foreach(v; val)
         {
@@ -281,15 +272,9 @@ struct UEDeserializer
 
     private Tag findObject(string objectType, string objectId)
     {
-        /+import std.stdio;
-        writefln("find: %s(%s)",objectType,objectId);
-        scope(exit)writefln("endfind");+/
-
         auto objects = dependencies.all.tags[objectType];
         foreach(Tag o; objects)
         {
-            //writefln("o: %s",o.name);
-
             auto uid = o.attributes["uid"];
 
             if(!uid.empty && uid[0].value == objectId)
@@ -406,14 +391,15 @@ struct UEDeserializer
         objArray ~= LoadedObject!(Base)(v,uid);
     }
     
-    static void deserializeMember(T)(ref T val, Tag parent)
+    private static void deserializeMember(T)(ref T val, Tag parent)
         if(is(T == enum))
     {
         val = cast(T)parent.values[0].get!int;
     }
     
-    static void deserializeMember(T)(ref T[] val, Tag parent)
-        if(isSerializerBaseType!T && !is(T : char))
+    private void deserializeMember(T)(ref T[] val, Tag parent)
+        if((isSerializerBaseType!T && !is(T : char)) ||
+            (is(T:UEComponent) || is(T:UEEntity) ))
     {
         val.length = parent.all.tags.length;
         size_t idx=0;
@@ -423,24 +409,13 @@ struct UEDeserializer
         }
     }
     
-    void deserializeMember(T)(ref T val, Tag parent)
-        if(is(T : Arr[],Arr : UEComponent))
-    {
-        val.length = parent.all.tags.length;
-        size_t idx=0;
-        foreach(tag; parent.all.tags)
-        {
-            deserializeMember(val[idx++],tag);
-        }
-    }
-    
-    static void deserializeMember(T)(T val, Tag parent)
+    private static void deserializeMember(T)(T val, Tag parent)
         if(is(T == struct) && __traits(isPOD,T))
     {
         pragma(msg, "ignore deserialization of: "~T.stringof);
     }
 
-    static void deserializeMember(T)(ref T val, Tag parent)
+    private static void deserializeMember(T)(ref T val, Tag parent)
         if( isSerializerBaseType!T && !is(T == enum) )
     {
         assert(parent.values.length == 1);
