@@ -20,6 +20,12 @@ template UERegisterComponent()
             serializer.serialize(this);
             super.serialize(serializer);
         }
+
+        override void deserialize(ref UEDeserializer serializer, string uid=null) 
+        {
+            auto parentId = serializer.deserialize(this, uid);
+            super.deserialize(serializer,parentId);
+        }
 	};
 }
 
@@ -44,6 +50,12 @@ abstract class UEComponent
     void serialize(ref UESerializer serializer)
     {
         serializer.serialize(this);
+    }
+
+    ///
+    void deserialize(ref UEDeserializer serializer, string uid=null)
+    {
+        serializer.deserialize(this,uid);
     }
 	
     @nogc final nothrow {

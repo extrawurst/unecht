@@ -182,12 +182,6 @@ struct UESerializer
         parent.add(Value(cast(int)val));
     }
 
-    static void serializeMember(T)(T val, Tag parent)
-        if(isPointer!T)
-    {
-        static assert(false, "TODO");
-    }
-
     static void serializeMember(T)(T[] val, Tag parent)
         if(isSerializerBaseType!T && !is(T : char))
     {
@@ -211,6 +205,7 @@ struct UESerializer
     static void serializeMember(T)(T val, Tag parent)
         if(is(T == struct) && __traits(isPOD,T))
     {
+        pragma(msg, "ignore serialization of: "~T.stringof);
         /+Tag componentTag = new Tag(parent);
 
         foreach(m; __traits(allMembers, T))
@@ -231,7 +226,7 @@ struct UESerializer
         parent.add(Value(val));
     }
 
-    string toString() 
+    string toString()
     {
         auto root = new Tag;
 
@@ -239,6 +234,154 @@ struct UESerializer
         root.add(dependencies);
 
         return root.toSDLDocument();
+    }
+}
+
+struct UEDeserializer
+{
+    private Tag content;
+    private Tag dependencies;
+    private bool rootRead;
+
+    this(string input)
+    {
+        import std.stdio;
+        auto root =  parseSource(input);
+
+        content = root.all.tags["content"][0];
+        //writefln("%s",root.all.tags[0]);
+        assert(content !is null);
+        dependencies = root.all.tags["dependencies"][0];
+        assert(dependencies !is null);
+    }
+    
+    string deserialize(T)(T v, string uid)
+        if(is(T:UEComponent))
+    {
+        if(!uid || uid.length == 0)
+        {
+            auto contentRoot = content.all.tags.front;
+
+            assert(T.stringof == contentRoot.name, format("content name: '%s' (expected '%s')",contentRoot.name, T.stringof));
+
+            deserializeFrom(v, contentRoot);
+
+            string res = contentRoot.attributes["uid"][0].value.get!string;
+
+            return res;
+        }
+        else
+        {
+            return deserializeId(v,uid);
+        }
+    }
+
+    private string deserializeId(T)(T v, string uid)
+        if(is(T:UEComponent))
+    {
+        auto tag = findObject(T.stringof, uid);
+        assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
+
+        return uid;
+    }
+
+    private Tag findObject(string objectType, string objectId)
+    {
+        /+import std.stdio;
+        writefln("find: %s(%s)",objectType,objectId);
+        scope(exit)writefln("endfind");+/
+
+        auto objects = dependencies.all.tags[objectType];
+        foreach(Tag o; objects)
+        {
+            //writefln("o: %s",o.name);
+
+            auto uid = o.attributes["uid"];
+
+            if(!uid.empty && uid[0].value == objectId)
+            {
+                return o;
+            }
+        }
+
+        return null;
+    }
+
+    private void deserializeFrom(T)(T v, Tag node)
+        if(is(T:UEComponent))
+    {
+        foreach(m; __traits(derivedMembers, T))
+        {
+            enum isMemberVariable = is(typeof(() {
+                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
+                    }));
+            
+            enum isNonStatic = !is(typeof(mixin("&T."~m)));
+            
+            //pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
+            
+            static if(isMemberVariable && isNonStatic) {
+                
+                enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
+                
+                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
+                
+                enum hasNonSerializeUDA = hasUDA!(mixin("T."~m), NonSerialize);
+                
+                //pragma(msg, .format("> %s (%s,%s,%s)",m,isPublic,hasSerializeUDA,hasNonSerializeUDA));
+                
+                static if((isPublic || hasSerializeUDA) && !hasNonSerializeUDA)
+                {
+                    //pragma(msg, "-> "~m);
+
+                    auto memberTag = node.all.tags[m][0];
+                    assert(memberTag);
+                    
+                    deserializeMember(__traits(getMember, v, m), memberTag);
+                }
+            }
+        }
+    }
+
+    void deserializeMember(T)(T val, Tag parent)
+        if(is(T : UEComponent))
+    {
+
+    }
+    
+    void deserializeMember(UEEntity val, Tag parent)
+    {
+
+    }
+    
+    static void deserializeMember(T)(in ref T val, Tag parent)
+        if(is(T == enum))
+    {
+
+    }
+    
+    static void deserializeMember(T)(T[] val, Tag parent)
+        if(isSerializerBaseType!T && !is(T : char))
+    {
+
+    }
+    
+    void deserializeMember(T)(T val, Tag parent)
+        if(is(T : Arr[],Arr : UEComponent))
+    {
+
+    }
+    
+    static void deserializeMember(T)(T val, Tag parent)
+        if(is(T == struct) && __traits(isPOD,T))
+    {
+        pragma(msg, "ignore deserialization of: "~T.stringof);
+    }
+
+    static void deserializeMember(T)(ref T val, Tag parent)
+        if( isSerializerBaseType!T && !is(T == enum) )
+    {
+        val = parent.values[0].get!T;
     }
 }
 
@@ -296,9 +439,20 @@ unittest
     UEEntity e = UEEntity.create("test",n);
     UESerializer s;
     Comp2 c = new Comp2();
+    c.i=2;
     c._entity = e;
     c.comp1_ = c.comp1;
 
     c.serialize(s);
-    writefln("%s",s.toString());
+
+    auto serializeString = s.toString();
+
+    writefln("string: \n'%s'",serializeString);
+
+    Comp2 c2 = new Comp2();
+    UEDeserializer d = UEDeserializer(serializeString);
+    c2.deserialize(d);
+
+    assert(d.findObject("UEEntity",to!string(cast(size_t)cast(void*)e)));
+    assert(c2.i == c.i, format("%s != %s",c2.i,c.i));
 }
