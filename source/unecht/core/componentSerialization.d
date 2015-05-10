@@ -35,6 +35,45 @@ struct SerializerUID
     size_t refId;
 }
 
+mixin template generateSerializeFunc(alias Func)
+{
+    void iterateAllSerializables(T)(T v, Tag tag)
+    {
+        //pragma (msg, "----------------------------------------");
+        //pragma (msg, T.stringof);
+        //pragma (msg, __traits(derivedMembers, T));
+        
+        foreach(m; __traits(derivedMembers, T))
+        {
+            enum isMemberVariable = is(typeof(() {
+                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
+                    }));
+
+            enum isNonStatic = !is(typeof(mixin("&T."~m)));
+            
+            //pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
+            
+            static if(isMemberVariable && isNonStatic) {
+                
+                enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
+                
+                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
+                
+                enum hasNonSerializeUDA = hasUDA!(mixin("T."~m), NonSerialize);
+                
+                //pragma(msg, .format("> %s (%s,%s,%s)",m,isPublic,hasSerializeUDA,hasNonSerializeUDA));
+                
+                static if((isPublic || hasSerializeUDA) && !hasNonSerializeUDA)
+                {
+                    //pragma(msg, "-> "~m);
+
+                    Func(__traits(getMember, v, m), tag, m);
+                }
+            }
+        }
+    }
+}
+
 ///
 struct UESerializer
 {
@@ -43,6 +82,8 @@ struct UESerializer
     private Tag dependencies;
     private Tag content;
     private bool rootWritten=false;
+
+    mixin generateSerializeFunc!serializeMemberWithName;
 
     void serialize(T)(T v)
         if(is(T:UEComponent) || is(T:UEEntity))
@@ -93,42 +134,16 @@ struct UESerializer
         Tag componentTag = new Tag(parent);
         componentTag.add(new Attribute("uid", Value(to!string(refId))));
         componentTag.name = Unqual!(T).stringof;
-
-        //pragma (msg, "----------------------------------------");
-        //pragma (msg, T.stringof);
-        //pragma (msg, __traits(derivedMembers, T));
         
-        foreach(m; __traits(derivedMembers, T))
-        {
-            enum isMemberVariable = is(typeof(() {
-                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
-                    }));
-            
-            enum isNonStatic = !is(typeof(mixin("&T."~m)));
+        iterateAllSerializables!(T)(v, componentTag);
+    }
 
-            //pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
+    private void serializeMemberWithName(T)(T v, Tag tag, string membername)
+    {
+        Tag memberTag = new Tag(tag);
+        memberTag.name = membername;
 
-            static if(isMemberVariable && isNonStatic) {
-
-                enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
-
-                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
-                
-                enum hasNonSerializeUDA = hasUDA!(mixin("T."~m), NonSerialize);
-
-                //pragma(msg, .format("> %s (%s,%s,%s)",m,isPublic,hasSerializeUDA,hasNonSerializeUDA));
-                
-                static if((isPublic || hasSerializeUDA) && !hasNonSerializeUDA)
-                {
-                    //pragma(msg, "-> "~m);
-                    
-                    Tag memberTag = new Tag(componentTag);
-                    memberTag.name = m;
-                    
-                    serializeMember(__traits(getMember, v, m), memberTag);
-                }
-            }
-        }
+        serializeMember(v, memberTag);
     }
     
     void serializeMember(T)(T val, Tag parent)
@@ -172,7 +187,7 @@ struct UESerializer
         }
     }
 
-    static void serializeMember(T)(T val, Tag parent)
+    static void serializeMember(T)(in T val, Tag parent)
         if(is(T == struct) && __traits(isPOD,T))
     {
         pragma(msg, "ignore serialization of: "~T.stringof);
@@ -223,6 +238,8 @@ struct UEDeserializer
     private LoadedObject!(UEEntity)[] entitiesLoaded;
     private UESceneNode dummy;
 
+    mixin generateSerializeFunc!deserializeFromMemberName;
+
     this(string input)
     {
         dummy = new UESceneNode;
@@ -249,7 +266,7 @@ struct UEDeserializer
 
             storeLoadedRef(v,res);
 
-            deserializeFrom(v, contentRoot);
+            deserializeFromTag(v, contentRoot);
 
             return res;
         }
@@ -265,7 +282,7 @@ struct UEDeserializer
         auto tag = findObject(T.stringof, uid);
         assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
 
-        deserializeFrom(v,tag);
+        deserializeFromTag(v,tag);
 
         return uid;
     }
@@ -286,42 +303,28 @@ struct UEDeserializer
         return null;
     }
 
-    private void deserializeFrom(T)(T v, Tag node)
+    private void deserializeFromTag(T)(T v, Tag node)
         if(is(T:UEComponent) || is(T:UEEntity))
     {
-        foreach(m; __traits(derivedMembers, T))
-        {
-            enum isMemberVariable = is(typeof(() {
-                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
-                    }));
-            
-            enum isNonStatic = !is(typeof(mixin("&T."~m)));
-            
-            //pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
-            
-            static if(isMemberVariable && isNonStatic) {
-                
-                enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
-                
-                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
-                
-                enum hasNonSerializeUDA = hasUDA!(mixin("T."~m), NonSerialize);
-                
-                //pragma(msg, .format("> %s (%s,%s,%s)",m,isPublic,hasSerializeUDA,hasNonSerializeUDA));
-                
-                static if((isPublic || hasSerializeUDA) && !hasNonSerializeUDA)
-                {
-                    //pragma(msg, "-> "~m);
-
-                    auto memberTag = node.all.tags[m][0];
-                    assert(memberTag);
-                    
-                    deserializeMember(__traits(getMember, v, m), memberTag);
-                }
-            }
-        }
+        iterateAllSerializables!T(v, node);
     }
 
+    private void deserializeFromMemberName(T)(ref T v, Tag tag, string membername)
+    {
+        auto memberTag = tag.all.tags[membername][0];
+        assert(memberTag);
+        
+        deserializeMember(v, memberTag);
+    }
+
+    private void deserializeFromMemberName(T)(T v, Tag tag, string membername)
+    {
+        auto memberTag = tag.all.tags[membername][0];
+        assert(memberTag);
+        
+        deserializeMember(v, memberTag);
+    }
+    
     void deserializeMember(T)(ref T val, Tag parent)
         if(is(T : UEComponent) || is(T : UEEntity))
     {
@@ -408,8 +411,8 @@ struct UEDeserializer
             deserializeMember(val[idx++],tag);
         }
     }
-    
-    private static void deserializeMember(T)(T val, Tag parent)
+
+    static void deserializeMember(T)(in T val, Tag parent)
         if(is(T == struct) && __traits(isPOD,T))
     {
         pragma(msg, "ignore deserialization of: "~T.stringof);
