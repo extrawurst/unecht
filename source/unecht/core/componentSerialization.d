@@ -162,6 +162,7 @@ struct UESerializer
 
             auto classId = cast(size_t)cast(void*)val;
             parent.add(Value(to!string(classId)));
+            parent.add(new Attribute("type", Value(typeid(val).toString())));
         }
     }
 
@@ -353,6 +354,7 @@ struct UEDeserializer
 
         assert(parent.values.length == 1, format("[%s] wrong value count %s",T.stringof,parent.values.length));
 
+        auto typename = parent.attributes["type"][0].value.get!string;
         auto uid = parent.values[0].get!string;
         assert(uid.length > 0);
 
@@ -360,8 +362,8 @@ struct UEDeserializer
         import std.traits:fullyQualifiedName;
         //import std.stdio;
         //writefln("%s",fullyQualifiedName!T);
-        val = cast(T)Object.factory(fullyQualifiedName!T);
-        assert(val);
+        val = cast(T)Object.factory(typename);
+        assert(val, format("could not create: %s",typename));
 
         val.deserialize(this, uid);
     }
@@ -418,7 +420,7 @@ class Comp1: UEComponent
 {
     mixin(UERegisterComponent!());
     
-    int comp1val;
+    int val;
 }
 
 unittest
@@ -440,7 +442,7 @@ unittest
         
         int i;
         bool b;
-        Comp1 comp1 = new Comp1;
+        UEComponent comp1;
         Comp1 comp1_;
         Comp1 compCheckNull;
         int[] intArr = [0,1];
@@ -464,7 +466,10 @@ unittest
     UESceneNode n = new UESceneNode;
     UEEntity e = UEEntity.create("test",n);
     UESerializer s;
+    Comp1 comp1 = new Comp1();
+    comp1.val = 50;
     Comp2 c = new Comp2();
+    c.comp1 = comp1;
     c.i=2;
     c.ai=3;
     c.b = true;
@@ -473,7 +478,7 @@ unittest
     c.dont = 1;
     c.e=Comp2.LocalEnum.foo;
     c._entity = e;
-    c.comp1_ = c.comp1;
+    c.comp1_ = comp1;
 
     c.serialize(s);
 
@@ -493,7 +498,7 @@ unittest
     assert(c2.e == c.e);
     assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
     assert(c2.dont != c.dont);
-    //TODO: serialize derived fully qualified component name to be able to instantiate correctly on deserialization
+    assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     //TODO: shared references instantiated only once
     //TODO: entity deserialization
     //TODO: array of components
