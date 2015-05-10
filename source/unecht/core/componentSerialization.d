@@ -254,9 +254,11 @@ struct UEDeserializer
 
             assert(T.stringof == contentRoot.name, format("content name: '%s' (expected '%s')",contentRoot.name, T.stringof));
 
-            deserializeFrom(v, contentRoot);
-
             string res = contentRoot.attributes["uid"][0].value.get!string;
+
+            storeLoadedRef(v,res);
+
+            deserializeFrom(v, contentRoot);
 
             return res;
         }
@@ -421,10 +423,15 @@ struct UEDeserializer
         }
     }
     
-    void deserializeMember(T)(T val, Tag parent)
+    void deserializeMember(T)(ref T val, Tag parent)
         if(is(T : Arr[],Arr : UEComponent))
     {
-
+        val.length = parent.all.tags.length;
+        size_t idx=0;
+        foreach(tag; parent.all.tags)
+        {
+            deserializeMember(val[idx++],tag);
+        }
     }
     
     static void deserializeMember(T)(T val, Tag parent)
@@ -436,6 +443,7 @@ struct UEDeserializer
     static void deserializeMember(T)(ref T val, Tag parent)
         if( isSerializerBaseType!T && !is(T == enum) )
     {
+        assert(parent.values.length == 1);
         val = parent.values[0].get!T;
     }
 }
@@ -476,6 +484,7 @@ unittest
         Comp1 comp1_;
         Comp1 compCheckNull;
         int[] intArr = [0,1];
+        UEComponent[] compArr;
         
         enum LocalEnum{foo,bar}
         //struct LocalStruct{}
@@ -499,6 +508,7 @@ unittest
     Comp1 comp1 = new Comp1();
     comp1.val = 50;
     Comp2 c = new Comp2();
+    c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
     c.i=2;
     c.ai=3;
@@ -530,7 +540,9 @@ unittest
     assert(c2.dont != c.dont);
     assert(c2._entity !is null);
     assert(c2._entity.name == "test");
+    assert(c2.compArr.length == 3);
+    assert(c2.compArr[0] == c2.compArr[1]);
+    assert(c2.compArr[2] == c2);
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     assert(cast(size_t)cast(void*)c2.comp1 == cast(size_t)cast(void*)c2.comp1_);
-    //TODO: array of components
 }
