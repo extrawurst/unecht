@@ -16,3 +16,4 @@ samples/enettest/enettest.exe
 samples/pong/pong.exe
 samples/soundtest/soundtest.exe
 dub.selections.json
+samples/enettest/enettest
