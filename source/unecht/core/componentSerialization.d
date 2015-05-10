@@ -4,7 +4,6 @@ import std.conv;
 import std.traits:isPointer,Unqual,BaseClassesTuple;
 
 import unecht.core.component;
-import unecht.core.components.sceneNode;
 import unecht.meta.uda;
 import unecht.core.entity;
 import sdlang;
@@ -224,6 +223,8 @@ struct UESerializer
 
 struct UEDeserializer
 {
+    import unecht.core.components.sceneNode;
+
     struct LoadedObject(T)
         if(is(T : UEEntity) || is(T:UEComponent))
     {
@@ -443,6 +444,7 @@ class Comp1: UEComponent
 unittest
 {
     import std.stdio;
+    import unecht.core.components.sceneNode;
     import unecht;
 
     class BaseComp: UEComponent
@@ -465,7 +467,7 @@ unittest
         UEComponent[] compArr;
         
         enum LocalEnum{foo,bar}
-        //struct LocalStruct{}
+        vec2 v;
         
         alias AliasInt = int;
         
