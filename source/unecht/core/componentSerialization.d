@@ -4,6 +4,7 @@ import std.conv;
 import std.traits:isPointer,Unqual,BaseClassesTuple;
 
 import unecht.core.component;
+import unecht.core.components.sceneNode;
 import unecht.meta.uda;
 import unecht.core.entity;
 import sdlang;
@@ -37,14 +38,14 @@ struct SerializerUID
 ///
 struct UESerializer
 {
-    SerializerUID[] alreadySerialized;
+    private SerializerUID[] alreadySerialized;
 
-    Tag dependencies;
-    Tag content;
-    bool rootWritten=false;
+    private Tag dependencies;
+    private Tag content;
+    private bool rootWritten=false;
 
     void serialize(T)(T v)
-        if(is(T:UEComponent))
+        if(is(T:UEComponent) || is(T:UEEntity))
     {
         if(!dependencies)
             dependencies = new Tag();
@@ -127,29 +128,6 @@ struct UESerializer
                     serializeMember(__traits(getMember, v, m), memberTag);
                 }
             }
-        }
-    }
-
-    private void serializeTo(UEEntity v, Tag parent)
-    {
-        size_t refId;
-        if(isCachedRefElseCache(v,refId))
-            return;
-
-        Tag componentTag = new Tag(parent);
-        componentTag.add(new Attribute("uid", Value(to!string(refId))));
-        componentTag.name = "UEEntity";
-
-        //TODO: serialize all relevant members
-        {
-            Tag memberTag = new Tag(componentTag);
-            memberTag.name = "name";
-            serializeMember(v.name, memberTag);
-        }
-        {
-            Tag memberTag = new Tag(componentTag);
-            memberTag.name = "children";
-            serializeMember(v.components, memberTag);
         }
     }
     
@@ -240,19 +218,23 @@ struct UESerializer
 
 struct UEDeserializer
 {
-    struct LoadedComponent
+    struct LoadedObject(T)
+        if(is(T : UEEntity) || is(T:UEComponent))
     {
-        UEComponent c;
+        T o;
         string uid;
     }
 
     private Tag content;
     private Tag dependencies;
     private bool rootRead;
-    private LoadedComponent[] componentsLoaded;
+    private LoadedObject!(UEComponent)[] componentsLoaded;
+    private LoadedObject!(UEEntity)[] entitiesLoaded;
+    private UESceneNode dummy;
 
     this(string input)
     {
+        dummy = new UESceneNode;
         import std.stdio;
         auto root =  parseSource(input);
 
@@ -264,7 +246,7 @@ struct UEDeserializer
     }
     
     string deserialize(T)(T v, string uid)
-        if(is(T:UEComponent))
+        if(is(T:UEComponent) || is(T:UEEntity))
     {
         if(!uid || uid.length == 0)
         {
@@ -285,7 +267,7 @@ struct UEDeserializer
     }
 
     private string deserializeId(T)(T v, string uid)
-        if(is(T:UEComponent))
+        if(is(T:UEComponent) || is(T:UEEntity))
     {
         auto tag = findObject(T.stringof, uid);
         assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
@@ -318,7 +300,7 @@ struct UEDeserializer
     }
 
     private void deserializeFrom(T)(T v, Tag node)
-        if(is(T:UEComponent))
+        if(is(T:UEComponent) || is(T:UEEntity))
     {
         foreach(m; __traits(derivedMembers, T))
         {
@@ -354,18 +336,17 @@ struct UEDeserializer
     }
 
     void deserializeMember(T)(ref T val, Tag parent)
-        if(is(T : UEComponent))
+        if(is(T : UEComponent) || is(T : UEEntity))
     {
         if(parent.values.length == 0)
             return;
 
         assert(parent.values.length == 1, format("[%s] wrong value count %s",T.stringof,parent.values.length));
 
-        auto typename = parent.attributes["type"][0].value.get!string;
-        auto uid = parent.values[0].get!string;
+        const uid = parent.values[0].get!string;
         assert(uid.length > 0);
 
-        auto r = findLoadedRef(uid);
+        auto r = findLoadedRef!T(uid);
         if(r)
         {
             val = cast(T)r;
@@ -373,28 +354,54 @@ struct UEDeserializer
         }
         else
         {
-            val = cast(T)Object.factory(typename);
-            assert(val, format("could not create: %s",typename));
+            static if(is(T:UEComponent))
+            {
+                auto typename = parent.attributes["type"][0].value.get!string;
+                val = cast(T)Object.factory(typename);
+                assert(val, format("could not create: %s",typename));
+            }
+            else
+                val = UEEntity.create(null,dummy);
 
-            val.deserialize(this, uid);
-            componentsLoaded ~= LoadedComponent(val,uid);
+            storeLoadedRef!T(val,uid);
+
+            static if(is(T:UEComponent))
+                val.deserialize(this, uid);
+            else
+                deserializeId(val,uid);
         }
     }
 
-    private UEComponent findLoadedRef(string uid)
+    private auto findLoadedRef(T)(string uid)
     {
-        foreach(c; componentsLoaded)
+        static if(is(T:UEComponent))
+            auto objArray = componentsLoaded;
+        else
+            auto objArray = entitiesLoaded;
+
+        foreach(o; objArray)
         {
-            if(c.uid == uid)
-                return c.c;
+            if(o.uid == uid)
+                return o.o;
         }
 
         return null;
     }
-    
-    void deserializeMember(UEEntity val, Tag parent)
-    {
 
+    private void storeLoadedRef(T)(T v, string uid)
+    {
+        static if(is(T:UEComponent))
+        {
+            alias Base = UEComponent;
+            alias objArray = componentsLoaded;
+        }
+        else
+        {
+            alias Base = UEEntity;
+            alias objArray = entitiesLoaded;
+        }
+
+        objArray ~= LoadedObject!(Base)(v,uid);
     }
     
     static void deserializeMember(T)(ref T val, Tag parent)
@@ -522,8 +529,9 @@ unittest
     assert(c2.e == c.e);
     assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
     assert(c2.dont != c.dont);
+    assert(c2._entity !is null);
+    assert(c2._entity.name == "test");
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     assert(cast(size_t)cast(void*)c2.comp1 == cast(size_t)cast(void*)c2.comp1_);
-    //TODO: entity deserialization
     //TODO: array of components
 }

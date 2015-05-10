@@ -24,7 +24,7 @@ final class UEEntity
     ///
 	bool hideInEditor;
 
-    @nogc @property{
+    @NonSerialize @nogc @property{
     	///
         UESceneNode sceneNode() nothrow { return _sceneNode; } 
         ///
@@ -177,13 +177,19 @@ private:
     }
 	
 private:
-	string _name = "entity";
+    //TODO: non public as soon as @Serialize works
+    @Serialize
+	public string _name = "entity";
 
     bool _destroyed = false;
 
-    UELayer _layer = UELayer.all;
+    //TODO: non public as soon as @Serialize works
+    @Serialize
+    public UELayer _layer = UELayer.all;
 
 	UESceneNode _sceneNode;
 	
-	UEComponent[] _components;
+    //TODO: non public as soon as @Serialize works
+    @Serialize
+	public UEComponent[] _components;
 }
