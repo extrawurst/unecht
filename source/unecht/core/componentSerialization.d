@@ -458,12 +458,11 @@ unittest
 {
     import std.stdio;
     import unecht;
-    import unecht.core.components.sceneNode;
 
     class BaseComp: UEComponent
     {
         mixin(UERegisterComponent!());
-
+        
         int baseClassMember;
     }
 
