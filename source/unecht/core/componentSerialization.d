@@ -354,10 +354,10 @@ struct UEDeserializer
 
     }
     
-    static void deserializeMember(T)(in ref T val, Tag parent)
+    static void deserializeMember(T)(ref T val, Tag parent)
         if(is(T == enum))
     {
-
+        val = cast(T)parent.values[0].get!int;
     }
     
     static void deserializeMember(T)(ref T[] val, Tag parent)
@@ -435,8 +435,8 @@ unittest
         @NonSerialize
         int dont;
         
-        @Serialize
-        private int priv;
+        //@Serialize
+        //private int priv;
         private int bar;
     }
 
@@ -445,8 +445,11 @@ unittest
     UESerializer s;
     Comp2 c = new Comp2();
     c.i=2;
+    c.ai=3;
     c.b = true;
     c.intArr = [1,2];
+    c.dont = 1;
+    c.e=Comp2.LocalEnum.foo;
     c._entity = e;
     c.comp1_ = c.comp1;
 
@@ -464,4 +467,7 @@ unittest
     assert(c2.i == c.i);
     assert(c2.b == c.b);
     assert(c2.intArr == c.intArr);
+    assert(c2.ai == c.ai);
+    assert(c2.e == c.e);
+    assert(c2.dont != c.dont);
 }
