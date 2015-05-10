@@ -282,6 +282,8 @@ struct UEDeserializer
         auto tag = findObject(T.stringof, uid);
         assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
 
+        deserializeFrom(v,tag);
+
         return uid;
     }
 
@@ -343,10 +345,25 @@ struct UEDeserializer
         }
     }
 
-    void deserializeMember(T)(T val, Tag parent)
+    void deserializeMember(T)(ref T val, Tag parent)
         if(is(T : UEComponent))
     {
+        if(parent.values.length == 0)
+            return;
 
+        assert(parent.values.length == 1, format("[%s] wrong value count %s",T.stringof,parent.values.length));
+
+        auto uid = parent.values[0].get!string;
+        assert(uid.length > 0);
+
+        //TODO: use attribute to infer correct type
+        import std.traits:fullyQualifiedName;
+        //import std.stdio;
+        //writefln("%s",fullyQualifiedName!T);
+        val = cast(T)Object.factory(fullyQualifiedName!T);
+        assert(val);
+
+        val.deserialize(this, uid);
     }
     
     void deserializeMember(UEEntity val, Tag parent)
@@ -395,16 +412,20 @@ struct Serialize{}
 /// UDA to mark serialization fields to not be serialized
 struct NonSerialize{}
 
+version(unittest):
+
+class Comp1: UEComponent
+{
+    mixin(UERegisterComponent!());
+    
+    int comp1val;
+}
+
 unittest
 {
     import std.stdio;
     import unecht;
     import unecht.core.components.sceneNode;
-
-    class Comp1: UEComponent
-    {
-        mixin(UERegisterComponent!());
-    }
 
     class BaseComp: UEComponent
     {
@@ -448,6 +469,7 @@ unittest
     c.ai=3;
     c.b = true;
     c.intArr = [1,2];
+    c.baseClassMember = 42;
     c.dont = 1;
     c.e=Comp2.LocalEnum.foo;
     c._entity = e;
@@ -469,5 +491,10 @@ unittest
     assert(c2.intArr == c.intArr);
     assert(c2.ai == c.ai);
     assert(c2.e == c.e);
+    assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
     assert(c2.dont != c.dont);
+    //TODO: serialize derived fully qualified component name to be able to instantiate correctly on deserialization
+    //TODO: shared references instantiated only once
+    //TODO: entity deserialization
+    //TODO: array of components
 }
