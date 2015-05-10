@@ -240,9 +240,16 @@ struct UESerializer
 
 struct UEDeserializer
 {
+    struct LoadedComponent
+    {
+        UEComponent c;
+        string uid;
+    }
+
     private Tag content;
     private Tag dependencies;
     private bool rootRead;
+    private LoadedComponent[] componentsLoaded;
 
     this(string input)
     {
@@ -358,14 +365,31 @@ struct UEDeserializer
         auto uid = parent.values[0].get!string;
         assert(uid.length > 0);
 
-        //TODO: use attribute to infer correct type
-        import std.traits:fullyQualifiedName;
-        //import std.stdio;
-        //writefln("%s",fullyQualifiedName!T);
-        val = cast(T)Object.factory(typename);
-        assert(val, format("could not create: %s",typename));
+        auto r = findLoadedRef(uid);
+        if(r)
+        {
+            val = cast(T)r;
+            assert(val);
+        }
+        else
+        {
+            val = cast(T)Object.factory(typename);
+            assert(val, format("could not create: %s",typename));
 
-        val.deserialize(this, uid);
+            val.deserialize(this, uid);
+            componentsLoaded ~= LoadedComponent(val,uid);
+        }
+    }
+
+    private UEComponent findLoadedRef(string uid)
+    {
+        foreach(c; componentsLoaded)
+        {
+            if(c.uid == uid)
+                return c.c;
+        }
+
+        return null;
     }
     
     void deserializeMember(UEEntity val, Tag parent)
@@ -499,7 +523,7 @@ unittest
     assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
     assert(c2.dont != c.dont);
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
-    //TODO: shared references instantiated only once
+    assert(cast(size_t)cast(void*)c2.comp1 == cast(size_t)cast(void*)c2.comp1_);
     //TODO: entity deserialization
     //TODO: array of components
 }
