@@ -36,7 +36,7 @@ struct SerializerUID
 
 mixin template generateSerializeFunc(alias Func)
 {
-    void iterateAllSerializables(T)(T v, Tag tag)
+    void iterateAllSerializables(T)(ref T v, Tag tag)
     {
         //pragma (msg, "----------------------------------------");
         //pragma (msg, T.stringof);
@@ -48,11 +48,15 @@ mixin template generateSerializeFunc(alias Func)
                         __traits(getMember, v, m) = __traits(getMember, v, m).init;
                     }));
 
+            enum isMethod = is(typeof(() {
+                        __traits(getMember, v, m)();
+                    }));
+
             enum isNonStatic = !is(typeof(mixin("&T."~m)));
+
+            //pragma(msg, .format("- %s (%s,%s,%s)",m,isMemberVariable,isNonStatic,isMethod));
             
-            //pragma(msg, .format("- %s (%s,%s)",m,isMemberVariable,isNonStatic));
-            
-            static if(isMemberVariable && isNonStatic) {
+            static if(isMemberVariable && isNonStatic && !isMethod) {
                 
                 enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
                 
@@ -186,22 +190,10 @@ struct UESerializer
         }
     }
 
-    static void serializeMember(T)(in T val, Tag parent)
-        if(is(T == struct) && __traits(isPOD,T))
+    private void serializeMember(T)(T v, Tag parent)
+        if(is(T == struct))
     {
-        pragma(msg, "ignore serialization of: "~T.stringof);
-        /+Tag componentTag = new Tag(parent);
-
-        foreach(m; __traits(allMembers, T))
-        {
-            enum isMemberVariable = is(typeof(() {
-                        __traits(getMember, val, m) = __traits(getMember, val, m).init;
-                    }));
-            
-            static if(isMemberVariable) {
-                serializeMember(__traits(getMember, val, m), componentTag);
-            }
-        }+/
+        iterateAllSerializables!(T)(v, parent);
     }
 
     static void serializeMember(T)(T val, Tag parent)
@@ -400,7 +392,18 @@ struct UEDeserializer
     {
         val = cast(T)parent.values[0].get!int;
     }
-    
+
+    private static void deserializeMember(T)(ref T val, Tag parent)
+        if(__traits(isStaticArray,T))
+    {
+        assert(parent.all.tags.length == T.length);
+        size_t idx=0;
+        foreach(tag; parent.all.tags)
+        {
+            deserializeMember(val[idx++],tag);
+        }
+    }
+
     private void deserializeMember(T)(ref T[] val, Tag parent)
         if((isSerializerBaseType!T && !is(T : char)) ||
             (is(T:UEComponent) || is(T:UEEntity) ))
@@ -413,10 +416,10 @@ struct UEDeserializer
         }
     }
 
-    static void deserializeMember(T)(in T val, Tag parent)
-        if(is(T == struct) && __traits(isPOD,T))
+    void deserializeMember(T)(ref T v, Tag parent)
+        if(is(T == struct))
     {
-        pragma(msg, "ignore deserialization of: "~T.stringof);
+        iterateAllSerializables(v, parent);
     }
 
     private static void deserializeMember(T)(ref T val, Tag parent)
@@ -465,6 +468,7 @@ unittest
         Comp1 compCheckNull;
         int[] intArr = [0,1];
         UEComponent[] compArr;
+        int[2] intStatArr = [0,0];
         
         enum LocalEnum{foo,bar}
         vec2 v;
@@ -490,10 +494,12 @@ unittest
     Comp2 c = new Comp2();
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
+    c.v = vec2(10,20);
     c.i=2;
     c.ai=3;
     c.b = true;
     c.intArr = [1,2];
+    c.intStatArr = [3,4];
     c.baseClassMember = 42;
     c.dont = 1;
     c.e=Comp2.LocalEnum.foo;
@@ -512,8 +518,10 @@ unittest
 
     assert(d.findObject("UEEntity",to!string(cast(size_t)cast(void*)e)));
     assert(c2.i == c.i);
+    assert(c2.v == c.v, format("%s",c2.v));
     assert(c2.b == c.b);
     assert(c2.intArr == c.intArr);
+    assert(c2.intStatArr == c.intStatArr);
     assert(c2.ai == c.ai);
     assert(c2.e == c.e);
     assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
