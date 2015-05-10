@@ -360,10 +360,15 @@ struct UEDeserializer
 
     }
     
-    static void deserializeMember(T)(T[] val, Tag parent)
+    static void deserializeMember(T)(ref T[] val, Tag parent)
         if(isSerializerBaseType!T && !is(T : char))
     {
-
+        val.length = parent.all.tags.length;
+        size_t idx=0;
+        foreach(tag; parent.all.tags)
+        {
+            deserializeMember(val[idx++],tag);
+        }
     }
     
     void deserializeMember(T)(T val, Tag parent)
@@ -440,6 +445,8 @@ unittest
     UESerializer s;
     Comp2 c = new Comp2();
     c.i=2;
+    c.b = true;
+    c.intArr = [1,2];
     c._entity = e;
     c.comp1_ = c.comp1;
 
@@ -454,5 +461,7 @@ unittest
     c2.deserialize(d);
 
     assert(d.findObject("UEEntity",to!string(cast(size_t)cast(void*)e)));
-    assert(c2.i == c.i, format("%s != %s",c2.i,c.i));
+    assert(c2.i == c.i);
+    assert(c2.b == c.b);
+    assert(c2.intArr == c.intArr);
 }
