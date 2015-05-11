@@ -87,7 +87,7 @@ public:
 private:
 	UESceneNode _root = new UESceneNode();
     UEEntity[] _destroyedEntites;
-	bool _playing=false;
+	bool _playing=true;
 	bool _singleStep=false;
 }
 

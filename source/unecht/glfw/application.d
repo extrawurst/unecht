@@ -305,6 +305,8 @@ private:
 
 		if(ue.hookStartup)
 			ue.hookStartup();
+
+        version(UEIncludeEditor)ue.scene.playing = false;
 	}
 
     void insertGuiObj()
