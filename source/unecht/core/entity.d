@@ -24,7 +24,7 @@ final class UEEntity
     ///
 	bool hideInEditor;
 
-    @NonSerialize @nogc @property{
+    @nogc @property{
     	///
         UESceneNode sceneNode() nothrow { return _sceneNode; } 
         ///

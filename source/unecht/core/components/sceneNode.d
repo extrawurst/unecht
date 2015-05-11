@@ -54,7 +54,6 @@ public:
     }
     
     ///
-    @NonSerialize
     @property const(UESceneNode) parent() const { return _parent; }
     ///
     @property void parent(UESceneNode _parent) { setParent(_parent); }
@@ -150,10 +149,12 @@ private:
     }
     
 private:
+    @NonSerialize
     UESceneNode _parent;
-    vec3 _position = vec3(0);
-    vec3 _scaling = vec3(1);
-    quat _rotation = quat.identity;
+    //TODO: make private again (#79)
+    public vec3 _position = vec3(0);
+    public vec3 _scaling = vec3(1);
+    public quat _rotation = quat.identity;
     //TODO: calc on the fly ->
     vec3 _dir = ORIG_DIR;
     vec3 _up = ORIG_UP;

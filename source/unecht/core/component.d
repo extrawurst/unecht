@@ -60,7 +60,6 @@ abstract class UEComponent
 	
     @nogc final nothrow {
     	///
-        @NonSerialize
     	@property bool enabled() const { return _enabled; }
     	///
     	@property void enabled(bool _value) { _enabled = _value; }
@@ -81,7 +80,7 @@ package:
 
 //TODO: make private once (#11 allows pivate srialization)
 public:
-    //@Serialize
+    @Serialize
 	UEEntity _entity;
 	//TODO: disabled by default
     @Serialize

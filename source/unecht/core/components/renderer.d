@@ -25,10 +25,8 @@ public:
     version(UEIncludeEditor)static UEMaterial editorMaterial;
 
     ///
-    @NonSerialize
     @property UEMaterial material(UEMaterial _v) { setMaterial(_v); return _v; }
     ///
-    @NonSerialize
     @property UEMaterial material() { return _material; }
 
     ///
