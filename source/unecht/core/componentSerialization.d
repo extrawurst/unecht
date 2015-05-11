@@ -349,7 +349,11 @@ struct UEDeserializer
             storeLoadedRef!T(val,uid);
 
             static if(is(T:UEComponent))
+            {
                 val.deserialize(this, uid);
+
+                val.onCreate();
+            }
             else
                 deserializeId(val,uid);
         }
@@ -425,8 +429,11 @@ struct UEDeserializer
     private static void deserializeMember(T)(ref T val, Tag parent)
         if( isSerializerBaseType!T && !is(T == enum) )
     {
-        assert(parent.values.length == 1);
-        val = parent.values[0].get!T;
+        if(parent.values.length > 0)
+        {
+            assert(parent.values.length == 1, format("deserializeMember!(%s)('%s'): %s",T.stringof, parent.name, parent.values.length));
+            val = parent.values[0].get!T;
+        }
     }
 }
 
@@ -472,6 +479,7 @@ unittest
         
         enum LocalEnum{foo,bar}
         vec2 v;
+        quat q;
         
         alias AliasInt = int;
         
@@ -488,6 +496,7 @@ unittest
 
     UESceneNode n = new UESceneNode;
     UEEntity e = UEEntity.create("test",n);
+    e.sceneNode.angles = vec3(90,0,0);
     UESerializer s;
     Comp1 comp1 = new Comp1();
     comp1.val = 50;
@@ -495,6 +504,7 @@ unittest
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
     c.v = vec2(10,20);
+    c.q.y = 0.5f;
     c.i=2;
     c.ai=3;
     c.b = true;
@@ -518,7 +528,10 @@ unittest
 
     assert(d.findObject("UEEntity",to!string(cast(size_t)cast(void*)e)));
     assert(c2.i == c.i);
+    assert(c2.sceneNode.angles.x == c.sceneNode.angles.x, format("%s != %s",c2.sceneNode.angles.x,c.sceneNode.angles.x));
     assert(c2.v == c.v, format("%s",c2.v));
+    assert(c2.q.x.isNaN);
+    assert(c2.q.y == c.q.y, format("%s",c2.q));
     assert(c2.b == c.b);
     assert(c2.intArr == c.intArr);
     assert(c2.intStatArr == c.intStatArr);

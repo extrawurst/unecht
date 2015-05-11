@@ -187,7 +187,8 @@ private:
     @Serialize
     public UELayer _layer = UELayer.all;
 
-	UESceneNode _sceneNode;
+    @Serialize
+	public UESceneNode _sceneNode;
 	
     //TODO: non public as soon as @Serialize works
     @Serialize

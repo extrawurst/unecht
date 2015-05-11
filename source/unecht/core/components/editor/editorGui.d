@@ -42,6 +42,17 @@ final class UEEditorGUI : UEComponent
             renderInspector();
         }
     }
+
+    static void saveToFile(string filename, string content)
+    {
+        import std.file;
+        write(filename, content);
+    }
+    /+static string loadFromFile(string filename)
+    {
+        import std.file;
+        return cast(string)read(filename);
+    }+/
     
     private static float sceneWindowWidth;
     ///
@@ -73,8 +84,23 @@ final class UEEditorGUI : UEComponent
                 {
                     UESerializer s;
                     EditorRootComponent.currentEntity.sceneNode.serialize(s);
-                    import std.stdio;
-                    writefln("serialize: %s",s.toString());
+                    saveToFile("assets/dummy.entity", s.toString());
+                }
+                menuOpen = false;
+            }
+
+            if(UEGui.Button("clone entity"))
+            {
+                if(EditorRootComponent.currentEntity)
+                {
+                    UESerializer s;
+                    EditorRootComponent.currentEntity.sceneNode.serialize(s);
+                    UEDeserializer d = UEDeserializer(s.toString);
+                    UESceneNode node = new UESceneNode;
+                    node.deserialize(d);
+                    node.parent = EditorRootComponent.currentEntity.sceneNode.parent;
+                    node.entity.name = node.entity.name~'_';
+                    node.onCreate();
                 }
                 menuOpen = false;
             }
