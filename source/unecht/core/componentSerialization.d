@@ -6,6 +6,7 @@ import std.traits:isPointer,Unqual,BaseClassesTuple;
 import unecht.core.component;
 import unecht.meta.uda;
 import unecht.core.entity;
+import unecht.core.object;
 import sdlang;
 
 import std.string:format;
@@ -89,7 +90,7 @@ struct UESerializer
     mixin generateSerializeFunc!serializeMemberWithName;
 
     void serialize(T)(T v)
-        if(is(T:UEComponent) || is(T:UEEntity))
+        if(is(T:UEObject))
     {
         if(!dependencies)
             dependencies = new Tag();
@@ -111,12 +112,13 @@ struct UESerializer
     }
 
     private bool isCachedRefElseCache(T)(T v,ref size_t refId)
+        if(is(T : UEObject))
     {
         import std.algorithm:countUntil;
         import std.digest.sha;
 
         SerializerUID uid;
-        uid.refId = refId = cast(size_t)cast(void*)v;
+        uid.refId = refId = v.instanceId;
         uid.nameHash = sha1Of(Unqual!(T).stringof);
         
         if(alreadySerialized.countUntil(uid) != -1)
@@ -150,26 +152,15 @@ struct UESerializer
     }
     
     void serializeMember(T)(T val, Tag parent)
-        if(is(T : UEComponent))
+        if(is(T : UEObject))
     {
         if(val !is null)
         {
             val.serialize(this);
 
-            auto classId = cast(size_t)cast(void*)val;
+            auto classId = val.instanceId;
             parent.add(Value(to!string(classId)));
             parent.add(new Attribute("type", Value(typeid(val).toString())));
-        }
-    }
-
-    void serializeMember(UEEntity val, Tag parent)
-    {
-        if(val !is null)
-        {
-            serializeTo(val,dependencies);
-            
-            auto classId = cast(size_t)cast(void*)val;
-            parent.add(Value(to!string(classId)));
         }
     }
 
@@ -217,18 +208,16 @@ struct UEDeserializer
 {
     import unecht.core.components.sceneNode;
 
-    struct LoadedObject(T)
-        if(is(T : UEEntity) || is(T:UEComponent))
+    struct LoadedObject
     {
-        T o;
+        UEObject o;
         string uid;
     }
 
     private Tag content;
     private Tag dependencies;
     private bool rootRead;
-    private LoadedObject!(UEComponent)[] componentsLoaded;
-    private LoadedObject!(UEEntity)[] entitiesLoaded;
+    private LoadedObject[] objectsLoaded;
     private UESceneNode dummy;
 
     mixin generateSerializeFunc!deserializeFromMemberName;
@@ -247,7 +236,7 @@ struct UEDeserializer
     }
     
     string deserialize(T)(T v, string uid)
-        if(is(T:UEComponent) || is(T:UEEntity))
+        if(is(T:UEObject))
     {
         if(!uid || uid.length == 0)
         {
@@ -270,7 +259,7 @@ struct UEDeserializer
     }
 
     private string deserializeId(T)(T v, string uid)
-        if(is(T:UEComponent) || is(T:UEEntity))
+        if(is(T:UEObject))
     {
         auto tag = findObject(T.stringof, uid);
         assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
@@ -297,7 +286,7 @@ struct UEDeserializer
     }
 
     private void deserializeFromTag(T)(T v, Tag node)
-        if(is(T:UEComponent) || is(T:UEEntity))
+        if(is(T:UEObject))
     {
         iterateAllSerializables!T(v, node);
     }
@@ -319,7 +308,7 @@ struct UEDeserializer
     }
     
     void deserializeMember(T)(ref T val, Tag parent)
-        if(is(T : UEComponent) || is(T : UEEntity))
+        if(is(T : UEObject))
     {
         if(parent.values.length == 0)
             return;
@@ -329,7 +318,7 @@ struct UEDeserializer
         const uid = parent.values[0].get!string;
         assert(uid.length > 0);
 
-        auto r = findLoadedRef!T(uid);
+        auto r = findLoadedRef(uid);
         if(r)
         {
             val = cast(T)r;
@@ -346,25 +335,18 @@ struct UEDeserializer
             else
                 val = UEEntity.create(null,dummy);
 
-            storeLoadedRef!T(val,uid);
+            storeLoadedRef(val,uid);
+
+            val.deserialize(this, uid);
 
             static if(is(T:UEComponent))
-            {
-                val.deserialize(this, uid);
-
                 val.onCreate();
-            }
-            else
-                deserializeId(val,uid);
         }
     }
 
-    private auto findLoadedRef(T)(string uid)
+    private UEObject findLoadedRef(string uid)
     {
-        static if(is(T:UEComponent))
-            auto objArray = componentsLoaded;
-        else
-            auto objArray = entitiesLoaded;
+        alias objArray = objectsLoaded;
 
         foreach(o; objArray)
         {
@@ -375,20 +357,9 @@ struct UEDeserializer
         return null;
     }
 
-    private void storeLoadedRef(T)(T v, string uid)
+    private void storeLoadedRef(UEObject v, string uid)
     {
-        static if(is(T:UEComponent))
-        {
-            alias Base = UEComponent;
-            alias objArray = componentsLoaded;
-        }
-        else
-        {
-            alias Base = UEEntity;
-            alias objArray = entitiesLoaded;
-        }
-
-        objArray ~= LoadedObject!(Base)(v,uid);
+        objectsLoaded ~= LoadedObject(v,uid);
     }
     
     private static void deserializeMember(T)(ref T val, Tag parent)
@@ -441,6 +412,8 @@ struct UEDeserializer
 struct Serialize{}
 /// UDA to mark serialization fields to not be serialized
 struct NonSerialize{}
+/// UDA to mark a type that contains custom serialization methods
+struct CustomSerializer{}
 
 version(unittest):
 
@@ -526,7 +499,7 @@ unittest
     UEDeserializer d = UEDeserializer(serializeString);
     c2.deserialize(d);
 
-    assert(d.findObject("UEEntity",to!string(cast(size_t)cast(void*)e)));
+    assert(d.findObject("UEEntity", to!string(e.instanceId)));
     assert(c2.i == c.i);
     assert(c2.sceneNode.angles.x == c.sceneNode.angles.x, format("%s != %s",c2.sceneNode.angles.x,c.sceneNode.angles.x));
     assert(c2.v == c.v, format("%s",c2.v));
@@ -545,5 +518,6 @@ unittest
     assert(c2.compArr[0] == c2.compArr[1]);
     assert(c2.compArr[2] == c2);
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
-    assert(cast(size_t)cast(void*)c2.comp1 == cast(size_t)cast(void*)c2.comp1_);
+    assert(c2.comp1 is c2.comp1_);
+    assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));
 }

@@ -2,8 +2,9 @@ module unecht.core.entity;
 
 import derelict.util.system;
 
-import unecht;
 import unecht.core.components.sceneNode;
+import unecht.core.object;
+import unecht;
 
 ///
 enum UELayer : uint
@@ -19,8 +20,10 @@ static assert(false == testBit(UECameraDefaultLayers,UELayer.editor));
 static assert(true == testBit(UECameraDefaultLayers,UELayer.all));
 
 /// 
-final class UEEntity
+final class UEEntity : UEObject
 {
+    mixin(UERegisterComponent!());
+
     ///
 	bool hideInEditor;
 

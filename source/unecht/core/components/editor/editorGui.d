@@ -225,7 +225,7 @@ final class UEEditorGUI : UEComponent
         if(!isSceneNode)
         {
             ig_PushIdPtr(cast(void*)c);
-            openNode = UEGui.TreeNode(c.name);
+            openNode = UEGui.TreeNode(c.typename);
         }
         else
         {
@@ -239,7 +239,7 @@ final class UEEditorGUI : UEComponent
             renderInspectorSameline(c);
             
             import unecht.core.componentManager;
-            if(auto renderer = c.name in UEComponentsManager.editors)
+            if(auto renderer = c.typename in UEComponentsManager.editors)
             {
                 renderer.render(c);
             }

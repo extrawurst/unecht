@@ -7,13 +7,15 @@ public import unecht.core.componentSerialization;
 import unecht.core.events:UEEventType;
 import unecht.core.entity;
 import unecht.core.components.sceneNode;
+import unecht.core.object;
 import unecht;
 
+//TODO: rename cause we actually insert the UEObject basics
 ///
 template UERegisterComponent()
 {
 	enum UERegisterComponent = q{
-        version(UEIncludeEditor)override @property string name() { return typeof(this).stringof; }
+        version(UEIncludeEditor)override @property string typename() { return typeof(this).stringof; }
 
         override void serialize(ref UESerializer serializer) 
         {
@@ -30,10 +32,9 @@ template UERegisterComponent()
 }
 
 /// binding component between an GameEntity and a SceneNode
-abstract class UEComponent
+abstract class UEComponent : UEObject
 {
-	///
-	version(UEIncludeEditor)abstract @property string name();
+    mixin(UERegisterComponent!());
 
 	//void OnEnable() {}
 	void onUpdate() {}
@@ -45,18 +46,6 @@ abstract class UEComponent
     void onDestroy() {}
     ///
     void onCollision(UEComponent _collider) {}
-
-    ///
-    void serialize(ref UESerializer serializer)
-    {
-        serializer.serialize(this);
-    }
-
-    ///
-    void deserialize(ref UEDeserializer serializer, string uid=null)
-    {
-        serializer.deserialize(this,uid);
-    }
 	
     @nogc final nothrow {
     	///
