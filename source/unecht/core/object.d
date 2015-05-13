@@ -6,20 +6,22 @@ import unecht.core.componentSerialization;
 abstract class UEObject
 {
     import unecht.core.hideFlags;
-    
-    private static int instanceIdPool = 0;
-    
+    import std.uuid;
+
     ///
     this()
     {
+        //TODO: find out why this is called at compile time (#87)
         if(!__ctfe)
-            instanceId = instanceIdPool++;
+        {
+            instanceId = randomUUID();
+        }
     }
     
     //TODO: see #79
     @Serialize
     {
-        public int instanceId;
+        public UUID instanceId;
         public HideFlagSet hideFlags;
     }
 

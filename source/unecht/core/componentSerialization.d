@@ -11,8 +11,8 @@ import sdlang;
 
 import std.string:format;
 
-enum isSerializerBaseType(T) = //is( T : Value        ) ||
-    is( T : bool         ) ||
+enum isSerializerBaseType(T) = 
+        is( T : bool         ) ||
         is( T : string       ) ||
         is( T : dchar        ) ||
         is( T : int          ) ||
@@ -20,21 +20,21 @@ enum isSerializerBaseType(T) = //is( T : Value        ) ||
         is( T : float        ) ||
         is( T : double       ) ||
         is( T : real         ) ||
-        //is( T : Date         ) ||
-        //is( T : DateTimeFrac ) ||
-        //is( T : SysTime      ) ||
-        //is( T : DateTimeFracUnknownZone ) ||
-        //is( T : Duration     ) ||
         is( T : ubyte[]      )
-        //is( T : typeof(null)
         ;
 
-struct SerializerUID
-{
-    ubyte[20] nameHash;
-    size_t refId;
-}
-
+enum isExactSerializerBaseType(T) = 
+    is( T == bool         ) ||
+        is( T == string       ) ||
+        is( T == dchar        ) ||
+        is( T == int          ) ||
+        is( T == long         ) ||
+        is( T == float        ) ||
+        is( T == double       ) ||
+        is( T == real         ) ||
+        is( T == ubyte[]      )
+        ;
+        
 mixin template generateSerializeFunc(alias Func)
 {
     void iterateAllSerializables(T)(ref T v, Tag tag)
@@ -78,9 +78,17 @@ mixin template generateSerializeFunc(alias Func)
     }
 }
 
+import std.uuid;
+
 ///
 struct UESerializer
 {
+    struct SerializerUID
+    {
+        ubyte[20] nameHash;
+        UUID refId;
+    }
+
     private SerializerUID[] alreadySerialized;
 
     private Tag dependencies;
@@ -111,7 +119,7 @@ struct UESerializer
         }
     }
 
-    private bool isCachedRefElseCache(T)(T v,ref size_t refId)
+    private bool isCachedRefElseCache(T)(T v,ref UUID refId)
         if(is(T : UEObject))
     {
         import std.algorithm:countUntil;
@@ -132,7 +140,7 @@ struct UESerializer
 
     private void serializeTo(T)(T v, Tag parent)
     {
-        size_t refId;
+        UUID refId;
         if(isCachedRefElseCache(v,refId))
             return;
 
@@ -170,6 +178,16 @@ struct UESerializer
         parent.add(Value(cast(int)val));
     }
 
+    private void serializeMember(T)(T val, Tag parent)
+        if(__traits(isStaticArray, T))
+    {
+        foreach(v; val)
+        {
+            auto t = new Tag(parent);
+            serializeMember(v,t);
+        }
+    }
+
     private void serializeMember(T)(T[] val, Tag parent)
         if( (isSerializerBaseType!T && !is(T : char)) ||
             (is(T:UEComponent) || is(T:UEEntity)))
@@ -188,9 +206,12 @@ struct UESerializer
     }
 
     static void serializeMember(T)(T val, Tag parent)
-        if( isSerializerBaseType!T && !is(T == enum) )
+        if( isSerializerBaseType!T && !is(T == enum) && !__traits(isStaticArray,T))
     {
-        parent.add(Value(val));
+        static if(isExactSerializerBaseType!T)
+            parent.add(Value(val));
+        else
+            parent.add(Value(to!string(val)));
     }
 
     string toString()
@@ -368,7 +389,7 @@ struct UEDeserializer
         val = cast(T)parent.values[0].get!int;
     }
 
-    private static void deserializeMember(T)(ref T val, Tag parent)
+    private void deserializeMember(T)(ref T val, Tag parent)
         if(__traits(isStaticArray,T))
     {
         assert(parent.all.tags.length == T.length);
@@ -391,19 +412,23 @@ struct UEDeserializer
         }
     }
 
-    void deserializeMember(T)(ref T v, Tag parent)
+    private void deserializeMember(T)(ref T v, Tag parent)
         if(is(T == struct))
     {
         iterateAllSerializables(v, parent);
     }
 
     private static void deserializeMember(T)(ref T val, Tag parent)
-        if( isSerializerBaseType!T && !is(T == enum) )
+        if( isSerializerBaseType!T && !is(T == enum) && !__traits(isStaticArray,T))
     {
         if(parent.values.length > 0)
         {
             assert(parent.values.length == 1, format("deserializeMember!(%s)('%s'): %s",T.stringof, parent.name, parent.values.length));
-            val = parent.values[0].get!T;
+
+            static if(isExactSerializerBaseType!T)
+                val = parent.values[0].get!T;
+            else
+                val = to!T(parent.values[0].get!string);
         }
     }
 }
@@ -449,6 +474,8 @@ unittest
         int[] intArr = [0,1];
         UEComponent[] compArr;
         int[2] intStatArr = [0,0];
+        ubyte ub;
+        ubyte[2] ubArr;
         
         enum LocalEnum{foo,bar}
         vec2 v;
@@ -477,11 +504,13 @@ unittest
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
     c.v = vec2(10,20);
+    c.ub = 2;
     c.q.y = 0.5f;
     c.i=2;
     c.ai=3;
     c.b = true;
     c.intArr = [1,2];
+    c.ubArr[0] = 128;
     c.intStatArr = [3,4];
     c.baseClassMember = 42;
     c.dont = 1;
@@ -501,6 +530,8 @@ unittest
 
     assert(d.findObject("UEEntity", to!string(e.instanceId)));
     assert(c2.i == c.i);
+    assert(c2.ub == c.ub);
+    assert(c2.ubArr[0] == c.ubArr[0]);
     assert(c2.sceneNode.angles.x == c.sceneNode.angles.x, format("%s != %s",c2.sceneNode.angles.x,c.sceneNode.angles.x));
     assert(c2.v == c.v, format("%s",c2.v));
     assert(c2.q.x.isNaN);
