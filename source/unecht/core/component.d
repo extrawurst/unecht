@@ -28,6 +28,11 @@ template UERegisterComponent()
             auto parentId = serializer.deserialize(this, uid);
             super.deserialize(serializer,parentId);
         }
+
+        override protected size_t memberOffset(string memberName)
+        {
+            return super.memberOffset(memberName);
+        }
 	};
 }
 

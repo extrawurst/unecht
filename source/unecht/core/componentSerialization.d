@@ -501,6 +501,7 @@ unittest
     Comp1 comp1 = new Comp1();
     comp1.val = 50;
     Comp2 c = new Comp2();
+    c.hideFlags = c.hideFlags.set(HideFlags.hideInInspector);
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
     c.v = vec2(10,20);
@@ -551,4 +552,7 @@ unittest
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     assert(c2.comp1 is c2.comp1_);
     assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));
+
+    // test genral private accessing
+    assert( c.accessPrivate!(HideFlagSet)("_hideFlags").isSet(HideFlags.hideInInspector) );
 }

@@ -29,16 +29,23 @@ struct UEFlags(E)
     ///
     bool isSet(E v) const
     {
-        return (mValue | v) == v;
+        return (mValue & v) == v;
     }
 
     ///
-    void set(E v)
+    auto set(E v)
     {
         mValue = mValue | v;
+        return this;
     }
 }
 
 unittest
 {
+    HideFlagSet s;
+    s.set(HideFlags.hideInInspector);
+    assert(s.mValue != 0);
+    assert(s.isSet(HideFlags.hideInInspector));
+    s.set(HideFlags.hideInHirarchie);
+    assert(s.isSet(HideFlags.hideInHirarchie));
 }
