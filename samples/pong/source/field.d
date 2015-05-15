@@ -5,7 +5,7 @@ import unecht;
 ///
 final class Field : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     static immutable x = 15;
     static immutable z = 10;

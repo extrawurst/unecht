@@ -24,7 +24,7 @@ import derelict.opengl3.gl3;
 ///
 final class UEEditorNodeKeyControls : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     static UESceneNode target;
 
@@ -119,7 +119,7 @@ private:
 ///
 final class UEEditorComponent : UEComponent {
 
-	mixin(UERegisterComponent!());
+	mixin(UERegisterObject!());
 
     private UEEditorNodeKeyControls keyControls;
 
@@ -161,7 +161,7 @@ final class UEEditorComponent : UEComponent {
 ///
 final class EditorRootComponent : UEComponent {
 
-	mixin(UERegisterComponent!());
+	mixin(UERegisterObject!());
 
 	private UEEntity editorComponent;
 

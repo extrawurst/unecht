@@ -42,7 +42,7 @@ static class UECameraInspector : IComponentEditor
 /// 
 final class UECamera : UEComponent
 {
-	mixin(UERegisterComponent!());
+	mixin(UERegisterObject!());
 
     ///
     @property auto projectionLook() const { return matProjection * matLook; }

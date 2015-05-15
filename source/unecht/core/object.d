@@ -112,7 +112,7 @@ unittest
 
     class Foo : UEObject
     {
-        mixin(UERegisterComponent!());
+        mixin(UERegisterObject!());
     }
 
     Foo foo = new Foo();

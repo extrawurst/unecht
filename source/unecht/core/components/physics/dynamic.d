@@ -13,7 +13,7 @@ import gl3n.linalg;
 @UEDefaultInspector!UEPhysicsBody
 final class UEPhysicsBody : UEComponent 
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     void addForce(vec3 _v)
     {

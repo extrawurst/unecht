@@ -22,7 +22,7 @@ static assert(true == testBit(UECameraDefaultLayers,UELayer.all));
 /// 
 final class UEEntity : UEObject
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     ///
 	bool hideInEditor;

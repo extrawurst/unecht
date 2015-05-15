@@ -7,7 +7,7 @@ import app;
 ///
 final class BallLogic : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     TestControls controls;
     static UEMaterial sharedMaterial;

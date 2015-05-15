@@ -10,7 +10,7 @@ import gl3n.linalg;
 ///
 final class UEEditorMouseControls : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     static immutable SPEED_NORMAL = 0.02f;
     static immutable SPEED_FAST = 0.25f;

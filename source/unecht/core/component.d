@@ -10,36 +10,35 @@ import unecht.core.components.sceneNode;
 import unecht.core.object;
 import unecht;
 
-//TODO: rename cause we actually insert the UEObject basics
 ///
-template UERegisterComponent()
+template UERegisterObject()
 {
-	enum UERegisterComponent = q{
+    enum UERegisterObject = q{
         version(UEIncludeEditor)override @property string typename() { return typeof(this).stringof; }
-
+        
         override void serialize(ref UESerializer serializer) 
         {
             serializer.serialize(this);
             super.serialize(serializer);
         }
-
+        
         override void deserialize(ref UEDeserializer serializer, string uid=null) 
         {
             auto parentId = serializer.deserialize(this, uid);
             super.deserialize(serializer,parentId);
         }
-
+        
         override protected size_t memberOffset(string memberName)
         {
             return super.memberOffset(memberName);
         }
-	};
+    };
 }
 
 /// binding component between an GameEntity and a SceneNode
 abstract class UEComponent : UEObject
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
 	//void OnEnable() {}
 	void onUpdate() {}

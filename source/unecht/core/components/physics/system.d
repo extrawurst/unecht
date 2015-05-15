@@ -15,7 +15,7 @@ version(UEProfiling)import unecht.core.profiler;
 @UEDefaultInspector!UEPhysicsSystem
 final class UEPhysicsSystem : UEComponent {
     
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     static dWorldID world;
     static dSpaceID space;

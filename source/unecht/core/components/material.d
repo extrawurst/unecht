@@ -69,7 +69,7 @@ static class UEMaterialInspector : IComponentEditor
 /// 
 final class UEMaterial : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     //TODO: remove shader hardwiring
     static const string vs_shaded = cast(string)import("vs_shaded.glsl");

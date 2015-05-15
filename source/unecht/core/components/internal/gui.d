@@ -18,7 +18,7 @@ import derelict.glfw3.glfw3;
 final class UEGui : UEComponent 
 {    
 public:
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     override void onCreate() {
         import unecht;

@@ -38,7 +38,7 @@ version(UEIncludeEditor)
 ///
 final class UESceneNode : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
 public:
 

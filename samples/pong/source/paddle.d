@@ -5,7 +5,7 @@ import unecht;
 ///
 final class PaddleLogic : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     auto keyUp = UEKey.u;
     auto keyDown = UEKey.j;

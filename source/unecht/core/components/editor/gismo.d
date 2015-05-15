@@ -15,7 +15,7 @@ import gl3n.linalg;
 ///
 final class UEEditorGismo : UEComponent {
     
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     override void onCreate() {
         super.onCreate;

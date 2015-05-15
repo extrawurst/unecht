@@ -12,7 +12,7 @@ import gl3n.linalg;
 
 abstract class UEPhysicsGeometry : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     protected dGeomID _geom;
 
@@ -31,7 +31,7 @@ abstract class UEPhysicsGeometry : UEComponent
 @UEDefaultInspector!UEPhysicsColliderPlane
 final class UEPhysicsColliderPlane : UEPhysicsGeometry
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     override void onCreate() {
         super.onCreate;
@@ -47,7 +47,7 @@ final class UEPhysicsColliderPlane : UEPhysicsGeometry
 @UEDefaultInspector!UEPhysicsColliderBox
 final class UEPhysicsColliderBox : UEPhysicsGeometry
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     vec3 size = vec3(2);
 
@@ -110,7 +110,7 @@ private:
 @UEDefaultInspector!UEPhysicsColliderSphere
 final class UEPhysicsColliderSphere : UEPhysicsGeometry
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     float rad=1.0f;
     

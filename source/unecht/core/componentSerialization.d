@@ -444,7 +444,7 @@ version(unittest):
 
 class Comp1: UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     int val;
 }
@@ -457,14 +457,14 @@ unittest
 
     class BaseComp: UEComponent
     {
-        mixin(UERegisterComponent!());
+        mixin(UERegisterObject!());
         
         int baseClassMember;
     }
 
     class Comp2: BaseComp
     {
-        mixin(UERegisterComponent!());
+        mixin(UERegisterObject!());
         
         int i;
         bool b;

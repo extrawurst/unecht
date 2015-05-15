@@ -15,7 +15,7 @@ import unecht.gl.vertexArrayObject;
 ///
 final class UEEditorgridComponent : UEComponent {
 
-	mixin(UERegisterComponent!());
+	mixin(UERegisterObject!());
 
 	override void onCreate() {
 		super.onCreate;

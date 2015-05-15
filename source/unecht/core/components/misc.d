@@ -11,7 +11,7 @@ import unecht.gl.texture;
 /// 
 final class UEMesh : UEComponent
 {
-	mixin(UERegisterComponent!());
+	mixin(UERegisterObject!());
 
     @NonSerialize{
 	GLVertexArrayObject vertexArrayObject;

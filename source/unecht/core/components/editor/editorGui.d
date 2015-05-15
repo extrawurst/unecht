@@ -13,7 +13,7 @@ import derelict.imgui.imgui;
 ///
 final class UEEditorGUI : UEComponent 
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     void render() {
         

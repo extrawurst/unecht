@@ -42,7 +42,7 @@ version(UEIncludeEditor)
 ///
 final class UEPhysicsMaterial : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
     
     UEPhysicsMaterialInfo materialInfo;
 }

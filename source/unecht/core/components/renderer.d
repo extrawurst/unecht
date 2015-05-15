@@ -18,7 +18,7 @@ private:
     UEMaterial _material;
 
 public:
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
    
     UEMesh mesh;
 

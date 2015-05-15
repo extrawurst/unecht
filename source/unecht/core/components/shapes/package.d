@@ -16,7 +16,7 @@ import gl3n.linalg;
 @UEDefaultInspector!UEShapeBox
 final class UEShapeBox : UEComponent {
     
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     UERenderer renderer;
 
@@ -131,7 +131,7 @@ final class UEShapeBox : UEComponent {
 @UEDefaultInspector!UEShapeSphere
 final class UEShapeSphere : UEComponent {
     
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     UERenderer renderer;
     
