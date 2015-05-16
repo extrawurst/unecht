@@ -89,8 +89,8 @@ struct UESerializer
     {
         if(!content)
         {
-            content.name = "content";
             content = new Tag();
+            content.name = "content";
         }
 
         serializeTo!(T,M)(obj, name, member, content);
