@@ -86,12 +86,16 @@ struct UESerializer
 
     ///
     void serializeObjectMember(T,M)(T obj, string name, ref M member)
+        if(is(T : UEObject))
     {
         if(!content)
         {
             content = new Tag();
             content.name = "content";
         }
+
+        import std.stdio;
+        writefln("serializeObjectMember!(%s,%s)(%s)",T.stringof,M.stringof,name);
 
         serializeTo!(T,M)(obj, name, member, content);
     }
@@ -106,15 +110,14 @@ struct UESerializer
 
     private Tag getTag(string id, string type, Tag parent)
     {
-        Tag idTag;
+        Tag idTag = getInstanceTag(id);
 
-        if(!(id in parent.all.tags))
+        if(idTag is null)
         {
             idTag = new Tag(parent);
-            idTag.name = id;
+            idTag.name = "obj";
+            idTag.add(new Attribute("id", Value(id)));
         }
-        else
-            idTag = parent.all.tags[id][0];
 
         Tag typeTag;
 
@@ -138,23 +141,35 @@ struct UESerializer
 
         serializeMember(member, memberTag);
     }
-    
-    void serializeMember(T)(T val, Tag parent)
+
+    private Tag getInstanceTag(string id)
+    {
+        foreach(o; content.all.tags)
+        {
+            auto attribute = o.attributes["id"][0];
+            if(attribute.value.get!string == id)
+                return o;
+        }
+
+        return null;
+    }
+
+    private void serializeMember(T)(T val, Tag parent)
         if(is(T : UEObject))
     {
         if(val !is null)
         {
-            auto classId = to!string(val.instanceId);
+            string instanceId = val.instanceId.toString();
 
-            if(!(classId in content.all.tags))
+            if(!getInstanceTag(instanceId))
                 val.serialize(this);
                 
-            parent.add(Value(classId));
+            parent.add(Value(instanceId));
             parent.add(new Attribute("type", Value(typeid(val).toString())));
         }
     }
 
-    static void serializeMember(T)(in ref T val, Tag parent)
+    private static void serializeMember(T)(in ref T val, Tag parent)
         if(is(T == enum))
     {
         parent.add(Value(cast(int)val));
@@ -187,7 +202,7 @@ struct UESerializer
         iterateAllSerializables!(T)(v, parent);
     }
 
-    static void serializeMember(T)(T val, Tag parent)
+    private static void serializeMember(T)(T val, Tag parent)
         if( isSerializerBaseType!T && !is(T == enum) && !__traits(isStaticArray,T))
     {
         static if(isExactSerializerBaseType!T)
@@ -196,7 +211,7 @@ struct UESerializer
             parent.add(Value(to!string(val)));
     }
 
-    string toString()
+    public string toString()
     {
         auto root = new Tag;
 
@@ -206,6 +221,7 @@ struct UESerializer
     }
 }
 
+///
 struct UEDeserializer
 {
     import unecht.core.components.sceneNode;
@@ -217,7 +233,6 @@ struct UEDeserializer
     }
 
     private Tag content;
-    private Tag dependencies;
     private bool rootRead;
     private LoadedObject[] objectsLoaded;
     private UESceneNode dummy;
@@ -231,14 +246,11 @@ struct UEDeserializer
         auto root =  parseSource(input);
 
         content = root.all.tags["content"][0];
-        //writefln("%s",root.all.tags[0]);
         assert(content !is null);
-        dependencies = root.all.tags["dependencies"][0];
-        assert(dependencies !is null);
     }
     
-    string deserialize(T)(T v, string uid)
-        if(is(T:UEObject))
+    public void deserializeObjectMember(T,M)(T obj, string uid, string name, ref M member)
+        if(is(T : UEObject))
     {
         if(!uid || uid.length == 0)
         {
@@ -248,32 +260,24 @@ struct UEDeserializer
 
             string res = contentRoot.attributes["uid"][0].value.get!string;
 
-            storeLoadedRef(v,res);
+            //storeLoadedRef(v,res);
 
-            deserializeFromTag(v, contentRoot);
+            deserializeFromTag(obj, contentRoot);
 
-            return res;
+            //return res;
         }
         else
         {
-            return deserializeId(v,uid);
+            auto tag = findObject(T.stringof, uid);
+            assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
+            
+            deserializeFromTag(obj,tag);
         }
-    }
-
-    private string deserializeId(T)(T v, string uid)
-        if(is(T:UEObject))
-    {
-        auto tag = findObject(T.stringof, uid);
-        assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
-
-        deserializeFromTag(v,tag);
-
-        return uid;
     }
 
     private Tag findObject(string objectType, string objectId)
     {
-        auto objects = dependencies.all.tags[objectType];
+        auto objects = content.all.tags[objectType];
         foreach(Tag o; objects)
         {
             auto uid = o.attributes["uid"];
@@ -451,7 +455,7 @@ class Comp2: BaseComp
     int[] intArr = [0,1];
     UEComponent[] compArr;
     int[2] intStatArr = [0,0];
-    ubyte ub;
+    //ubyte ub;
     ubyte[2] ubArr;
     
     enum LocalEnum{foo,bar}
@@ -485,7 +489,7 @@ unittest
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
     c.v = vec2(10,20);
-    c.ub = 2;
+    //c.ub = 2;
     c.q.y = 0.5f;
     c.i=2;
     c.ai=3;
@@ -504,11 +508,11 @@ unittest
     auto serializeString = s.toString();
 
     writefln("string: \n'%s'",serializeString);
-    /+
+
     Comp2 c2 = new Comp2();
     UEDeserializer d = UEDeserializer(serializeString);
-    c2.deserialize(d);
-
+    //c2.deserialize(d);
+    /+
     assert(d.findObject("UEEntity", to!string(e.instanceId)));
     assert(c2.i == c.i);
     assert(c2.ub == c.ub);
@@ -524,13 +528,12 @@ unittest
     assert(c2.e == c.e);
     assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
     assert(c2.dont != c.dont);
-    assert(c2._entity !is null);
-    assert(c2._entity.name == "test");
+    assert(c2.entity !is null);
+    assert(c2.entity.name == "test");
     assert(c2.compArr.length == 3);
     assert(c2.compArr[0] == c2.compArr[1]);
     assert(c2.compArr[2] == c2);
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     assert(c2.comp1 is c2.comp1_);
-    assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));
-+/
+    assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));+/
 }

@@ -63,8 +63,9 @@ template UERegisterObject()
         
         override void deserialize(ref UEDeserializer serializer, string uid=null) 
         {
-            //auto parentId = serializer.deserialize(this, uid);
-            //super.deserialize(serializer,parentId);
+            super.deserialize(serializer,uid);
+
+            //TODO:
         }
     };
 }

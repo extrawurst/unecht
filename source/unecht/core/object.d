@@ -79,7 +79,43 @@ abstract class UEObject
     ///
     void deserialize(ref UEDeserializer serializer, string uid=null) 
     {
-        //serializer.deserialize(this, uid);
+        import unecht.meta.uda;
+        
+        alias T = typeof(this);
+        alias v = this;
+        
+        pragma (msg, "----------------------------------------");
+        pragma (msg, T.stringof);
+        //pragma (msg, __traits(derivedMembers, T));
+        
+        foreach(m; __traits(derivedMembers, T))
+        {
+            enum isMemberVariable = is(typeof(() {
+                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
+                    }));
+            
+            enum isMethod = is(typeof(() {
+                        __traits(getMember, v, m)();
+                    }));
+            
+            enum isNonStatic = !is(typeof(mixin("&T."~m)));
+            
+            pragma(msg, .format("- %s (%s,%s,%s)",m,isMemberVariable,isNonStatic,isMethod));
+            
+            static if(isMemberVariable && isNonStatic && !isMethod) {
+                
+                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
+                
+                pragma(msg, .format("> '%s' (%s)", m, hasSerializeUDA));
+                
+                static if(hasSerializeUDA)
+                {
+                    alias M = typeof(__traits(getMember, v, m));
+                    
+                    serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m));
+                }
+            }
+        }
     }
     
     ///TBD
