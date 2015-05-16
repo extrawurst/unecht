@@ -43,6 +43,7 @@ final class UESceneNode : UEComponent
 public:
 
     ///
+    @Serialize
     UESceneNode[] children;
 
     ///
@@ -149,16 +150,15 @@ private:
     }
     
 private:
-    @NonSerialize
     UESceneNode _parent;
-    //TODO: make private again (#79)
-    public vec3 _position = vec3(0);
-    public vec3 _scaling = vec3(1);
-    public quat _rotation = quat.identity;
+
+    @Serialize vec3 _position = vec3(0);
+    @Serialize vec3 _scaling = vec3(1);
+    @Serialize quat _rotation = quat.identity;
     //TODO: calc on the fly ->
-    public vec3 _dir = ORIG_DIR;
-    public vec3 _up = ORIG_UP;
-    public vec3 _angles = vec3(0);
+    vec3 _dir = ORIG_DIR;
+    vec3 _up = ORIG_UP;
+    vec3 _angles = vec3(0);
     //<-
 
     static immutable vec3 ORIG_DIR = vec3(0,0,1);

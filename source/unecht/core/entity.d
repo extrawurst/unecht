@@ -25,6 +25,7 @@ final class UEEntity : UEObject
     mixin(UERegisterObject!());
 
     ///
+    @Serialize
 	bool hideInEditor;
 
     @nogc @property{
@@ -104,6 +105,7 @@ final class UEEntity : UEObject
 		return newcomp;
 	}
 
+    ///
 	void removeComponent(UEComponent c)
 	{
 		import std.algorithm:countUntil,remove;
@@ -182,18 +184,18 @@ private:
 private:
     //TODO: non public as soon as @Serialize works
     @Serialize
-	public string _name = "entity";
+	string _name = "entity";
 
     bool _destroyed = false;
 
     //TODO: non public as soon as @Serialize works
     @Serialize
-    public UELayer _layer = UELayer.all;
+    UELayer _layer = UELayer.all;
 
     @Serialize
-	public UESceneNode _sceneNode;
+	UESceneNode _sceneNode;
 	
     //TODO: non public as soon as @Serialize works
     @Serialize
-	public UEComponent[] _components;
+	UEComponent[] _components;
 }

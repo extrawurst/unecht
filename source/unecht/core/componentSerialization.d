@@ -1,6 +1,7 @@
 ﻿module unecht.core.componentSerialization;
 
 import std.conv;
+import std.uuid;
 import std.traits:isPointer,Unqual,BaseClassesTuple;
 
 import unecht.core.component;
@@ -63,11 +64,9 @@ mixin template generateSerializeFunc(alias Func)
                 
                 enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
                 
-                enum hasNonSerializeUDA = hasUDA!(mixin("T."~m), NonSerialize);
-                
                 //pragma(msg, .format("> %s (%s,%s,%s)",m,isPublic,hasSerializeUDA,hasNonSerializeUDA));
                 
-                static if((isPublic || hasSerializeUDA) && !hasNonSerializeUDA)
+                static if(isPublic || hasSerializeUDA)
                 {
                     //pragma(msg, "-> "~m);
 
@@ -78,85 +77,66 @@ mixin template generateSerializeFunc(alias Func)
     }
 }
 
-import std.uuid;
-
 ///
 struct UESerializer
 {
-    struct SerializerUID
-    {
-        ubyte[20] nameHash;
-        UUID refId;
-    }
-
-    private SerializerUID[] alreadySerialized;
-
-    private Tag dependencies;
     private Tag content;
-    private bool rootWritten=false;
 
     mixin generateSerializeFunc!serializeMemberWithName;
 
-    void serialize(T)(T v)
-        if(is(T:UEObject))
+    ///
+    void serializeObjectMember(T,M)(T obj, string name, ref M member)
     {
-        if(!dependencies)
-            dependencies = new Tag();
         if(!content)
+        {
+            content.name = "content";
             content = new Tag();
-
-        dependencies.name = "dependencies";
-        content.name = "content";
-
-        if(!rootWritten)
-        {
-            rootWritten = true;
-            serializeTo(v, content);
-        }
-        else
-        {
-            serializeTo(v, dependencies);
-        }
-    }
-
-    private bool isCachedRefElseCache(T)(T v,ref UUID refId)
-        if(is(T : UEObject))
-    {
-        import std.algorithm:countUntil;
-        import std.digest.sha;
-
-        SerializerUID uid;
-        uid.refId = refId = v.instanceId;
-        uid.nameHash = sha1Of(Unqual!(T).stringof);
-        
-        if(alreadySerialized.countUntil(uid) != -1)
-        {
-            return true;
         }
 
-        alreadySerialized ~= uid;
-        return false;
-    }
-
-    private void serializeTo(T)(T v, Tag parent)
-    {
-        UUID refId;
-        if(isCachedRefElseCache(v,refId))
-            return;
-
-        Tag componentTag = new Tag(parent);
-        componentTag.add(new Attribute("uid", Value(to!string(refId))));
-        componentTag.name = Unqual!(T).stringof;
-        
-        iterateAllSerializables!(T)(v, componentTag);
+        serializeTo!(T,M)(obj, name, member, content);
     }
 
     private void serializeMemberWithName(T)(T v, Tag tag, string membername)
     {
         Tag memberTag = new Tag(tag);
         memberTag.name = membername;
-
+        
         serializeMember(v, memberTag);
+    }
+
+    private Tag getTag(string id, string type, Tag parent)
+    {
+        Tag idTag;
+
+        if(!(id in parent.all.tags))
+        {
+            idTag = new Tag(parent);
+            idTag.name = id;
+        }
+        else
+            idTag = parent.all.tags[id][0];
+
+        Tag typeTag;
+
+        if(!(type in idTag.all.tags))
+        {
+            typeTag = new Tag(idTag);
+            typeTag.name = type;
+        }
+        else
+            typeTag = idTag.all.tags[type][0];
+
+        return typeTag;
+    }
+
+    private void serializeTo(T,M)(T v, string name, ref M member, Tag parent)
+    {
+        auto componentTag = getTag(v.instanceId.toString(), Unqual!(T).stringof, parent);
+
+        Tag memberTag = new Tag(componentTag);
+        memberTag.name = name;
+
+        serializeMember(member, memberTag);
     }
     
     void serializeMember(T)(T val, Tag parent)
@@ -164,10 +144,12 @@ struct UESerializer
     {
         if(val !is null)
         {
-            val.serialize(this);
+            auto classId = to!string(val.instanceId);
 
-            auto classId = val.instanceId;
-            parent.add(Value(to!string(classId)));
+            if(!(classId in content.all.tags))
+                val.serialize(this);
+                
+            parent.add(Value(classId));
             parent.add(new Attribute("type", Value(typeid(val).toString())));
         }
     }
@@ -219,7 +201,6 @@ struct UESerializer
         auto root = new Tag;
 
         root.add(content);
-        root.add(dependencies);
 
         return root.toSDLDocument();
     }
@@ -435,72 +416,71 @@ struct UEDeserializer
 
 /// UDA to mark serialization fields
 struct Serialize{}
-/// UDA to mark serialization fields to not be serialized
-struct NonSerialize{}
 /// UDA to mark a type that contains custom serialization methods
 struct CustomSerializer{}
 
-version(unittest):
+//version(unittest):
+import unecht;
 
 class Comp1: UEComponent
 {
     mixin(UERegisterObject!());
-    
+
+    @Serialize
     int val;
+}
+
+class BaseComp: UEComponent
+{
+    mixin(UERegisterObject!());
+
+    @Serialize
+    int baseClassMember;
+}
+
+class Comp2: BaseComp
+{
+    mixin(UERegisterObject!());
+
+    @Serialize{
+    int i;
+    bool b;
+    UEComponent comp1;
+    Comp1 comp1_;
+    Comp1 compCheckNull;
+    int[] intArr = [0,1];
+    UEComponent[] compArr;
+    int[2] intStatArr = [0,0];
+    ubyte ub;
+    ubyte[2] ubArr;
+    
+    enum LocalEnum{foo,bar}
+    vec2 v;
+    quat q;
+    
+    alias AliasInt = int;
+    
+    LocalEnum e=LocalEnum.bar;
+    AliasInt ai=2;
+    
+    private int priv;
+    }
+
+    int dont;
 }
 
 unittest
 {
     import std.stdio;
     import unecht.core.components.sceneNode;
-    import unecht;
 
-    class BaseComp: UEComponent
-    {
-        mixin(UERegisterObject!());
-        
-        int baseClassMember;
-    }
-
-    class Comp2: BaseComp
-    {
-        mixin(UERegisterObject!());
-        
-        int i;
-        bool b;
-        UEComponent comp1;
-        Comp1 comp1_;
-        Comp1 compCheckNull;
-        int[] intArr = [0,1];
-        UEComponent[] compArr;
-        int[2] intStatArr = [0,0];
-        ubyte ub;
-        ubyte[2] ubArr;
-        
-        enum LocalEnum{foo,bar}
-        vec2 v;
-        quat q;
-        
-        alias AliasInt = int;
-        
-        LocalEnum e=LocalEnum.bar;
-        AliasInt ai=2;
-        
-        @NonSerialize
-        int dont;
-        
-        //@Serialize
-        //private int priv;
-        private int bar;
-    }
-
+    
     UESceneNode n = new UESceneNode;
     UEEntity e = UEEntity.create("test",n);
     e.sceneNode.angles = vec3(90,0,0);
-    UESerializer s;
     Comp1 comp1 = new Comp1();
     comp1.val = 50;
-    Comp2 c = new Comp2();
+    Comp2 c = e.addComponent!Comp2;
     c.hideFlags = c.hideFlags.set(HideFlags.hideInInspector);
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
@@ -516,15 +496,15 @@ unittest
     c.baseClassMember = 42;
     c.dont = 1;
     c.e=Comp2.LocalEnum.foo;
-    c._entity = e;
     c.comp1_ = comp1;
 
+    UESerializer s;
     c.serialize(s);
 
     auto serializeString = s.toString();
 
     writefln("string: \n'%s'",serializeString);
-
+    /+
     Comp2 c2 = new Comp2();
     UEDeserializer d = UEDeserializer(serializeString);
     c2.deserialize(d);
@@ -552,7 +532,5 @@ unittest
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     assert(c2.comp1 is c2.comp1_);
     assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));
-
-    // test genral private accessing
-    assert( c.accessPrivate!(HideFlagSet)("_hideFlags").isSet(HideFlags.hideInInspector) );
++/
 }

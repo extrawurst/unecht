@@ -43,6 +43,7 @@ version(UEIncludeEditor)
 final class UEPhysicsMaterial : UEComponent
 {
     mixin(UERegisterObject!());
-    
+
+    @Serialize
     UEPhysicsMaterialInfo materialInfo;
 }

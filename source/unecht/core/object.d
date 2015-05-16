@@ -2,6 +2,7 @@
 
 public import unecht.core.hideFlags;
 import unecht.core.componentSerialization;
+import unecht.meta.uda;
 
 ///
 abstract class UEObject
@@ -14,14 +15,13 @@ abstract class UEObject
         //TODO: find out why this is called at compile time (#87)
         if(!__ctfe)
         {
-            instanceId = randomUUID();
+            _instanceId = randomUUID();
         }
     }
-    
-    //TODO: see #79
+
     @Serialize private
     {
-        public UUID instanceId;
+        UUID _instanceId;
         HideFlagSet _hideFlags;
     }
 
@@ -29,27 +29,21 @@ abstract class UEObject
     public void hideFlags(HideFlagSet v) { _hideFlags = v; }
     ///
     public HideFlagSet hideFlags() const { return _hideFlags; }
+    ///
+    public UUID instanceId() const { return _instanceId; }
 
-    final public ref T accessPrivate(T)(string memberName)
+    version(UEIncludeEditor)abstract @property string typename();
+
+    ///
+    void serialize(ref UESerializer serializer) 
     {
-        auto memberOffset = this.memberOffset(memberName);
-
-        return *cast(T*)(cast(ubyte*)this + memberOffset);
-    }
-
-    protected size_t memberOffset(string memberName)
-    {
-        import unecht.meta.uda;
-
         alias T = typeof(this);
-        auto v= this;
+        alias v = this;
 
         pragma (msg, "----------------------------------------");
         pragma (msg, T.stringof);
         pragma (msg, __traits(derivedMembers, T));
-
-        size_t[string] offsets;
-
+        
         foreach(m; __traits(derivedMembers, T))
         {
             enum isMemberVariable = is(typeof(() {
@@ -63,39 +57,29 @@ abstract class UEObject
             enum isNonStatic = !is(typeof(mixin("&T."~m)));
             
             pragma(msg, .format("- %s (%s,%s,%s)",m,isMemberVariable,isNonStatic,isMethod));
-            
+
             static if(isMemberVariable && isNonStatic && !isMethod) {
-                
-                enum isPublic = __traits(getProtection, __traits(getMember, v, m)) == "public";
                 
                 enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
                 
-                //pragma(msg, .format("> %s (%s,%s,%s)",m,isPublic,hasSerializeUDA,hasNonSerializeUDA));
+                pragma(msg, .format("> '%s' (%s)", m, hasSerializeUDA));
                 
-                static if(!isPublic && hasSerializeUDA)
+                static if(hasSerializeUDA)
                 {
-                    pragma(msg, "-> "~m);
+                    alias M = typeof(__traits(getMember, v, m));
 
-                    offsets[m] = __traits(getMember, v, m).offsetof;
+                    enum memberOffset = __traits(getMember, v, m).offsetof;
+
+                    serializer.serializeObjectMember!(T,M)(this, m, __traits(getMember, v, m));
                 }
             }
         }
-
-        auto pOffset = memberName in offsets;
-        if(pOffset) return *pOffset;
-        else return size_t.max;
     }
 
-    version(UEIncludeEditor)abstract @property string typename();
-
-    void serialize(ref UESerializer serializer) 
-    {
-        serializer.serialize(this);
-    }
-    
+    ///
     void deserialize(ref UEDeserializer serializer, string uid=null) 
     {
-        serializer.deserialize(this, uid);
+        //serializer.deserialize(this, uid);
     }
     
     ///TBD
@@ -104,17 +88,4 @@ abstract class UEObject
         //TODO:
         return null;
     }
-}
-
-unittest
-{
-    import unecht;
-
-    class Foo : UEObject
-    {
-        mixin(UERegisterObject!());
-    }
-
-    Foo foo = new Foo();
-    assert(foo.memberOffset("_hideFlags") == foo._hideFlags.offsetof);
 }
