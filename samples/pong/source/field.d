@@ -36,7 +36,7 @@ final class Field : UEComponent
         newE.addComponent!UEPhysicsColliderBox;
         if(!_outside)
         {
-            shape.renderer.material.uniforms.setColor(vec4(0,1,0,1));
+            newE.getComponent!(UEMaterial).uniforms.setColor(vec4(0,1,0,1));
             
             auto material = newE.addComponent!UEPhysicsMaterial;
             material.materialInfo.bouncyness = 1.0f;
