@@ -18,7 +18,6 @@ enum isSerializerBaseType(T) =
         is( T : dchar        ) ||
         is( T : int          ) ||
         is( T : long         ) ||
-        is( T : float        ) ||
         is( T : double       ) ||
         is( T : real         ) ||
         is( T : ubyte[]      )
@@ -30,7 +29,6 @@ enum isExactSerializerBaseType(T) =
         is( T == dchar        ) ||
         is( T == int          ) ||
         is( T == long         ) ||
-        is( T == float        ) ||
         is( T == double       ) ||
         is( T == real         ) ||
         is( T == ubyte[]      )
@@ -455,6 +453,7 @@ class Comp2: BaseComp
     @Serialize{
     int i;
     bool b;
+    float inf = 1;
     UEComponent comp1;
     Comp1 comp1_;
     Comp1 compCheckNull;
@@ -497,6 +496,7 @@ unittest
     c.v = vec2(10,20);
     c.ub = 2;
     c.q.y = 0.5f;
+    c.inf = float.infinity;
     c.i=2;
     c.ai=3;
     c.b = true;
@@ -530,6 +530,7 @@ unittest
     assert(c2.v == c.v, format("%s",c2.v));
     assert(c2.q.x.isNaN);
     assert(c2.q.y == c.q.y, format("%s",c2.q));
+    assert(c2.inf.isInfinity, format("%s != float.isInfinity",c2.inf));
     assert(c2.b == c.b);
     assert(c2.intArr == c.intArr);
     assert(c2.intStatArr == c.intStatArr);

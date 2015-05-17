@@ -1,19 +1,20 @@
 content {
-	obj id="030dc13a-e99a-4f25-b920-73cecec91b5d" {
+	obj id="c0892d95-f3ce-49fc-a754-8262362e387f" {
 		Comp2 {
 			i 2
 			b true
-			comp1 "33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
-			comp1_ "33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
+			inf "inf"
+			comp1 "4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
+			comp1_ "4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
 			compCheckNull
 			intArr {
 				1
 				2
 			}
 			compArr {
-				"33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
-				"33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
-				"030dc13a-e99a-4f25-b920-73cecec91b5d" type="unecht.core.componentSerialization.Comp2"
+				"4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
+				"4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
+				"c0892d95-f3ce-49fc-a754-8262362e387f" type="unecht.core.componentSerialization.Comp2"
 			}
 			intStatArr {
 				3
@@ -26,16 +27,16 @@ content {
 			}
 			v {
 				vector {
-					10F
-					20F
+					"10"
+					"20"
 				}
 			}
 			q {
 				quaternion {
-					nanF
-					nanF
-					0.5F
-					nanF
+					"nan"
+					"nan"
+					"0.5"
+					"nan"
 				}
 			}
 			e 0
@@ -46,28 +47,28 @@ content {
 			baseClassMember 42
 		}
 		UEComponent {
-			_entity "a75da0f9-6df4-4d76-8848-80b4abcd3092" type="unecht.core.entity.UEEntity"
+			_entity "7531449d-7228-49e0-8b8d-dc23f54687fe" type="unecht.core.entity.UEEntity"
 			_enabled true
 		}
 		UEObject {
 			_instanceId {
 				data {
-					"3"
-					"13"
-					"193"
-					"58"
-					"233"
-					"154"
-					"79"
-					"37"
-					"185"
-					"32"
-					"115"
+					"192"
+					"137"
+					"45"
+					"149"
+					"243"
 					"206"
-					"206"
-					"201"
-					"27"
-					"93"
+					"73"
+					"252"
+					"167"
+					"84"
+					"130"
+					"98"
+					"54"
+					"46"
+					"56"
+					"127"
 				}
 			}
 			_hideFlags {
@@ -75,7 +76,7 @@ content {
 			}
 		}
 	}
-	obj id="33edd67d-705f-418a-af83-b5625c3d8026" {
+	obj id="4bcb6475-92a2-41ff-9fb4-8f354d86c880" {
 		Comp1 {
 			val 50
 		}
@@ -86,22 +87,22 @@ content {
 		UEObject {
 			_instanceId {
 				data {
-					"51"
-					"237"
-					"214"
-					"125"
-					"112"
-					"95"
+					"75"
+					"203"
+					"100"
+					"117"
+					"146"
+					"162"
 					"65"
-					"138"
-					"175"
-					"131"
-					"181"
-					"98"
-					"92"
-					"61"
+					"255"
+					"159"
+					"180"
+					"143"
+					"53"
+					"77"
+					"134"
+					"200"
 					"128"
-					"38"
 				}
 			}
 			_hideFlags {
@@ -109,36 +110,36 @@ content {
 			}
 		}
 	}
-	obj id="a75da0f9-6df4-4d76-8848-80b4abcd3092" {
+	obj id="7531449d-7228-49e0-8b8d-dc23f54687fe" {
 		UEEntity {
 			hideInEditor false
 			_name "test"
 			_layer 0
-			_sceneNode "e82d3e23-631d-4a8d-a213-a9fdfcf4ee19" type="unecht.core.components.sceneNode.UESceneNode"
+			_sceneNode "aaa21fbc-7da3-4114-9ebf-ad6aa6b0564c" type="unecht.core.components.sceneNode.UESceneNode"
 			_components {
-				"e82d3e23-631d-4a8d-a213-a9fdfcf4ee19" type="unecht.core.components.sceneNode.UESceneNode"
-				"030dc13a-e99a-4f25-b920-73cecec91b5d" type="unecht.core.componentSerialization.Comp2"
+				"aaa21fbc-7da3-4114-9ebf-ad6aa6b0564c" type="unecht.core.components.sceneNode.UESceneNode"
+				"c0892d95-f3ce-49fc-a754-8262362e387f" type="unecht.core.componentSerialization.Comp2"
 			}
 		}
 		UEObject {
 			_instanceId {
 				data {
-					"167"
-					"93"
-					"160"
-					"249"
-					"109"
-					"244"
-					"77"
-					"118"
-					"136"
-					"72"
-					"128"
-					"180"
-					"171"
-					"205"
-					"48"
-					"146"
+					"117"
+					"49"
+					"68"
+					"157"
+					"114"
+					"40"
+					"73"
+					"224"
+					"139"
+					"141"
+					"220"
+					"35"
+					"245"
+					"70"
+					"135"
+					"254"
 				}
 			}
 			_hideFlags {
@@ -146,76 +147,76 @@ content {
 			}
 		}
 	}
-	obj id="e82d3e23-631d-4a8d-a213-a9fdfcf4ee19" {
+	obj id="aaa21fbc-7da3-4114-9ebf-ad6aa6b0564c" {
 		UESceneNode {
 			children
 			_position {
 				vector {
-					0F
-					0F
-					0F
+					"0"
+					"0"
+					"0"
 				}
 			}
 			_scaling {
 				vector {
-					1F
-					1F
-					1F
+					"1"
+					"1"
+					"1"
 				}
 			}
 			_rotation {
 				quaternion {
-					0.7071067691F
-					0.7071067691F
-					0F
-					0F
+					"0.707107"
+					"0.707107"
+					"0"
+					"0"
 				}
 			}
 			_dir {
 				vector {
-					0F
-					-0.9999999404F
-					0F
+					"0"
+					"-1"
+					"0"
 				}
 			}
 			_up {
 				vector {
-					0F
-					0F
-					0.9999999404F
+					"0"
+					"0"
+					"1"
 				}
 			}
 			_angles {
 				vector {
-					90F
-					0F
-					0F
+					"90"
+					"0"
+					"0"
 				}
 			}
 		}
 		UEComponent {
-			_entity "a75da0f9-6df4-4d76-8848-80b4abcd3092" type="unecht.core.entity.UEEntity"
+			_entity "7531449d-7228-49e0-8b8d-dc23f54687fe" type="unecht.core.entity.UEEntity"
 			_enabled true
 		}
 		UEObject {
 			_instanceId {
 				data {
-					"232"
-					"45"
-					"62"
-					"35"
-					"99"
-					"29"
-					"74"
-					"141"
+					"170"
 					"162"
-					"19"
-					"169"
-					"253"
-					"252"
-					"244"
-					"238"
-					"25"
+					"31"
+					"188"
+					"125"
+					"163"
+					"65"
+					"20"
+					"158"
+					"191"
+					"173"
+					"106"
+					"166"
+					"176"
+					"86"
+					"76"
 				}
 			}
 			_hideFlags {
