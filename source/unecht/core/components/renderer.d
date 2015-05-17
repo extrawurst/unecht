@@ -15,11 +15,13 @@ import unecht.gl.program;
 final class UERenderer : UEComponent
 {
 private:
+    //@Serialize
     UEMaterial _material;
 
 public:
     mixin(UERegisterObject!());
-   
+
+    //@Serialize
     UEMesh mesh;
 
     version(UEIncludeEditor)static UEMaterial editorMaterial;
@@ -32,6 +34,9 @@ public:
     ///
     void render(UECamera _cam)
     {
+        if(!mesh)
+            return;
+
         auto matScale = mat4.scaling(sceneNode.scaling.x,sceneNode.scaling.y,sceneNode.scaling.z);
         auto matModel = mat4.translation(sceneNode.position) * sceneNode.rotation.to_matrix!(4,4) * matScale;
         
@@ -47,6 +52,11 @@ public:
         
         if(_material)
             _material.preRender();
+        scope(exit)
+        {
+            if(_material)
+                _material.postRender();
+        }
         
         auto posLoc = _material.attribLocation(GLAtrribTypes.position);
         auto normLoc = _material.attribLocation(GLAtrribTypes.normal);
@@ -55,7 +65,10 @@ public:
 
         _material.uniforms.setMatWorld(mat);
         _material.uniforms.setViewDir(_cam.sceneNode.forward);
-        
+
+        if(!mesh.vertexArrayObject)
+            return;
+
         mesh.vertexArrayObject.bind();
         scope(exit) mesh.vertexArrayObject.unbind();
         mesh.vertexBuffer.bind(posLoc);
@@ -78,24 +91,24 @@ public:
             assert(mesh.colorBuffer, "shader needs Normals but mesh does not contain any");
             mesh.colorBuffer.bind(colorLoc);
         }
+
+        scope(exit)
+        {
+            if(normLoc != -1)
+                mesh.normalBuffer.unbind();
+            
+            if(uvLoc != -1)
+                mesh.uvBuffer.unbind();
+            
+            if(colorLoc != -1)
+                mesh.colorBuffer.unbind();
+        }
         
         mesh.indexBuffer.bind(0);
         scope(exit) mesh.indexBuffer.unbind();
 
         material.validate();
         mesh.indexBuffer.renderIndexed();
-        
-        if(normLoc != -1)
-            mesh.normalBuffer.unbind();
-        
-        if(uvLoc != -1)
-            mesh.uvBuffer.unbind();
-        
-        if(colorLoc != -1)
-            mesh.colorBuffer.unbind();
-        
-        if(_material)
-            _material.postRender();
     }
 
     private void setMaterial(UEMaterial _v)

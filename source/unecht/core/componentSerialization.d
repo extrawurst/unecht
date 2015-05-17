@@ -308,14 +308,6 @@ struct UEDeserializer
         
         deserializeMember(v, memberTag);
     }
-
-    private void deserializeFromMemberName(T)(T v, Tag tag, string membername)
-    {
-        auto memberTag = tag.all.tags[membername][0];
-        assert(memberTag);
-        
-        deserializeMember(v, memberTag);
-    }
     
     void deserializeMember(T)(ref T val, Tag parent)
         if(is(T : UEObject))
@@ -349,7 +341,7 @@ struct UEDeserializer
 
             val.deserialize(this, uid);
 
-            static if(is(T:UEComponent))
+            static if(is(T : UEComponent))
                 val.onCreate();
         }
     }

@@ -95,11 +95,11 @@ final class UEMaterial : UEComponent
     }
 
     ///
-    bool polygonFill = true;
+    @Serialize bool polygonFill = true;
     ///
-    bool depthTest = true;
+    @Serialize bool depthTest = true;
     ///
-    CullMode cullMode = CullMode.cullNone;
+    @Serialize CullMode cullMode = CullMode.cullNone;
 
     ///
     @property void texture(GLTexture _texture) { setTexture(_texture); }
@@ -111,7 +111,7 @@ final class UEMaterial : UEComponent
     ///
     override void onCreate() {
         super.onCreate;
-        
+
         _program = new GLProgram();
         
         _tex = new GLTexture();

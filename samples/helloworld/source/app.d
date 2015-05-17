@@ -71,16 +71,20 @@ final class TestLogic : UEComponent
     void spawnBall()
     {
         auto newE = UEEntity.create("ball",ballRoot.sceneNode);
-        import std.random:uniform;
-        newE.sceneNode.position = vec3(uniform(0.0f,2),15,uniform(0.0f,2));
+
+        {
+            import std.random:uniform;
+            newE.sceneNode.position = vec3(uniform(0.0f,2),15,uniform(0.0f,2));
+        }
+
         newE.addComponent!UEPhysicsBody;
         newE.addComponent!UEPhysicsColliderBox;
-        auto shape = newE.addComponent!UEShapeBox;
         newE.addComponent!UEPhysicsMaterial;
 
         auto material = newE.addComponent!UEMaterial;
         material.setProgram(UEMaterial.vs_tex,UEMaterial.fs_tex, "tex");
-        shape.renderer.material = material;
+
+        auto shape = newE.addComponent!UEShapeBox;
     }
 }
 

@@ -26,7 +26,7 @@ template UERegisterObject()
             //pragma (msg, "----------------------------------------");
             //pragma (msg, T.stringof);
             //pragma (msg, __traits(derivedMembers, T));
-            
+
             foreach(m; __traits(derivedMembers, T))
             {
                 enum isMemberVariable = is(typeof(() {

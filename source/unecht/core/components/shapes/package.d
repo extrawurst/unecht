@@ -18,22 +18,47 @@ final class UEShapeBox : UEComponent {
     
     mixin(UERegisterObject!());
 
-    UERenderer renderer;
+    @Serialize private
+    {
+        UERenderer renderer;
+        UEMesh mesh;
+        UEMaterial material;
+    }
 
     override void onCreate() {
-        super.onCreate;      
-        
-        renderer = this.entity.addComponent!UERenderer;
-        auto mesh = this.entity.addComponent!UEMesh;
-        
-        auto tex = new GLTexture();
-        tex.create(import("rgb.png"),true);
+        super.onCreate;
+
+        //import std.stdio;
+        //writefln("%s.onCreate !->",typeof(this).stringof);
+        //scope(exit) writefln("%s.onCreate <-!",typeof(this).stringof);
+
+        if(!renderer)
+        {
+            renderer = this.entity.getComponent!UERenderer;
+            if(!renderer)
+                renderer = this.entity.addComponent!UERenderer;
+        }
+
+        if(!mesh)
+        {
+            mesh = this.entity.getComponent!UEMesh;
+            if(!mesh)
+            {
+                mesh = this.entity.addComponent!UEMesh;
+            }
+        }
+
+        if(!material)
+        {
+            material = this.entity.getComponent!UEMaterial;
+            if(!material)
+            {
+                material = this.entity.addComponent!UEMaterial;
+                material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
+            }
+        }
 
         renderer.mesh = mesh;
-
-        auto material = this.entity.addComponent!UEMaterial;
-        material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
-        material.texture = tex;
         renderer.material = material;
         
         mesh.vertexArrayObject = new GLVertexArrayObject();
@@ -118,13 +143,6 @@ final class UEShapeBox : UEComponent {
                 20,22,21, 21,22,23
             ]);
     }
-
-    ///
-    override void onDestroy() {
-        super.onDestroy;
-        
-        renderer = null;
-    }
 }
 
 ///
@@ -137,11 +155,21 @@ final class UEShapeSphere : UEComponent {
     
     override void onCreate() {
         super.onCreate;      
-        
-        renderer = this.entity.addComponent!UERenderer;
-        auto mesh = this.entity.addComponent!UEMesh;
-        
-        auto material = renderer.material = this.entity.addComponent!UEMaterial;
+
+        renderer = this.entity.getComponent!UERenderer;
+        if(!renderer)
+            renderer = this.entity.addComponent!UERenderer;
+            
+        auto mesh = this.entity.getComponent!UEMesh;
+        if(!mesh)
+            mesh = this.entity.addComponent!UEMesh;
+
+        auto material = this.entity.getComponent!UEMaterial;
+        if(!material)
+            material = this.entity.addComponent!UEMaterial;
+
+        renderer.material = material;
+
         material.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded, "shaded");
         renderer.mesh = mesh;
         
