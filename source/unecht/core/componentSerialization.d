@@ -513,7 +513,8 @@ unittest
 
     auto serializeString = s.toString();
 
-    writefln("string: \n'%s'",serializeString);
+    import std.file:write;
+    write("serializationTest.txt", serializeString);
 
     Comp2 c2 = new Comp2();
     UEDeserializer d = UEDeserializer(serializeString);

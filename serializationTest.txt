@@ -1,0 +1,226 @@
+content {
+	obj id="030dc13a-e99a-4f25-b920-73cecec91b5d" {
+		Comp2 {
+			i 2
+			b true
+			comp1 "33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
+			comp1_ "33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
+			compCheckNull
+			intArr {
+				1
+				2
+			}
+			compArr {
+				"33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
+				"33edd67d-705f-418a-af83-b5625c3d8026" type="unecht.core.componentSerialization.Comp1"
+				"030dc13a-e99a-4f25-b920-73cecec91b5d" type="unecht.core.componentSerialization.Comp2"
+			}
+			intStatArr {
+				3
+				4
+			}
+			ub "2"
+			ubArr {
+				"128"
+				"0"
+			}
+			v {
+				vector {
+					10F
+					20F
+				}
+			}
+			q {
+				quaternion {
+					nanF
+					nanF
+					0.5F
+					nanF
+				}
+			}
+			e 0
+			ai 3
+			priv 0
+		}
+		BaseComp {
+			baseClassMember 42
+		}
+		UEComponent {
+			_entity "a75da0f9-6df4-4d76-8848-80b4abcd3092" type="unecht.core.entity.UEEntity"
+			_enabled true
+		}
+		UEObject {
+			_instanceId {
+				data {
+					"3"
+					"13"
+					"193"
+					"58"
+					"233"
+					"154"
+					"79"
+					"37"
+					"185"
+					"32"
+					"115"
+					"206"
+					"206"
+					"201"
+					"27"
+					"93"
+				}
+			}
+			_hideFlags {
+				mValue 2
+			}
+		}
+	}
+	obj id="33edd67d-705f-418a-af83-b5625c3d8026" {
+		Comp1 {
+			val 50
+		}
+		UEComponent {
+			_entity
+			_enabled true
+		}
+		UEObject {
+			_instanceId {
+				data {
+					"51"
+					"237"
+					"214"
+					"125"
+					"112"
+					"95"
+					"65"
+					"138"
+					"175"
+					"131"
+					"181"
+					"98"
+					"92"
+					"61"
+					"128"
+					"38"
+				}
+			}
+			_hideFlags {
+				mValue 0
+			}
+		}
+	}
+	obj id="a75da0f9-6df4-4d76-8848-80b4abcd3092" {
+		UEEntity {
+			hideInEditor false
+			_name "test"
+			_layer 0
+			_sceneNode "e82d3e23-631d-4a8d-a213-a9fdfcf4ee19" type="unecht.core.components.sceneNode.UESceneNode"
+			_components {
+				"e82d3e23-631d-4a8d-a213-a9fdfcf4ee19" type="unecht.core.components.sceneNode.UESceneNode"
+				"030dc13a-e99a-4f25-b920-73cecec91b5d" type="unecht.core.componentSerialization.Comp2"
+			}
+		}
+		UEObject {
+			_instanceId {
+				data {
+					"167"
+					"93"
+					"160"
+					"249"
+					"109"
+					"244"
+					"77"
+					"118"
+					"136"
+					"72"
+					"128"
+					"180"
+					"171"
+					"205"
+					"48"
+					"146"
+				}
+			}
+			_hideFlags {
+				mValue 0
+			}
+		}
+	}
+	obj id="e82d3e23-631d-4a8d-a213-a9fdfcf4ee19" {
+		UESceneNode {
+			children
+			_position {
+				vector {
+					0F
+					0F
+					0F
+				}
+			}
+			_scaling {
+				vector {
+					1F
+					1F
+					1F
+				}
+			}
+			_rotation {
+				quaternion {
+					0.7071067691F
+					0.7071067691F
+					0F
+					0F
+				}
+			}
+			_dir {
+				vector {
+					0F
+					-0.9999999404F
+					0F
+				}
+			}
+			_up {
+				vector {
+					0F
+					0F
+					0.9999999404F
+				}
+			}
+			_angles {
+				vector {
+					90F
+					0F
+					0F
+				}
+			}
+		}
+		UEComponent {
+			_entity "a75da0f9-6df4-4d76-8848-80b4abcd3092" type="unecht.core.entity.UEEntity"
+			_enabled true
+		}
+		UEObject {
+			_instanceId {
+				data {
+					"232"
+					"45"
+					"62"
+					"35"
+					"99"
+					"29"
+					"74"
+					"141"
+					"162"
+					"19"
+					"169"
+					"253"
+					"252"
+					"244"
+					"238"
+					"25"
+				}
+			}
+			_hideFlags {
+				mValue 0
+			}
+		}
+	}
+}
