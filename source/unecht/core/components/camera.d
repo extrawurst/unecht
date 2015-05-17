@@ -47,6 +47,7 @@ final class UECamera : UEComponent
     ///
     @property auto projectionLook() const { return matProjection * matLook; }
 
+    @Serialize{
 	float fieldOfView = 60;
 	float clipNear = 1;
 	float clipFar = 1000;
@@ -60,6 +61,7 @@ final class UECamera : UEComponent
     float orthoSize=1;
 
 	UERect viewport;
+    }
 
 	void updateLook()
 	{

@@ -65,7 +65,37 @@ template UERegisterObject()
         {
             super.deserialize(serializer,uid);
 
-            //TODO:
+            uid = this.instanceId.toString();
+
+            import unecht.meta.uda;
+            
+            alias T = typeof(this);
+            alias v = this;
+            
+            foreach(m; __traits(derivedMembers, T))
+            {
+                enum isMemberVariable = is(typeof(() {
+                            __traits(getMember, v, m) = __traits(getMember, v, m).init;
+                        }));
+                
+                enum isMethod = is(typeof(() {
+                            __traits(getMember, v, m)();
+                        }));
+                
+                enum isNonStatic = !is(typeof(mixin("&T."~m)));
+                
+                static if(isMemberVariable && isNonStatic && !isMethod) {
+                    
+                    enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
+                    
+                    static if(hasSerializeUDA)
+                    {
+                        alias M = typeof(__traits(getMember, v, m));
+                        
+                        serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m));
+                    }
+                }
+            }
         }
     };
 }

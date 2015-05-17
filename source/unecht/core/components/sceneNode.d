@@ -156,9 +156,9 @@ private:
     @Serialize vec3 _scaling = vec3(1);
     @Serialize quat _rotation = quat.identity;
     //TODO: calc on the fly ->
-    vec3 _dir = ORIG_DIR;
-    vec3 _up = ORIG_UP;
-    vec3 _angles = vec3(0);
+    @Serialize vec3 _dir = ORIG_DIR;
+    @Serialize vec3 _up = ORIG_UP;
+    @Serialize vec3 _angles = vec3(0);
     //<-
 
     static immutable vec3 ORIG_DIR = vec3(0,0,1);

@@ -94,9 +94,6 @@ struct UESerializer
             content.name = "content";
         }
 
-        import std.stdio;
-        writefln("serializeObjectMember!(%s,%s)(%s)",T.stringof,M.stringof,name);
-
         serializeTo!(T,M)(obj, name, member, content);
     }
 
@@ -249,38 +246,36 @@ struct UEDeserializer
         assert(content !is null);
     }
     
-    public void deserializeObjectMember(T,M)(T obj, string uid, string name, ref M member)
+    public void deserializeObjectMember(T,M)(T obj, string uid, string membername, ref M member)
         if(is(T : UEObject))
     {
         if(!uid || uid.length == 0)
         {
             auto contentRoot = content.all.tags.front;
 
-            assert(T.stringof == contentRoot.name, format("content name: '%s' (expected '%s')",contentRoot.name, T.stringof));
+            uid = contentRoot.attributes["id"][0].value.get!string;
 
-            string res = contentRoot.attributes["uid"][0].value.get!string;
+            storeLoadedRef(obj,uid);
 
-            //storeLoadedRef(v,res);
-
-            deserializeFromTag(obj, contentRoot);
-
-            //return res;
+            deserializeFromTag!(T,M)(obj, membername, member, contentRoot);
         }
         else
         {
-            auto tag = findObject(T.stringof, uid);
+            auto tag = findObject(uid);
             assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
+
+            storeLoadedRef(obj,uid);
             
-            deserializeFromTag(obj,tag);
+            deserializeFromTag!(T,M)(obj, membername, member, tag);
         }
     }
 
-    private Tag findObject(string objectType, string objectId)
+    private Tag findObject(string objectId)
     {
-        auto objects = content.all.tags[objectType];
+        auto objects = content.all.tags["obj"];
         foreach(Tag o; objects)
         {
-            auto uid = o.attributes["uid"];
+            auto uid = o.attributes["id"];
 
             if(!uid.empty && uid[0].value == objectId)
             {
@@ -291,10 +286,21 @@ struct UEDeserializer
         return null;
     }
 
-    private void deserializeFromTag(T)(T v, Tag node)
-        if(is(T:UEObject))
+    private void deserializeFromTag(T,M)(T obj, string membername, ref M member, Tag parent)
     {
-        iterateAllSerializables!T(v, node);
+        auto tags = parent.all.tags[Unqual!(T).stringof];
+
+        if(tags.empty)
+            return;
+
+        auto typeTag = tags[0];
+
+        auto membertags = typeTag.all.tags[membername];
+
+        if(membertags.empty)
+            return;
+
+        deserializeMember(member, membertags[0]);
     }
 
     private void deserializeFromMemberName(T)(ref T v, Tag tag, string membername)
@@ -455,7 +461,7 @@ class Comp2: BaseComp
     int[] intArr = [0,1];
     UEComponent[] compArr;
     int[2] intStatArr = [0,0];
-    //ubyte ub;
+    ubyte ub;
     ubyte[2] ubArr;
     
     enum LocalEnum{foo,bar}
@@ -489,7 +495,7 @@ unittest
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
     c.v = vec2(10,20);
-    //c.ub = 2;
+    c.ub = 2;
     c.q.y = 0.5f;
     c.i=2;
     c.ai=3;
@@ -511,10 +517,12 @@ unittest
 
     Comp2 c2 = new Comp2();
     UEDeserializer d = UEDeserializer(serializeString);
-    //c2.deserialize(d);
-    /+
-    assert(d.findObject("UEEntity", to!string(e.instanceId)));
-    assert(c2.i == c.i);
+    c2.deserialize(d);
+   
+    assert(d.findObject(to!string(e.instanceId)));
+    assert(c2.i == c.i, format("%s != %s",c2.i,c.i));
+    assert(c2.hideFlags == c.hideFlags,format("%s != %s",c2.hideFlags,c.hideFlags));
+    assert(c2.instanceId == c.instanceId);
     assert(c2.ub == c.ub);
     assert(c2.ubArr[0] == c.ubArr[0]);
     assert(c2.sceneNode.angles.x == c.sceneNode.angles.x, format("%s != %s",c2.sceneNode.angles.x,c.sceneNode.angles.x));
@@ -532,8 +540,8 @@ unittest
     assert(c2.entity.name == "test");
     assert(c2.compArr.length == 3);
     assert(c2.compArr[0] == c2.compArr[1]);
-    assert(c2.compArr[2] == c2);
+    assert(c2.compArr[2] == c2, format("%s != %s",c2.compArr[2].instanceId,c2.instanceId));
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     assert(c2.comp1 is c2.comp1_);
-    assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));+/
+    assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));
 }
