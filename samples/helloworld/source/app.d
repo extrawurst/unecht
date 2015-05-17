@@ -6,7 +6,7 @@ import unecht;
 @UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     private UEEntity ballRoot;
 
