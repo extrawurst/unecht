@@ -12,7 +12,7 @@ alias OnDataCallback = void delegate(ubyte*,size_t);
 @UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     bool isServer=false;
 
