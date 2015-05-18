@@ -9,7 +9,7 @@ import std.stdio;
 @UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     override void onCreate() {
         super.onCreate;
