@@ -30,9 +30,19 @@ template UERegisterObject()
                     {
                         static if(hasUDA!(__traits(getMember, T, m), MenuItem))
                         {
-                            alias uda = getUDA!(__traits(getMember, T, m), MenuItem);
+                            alias MemberType = typeof(&__traits(getMember, T, m));
 
-                            items ~= EditorMenuItem(uda.name, &__traits(getMember, T, m), uda.validate);
+                            static if(is(MemberType : MenuItemFunc))
+                            {
+                                alias uda = getUDA!(__traits(getMember, T, m), MenuItem);
+
+                                items ~= EditorMenuItem(uda.name, &__traits(getMember, T, m), uda.validate);
+                            }
+                            else
+                            {
+                                static assert(false, format("%s.%s is annotated as MenuItem but has type: '%s' expected '%s'",
+                                        T.stringof,m,MemberType.stringof,MenuItemFunc.stringof));
+                            }
                         }
                     }
                 }
