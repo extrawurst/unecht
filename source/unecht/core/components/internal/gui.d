@@ -22,6 +22,9 @@ public:
     
     override void onCreate() {
         import unecht;
+        import unecht.core.hideFlags;
+
+        sceneNode.hideFlags.set(HideFlags.hideInHirarchie);
 
         registerEvent(UEEventType.text, &OnCharInput);
         registerEvent(UEEventType.key, &OnKeyInput);

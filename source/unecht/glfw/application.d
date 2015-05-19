@@ -313,7 +313,6 @@ private:
     {
         auto newE = UEEntity.create("gui");
         newE.addComponent!UEGui;
-        newE.hideInEditor = true;
     }
 
     void insertPhysicsObj()
@@ -321,7 +320,6 @@ private:
         auto newE = UEEntity.create("physics");
         import unecht.core.components.physics;
         newE.addComponent!UEPhysicsSystem;
-        newE.hideInEditor = true;
     }
 
 	version(UEIncludeEditor)void insertEditorEntity()

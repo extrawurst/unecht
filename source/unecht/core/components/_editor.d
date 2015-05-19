@@ -4,6 +4,7 @@ version(UEIncludeEditor):
 
 import unecht;
 
+import unecht.core.hideFlags;
 import unecht.core.component;
 import unecht.core.components.camera;
 import unecht.core.components.sceneNode;
@@ -181,12 +182,11 @@ final class EditorRootComponent : UEComponent {
     ///
 	override void onCreate() {
 		super.onCreate;
+
+        sceneNode.hideFlags.set(HideFlags.hideInHirarchie);
 		
 		registerEvent(UEEventType.key, &OnKeyEvent);
         registerEvent(UEEventType.updateEditMode, &onEditorUpdate);
-
-		// hide the whole entity with its hirarchie
-		//this.entity.hideInEditor = true;
 
         _editorGUI = entity.addComponent!UEEditorGUI;
 

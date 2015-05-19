@@ -28,9 +28,11 @@ abstract class UEObject
     ///
     public void hideFlags(HideFlagSet v) { _hideFlags = v; }
     ///
-    public HideFlagSet hideFlags() const { return _hideFlags; }
+    public ref HideFlagSet hideFlags() { return _hideFlags; }
     ///
     public UUID instanceId() const { return _instanceId; }
+    ///
+    public @property bool hideInHirarchie() const { return _hideFlags.isSet(HideFlags.hideInHirarchie); }
 
     version(UEIncludeEditor)abstract @property string typename();
 

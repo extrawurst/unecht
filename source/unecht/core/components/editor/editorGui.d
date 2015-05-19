@@ -127,7 +127,7 @@ final class UEEditorGUI : UEComponent
     ///
     private static void renderSceneNode(UESceneNode _node)
     {
-        if(_node.entity.hideInEditor)
+        if(_node.hideInHirarchie)
             return;
         
         const canExpand = _node.children.length>0;

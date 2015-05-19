@@ -24,10 +24,6 @@ final class UEEntity : UEObject
 {
     mixin(UERegisterObject!());
 
-    ///
-    @Serialize
-	bool hideInEditor;
-
     @nogc @property{
     	///
         UESceneNode sceneNode() nothrow { return _sceneNode; } 

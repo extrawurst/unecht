@@ -3,6 +3,7 @@
 import derelict.ode.ode;
 import derelict.util.system;
 
+import unecht.core.hideFlags;
 import unecht.core.component;
 import unecht.core.defaultInspector;
 import unecht.core.components.physics.material;
@@ -31,6 +32,9 @@ final class UEPhysicsSystem : UEComponent {
 
     ///
     override void onCreate() {
+
+        sceneNode.hideFlags.set(HideFlags.hideInHirarchie);
+
         if(!initialised)
         {
             DerelictODE.load();
