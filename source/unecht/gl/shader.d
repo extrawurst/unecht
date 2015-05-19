@@ -29,8 +29,9 @@ final class GLShader
 
 		shader = glCreateShader(shaderType==ShaderType.vertex ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
 
-		auto vsPtr = _src.ptr;
-		glShaderSource(shader, 1, &vsPtr, null);
+        int stringLength = cast(int)_src.length;
+        const(char)* strPtr = _src.ptr;
+		glShaderSource(shader, 1, &strPtr, &stringLength);
 
 		glCompileShader(shader);
 
