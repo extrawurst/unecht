@@ -75,11 +75,22 @@ final class UEEditorGUI : UEComponent
             import unecht.core.componentManager;
             foreach(item; UEComponentsManager.menuItems)
             {
+                auto isValid = item.validateFunc?item.validateFunc():true;
+
+                if(!isValid)
+                    ig_PushStyleColor(ImGuiCol_Text, ImVec4(0.4,0.4,0.4,1));
+
                 if(UEGui.Button(item.name))
                 {
-                    item.func();
-                    menuOpen = false;
+                    if(isValid)
+                    {
+                        item.func();
+                        menuOpen = false;
+                    }
                 }
+
+                if(!isValid)
+                    ig_PopStyleColor();
             }
 
             ig_EndPopup();
@@ -96,6 +107,12 @@ final class UEEditorGUI : UEComponent
         ig_End();
     }
 
+    ///
+    private static bool entitySelected()
+    {
+        return EditorRootComponent.currentEntity !is null;
+    }
+
 	///
     @MenuItem("add entity")
     private static void addEmptyEntity()
@@ -104,32 +121,30 @@ final class UEEditorGUI : UEComponent
     }
 
     ///
-    @MenuItem("save entity")
+    @MenuItem("save entity", &entitySelected)
     private static void saveEntity()
     {
-        if(EditorRootComponent.currentEntity)
-        {
-            UESerializer s;
-            EditorRootComponent.currentEntity.sceneNode.serialize(s);
-            saveToFile("assets/dummy.entity", s.toString());
-        }
+        assert(EditorRootComponent.currentEntity);
+
+        UESerializer s;
+        EditorRootComponent.currentEntity.sceneNode.serialize(s);
+        saveToFile("assets/dummy.entity", s.toString());
     }
 
     ///
-    @MenuItem("clone entity")
+    @MenuItem("clone entity", &entitySelected)
     private static void cloneEntity()
     {
-        if(EditorRootComponent.currentEntity)
-        {
-            UESerializer s;
-            EditorRootComponent.currentEntity.sceneNode.serialize(s);
-            UEDeserializer d = UEDeserializer(s.toString);
-            UESceneNode node = new UESceneNode;
-            node.deserialize(d);
-            node.parent = EditorRootComponent.currentEntity.sceneNode.parent;
-            node.entity.name = node.entity.name~'_';
-            node.onCreate();
-        }
+        assert(EditorRootComponent.currentEntity);
+
+        UESerializer s;
+        EditorRootComponent.currentEntity.sceneNode.serialize(s);
+        UEDeserializer d = UEDeserializer(s.toString);
+        UESceneNode node = new UESceneNode;
+        node.deserialize(d);
+        node.parent = EditorRootComponent.currentEntity.sceneNode.parent;
+        node.entity.name = node.entity.name~'_';
+        node.onCreate();
     }
 
     ///

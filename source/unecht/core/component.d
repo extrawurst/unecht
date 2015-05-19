@@ -32,7 +32,7 @@ template UERegisterObject()
                         {
                             alias uda = getUDA!(__traits(getMember, T, m), MenuItem);
 
-                            items ~= EditorMenuItem(uda.name, &__traits(getMember, T, m));
+                            items ~= EditorMenuItem(uda.name, &__traits(getMember, T, m), uda.validate);
                         }
                     }
                 }
