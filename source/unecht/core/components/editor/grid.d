@@ -2,6 +2,8 @@
 
 version(UEIncludeEditor):
 
+import std.array;
+
 import gl3n.linalg;
 
 import unecht.core.component;
@@ -30,15 +32,51 @@ final class UEEditorgridComponent : UEComponent {
 		mesh.vertexArrayObject = new GLVertexArrayObject();
 		mesh.vertexArrayObject.bind();
 
-        enum size = 100;
-		mesh.vertexBuffer = new GLVertexBufferObject([
-				vec3(-size,0,-size),
-				vec3(size,0,-size),
-				vec3(size,0,size),
-				vec3(-size,0,size),
-			]);
+        enum cellsize = 10;
+        enum cnt = 10;
+        enum size = cnt*cellsize;
+        enum sized2 = size/2;
 
-		mesh.indexBuffer = new GLVertexBufferObject([0,1,2, 0,2,3]);
+        auto vertices = appender!(vec3[])();
+        vertices.reserve(cnt*cnt);
+        foreach(x; 0..cnt)
+        {
+            foreach(y; 0..cnt)
+            {
+                vertices.put(vec3(x*cellsize - sized2,0,y*cellsize - sized2));
+            }
+        }
+
+		mesh.vertexBuffer = new GLVertexBufferObject(vertices.data);
+
+        auto indices = appender!(uint[])();
+        indices.reserve(cnt*cnt*4);
+        foreach(x; 0..cnt)
+        {
+            foreach(y; 0..cnt)
+            {
+                if(x<cnt-1)
+                {
+                    indices.put(y*cnt + x);
+                    indices.put(y*cnt + x+1);
+                }
+                if(y<cnt-1)
+                {
+                    indices.put(y*cnt + x);
+                    indices.put((y+1)*cnt + x);
+                }
+            }
+        }
+
+		mesh.indexBuffer = new GLVertexBufferObject(indices.data);
+        mesh.indexBuffer.primitiveType = GLRenderPrimitive.lines;
 		mesh.vertexArrayObject.unbind();
 	}
+
+    override void onUpdate() {
+        super.onUpdate;
+
+        //TODO: change size depending on the distance of the editor cam
+        //this.sceneNode.scaling = this.sceneNode.scaling*1.1f;
+    }
 }
