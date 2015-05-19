@@ -3,6 +3,7 @@
 import unecht.core.events;
 import unecht.core.entity;
 import unecht.core.component;
+import unecht.core.components.editor.menus;
 import unecht.core.components.internal.gui;
 
 import gl3n.linalg;

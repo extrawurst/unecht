@@ -7,6 +7,7 @@ import derelict.opengl3.gl3;
 import gl3n.linalg;
 
 import unecht.core.component;
+import unecht.core.components.editor.menus;
 
 import unecht.gl.shader;
 import unecht.gl.program;

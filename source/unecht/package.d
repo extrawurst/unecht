@@ -10,6 +10,10 @@ public import unecht.core.components.shapes;
 public import unecht.core.components.material;
 public import unecht.core.components.internal.gui;
 public import unecht.core.defaultInspector;
+version(UEIncludeEditor){
+public import unecht.core.components.editor.menus;
+public import unecht.meta.uda;
+}
 
 public import unecht.glfw.application;
 

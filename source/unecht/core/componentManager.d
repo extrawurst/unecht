@@ -3,6 +3,7 @@
 version(UEIncludeEditor):
 
 import unecht.core.component:UEComponent;
+import unecht.core.components.editor.menus:EditorMenuItem;
 
 ///
 mixin template UERegisterInspector(T)
@@ -32,9 +33,11 @@ static struct UEComponentsManager
 {
 	static IComponentEditor[string] editors;
     static string[] componentNames;
+    static EditorMenuItem[] menuItems;
 }
 
-bool hasBaseClass(in TypeInfo_Class v, in TypeInfo_Class base)
+///
+private bool hasBaseClass(in TypeInfo_Class v, in TypeInfo_Class base) pure nothrow
 {
     if(v is base)
         return true;
@@ -59,6 +62,12 @@ shared static this()
             {
                 //writefln("component: %s",cla.name);
                 UEComponentsManager.componentNames ~= cla.name;
+
+                scope comp = cast(UEComponent)cla.create();
+                if(comp)
+                {
+                    comp.getMenuItems(UEComponentsManager.menuItems);
+                }
             }
         }       
     }

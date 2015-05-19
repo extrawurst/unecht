@@ -4,6 +4,7 @@ import gl3n.linalg;
 
 import unecht.core.component;
 import unecht.core.componentManager;
+import unecht.core.components.editor.menus;
 
 //TODO: create mixin
 version(UEIncludeEditor)

@@ -4,6 +4,7 @@ import unecht.core.components.misc;
 import unecht.core.components.renderer;
 import unecht.core.component;
 import unecht.core.componentManager;
+import unecht.core.components.editor.menus;
 import unecht.core.entity;
 
 import unecht.core.types;

@@ -7,6 +7,7 @@ import unecht.core.components.camera;
 import unecht.core.components.material;
 import unecht.core.components.misc;
 import unecht.core.defaultInspector;
+import unecht.core.components.editor.menus;
 
 import unecht.gl.program;
 

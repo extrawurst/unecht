@@ -15,7 +15,30 @@ template UERegisterObject()
 {
     enum UERegisterObject = q{
         version(UEIncludeEditor)override @property string typename() { return typeof(this).stringof; }
-        
+
+        static if(!is(typeof(this) == UEComponent) && is(typeof(this) : UEComponent))
+        {
+            version(UEIncludeEditor)override void getMenuItems(ref EditorMenuItem[] items)
+            {
+                super.getMenuItems(items);
+
+                alias T = typeof(this);
+
+                foreach(m; __traits(derivedMembers, T))
+                {
+                    static if(__traits(isStaticFunction, __traits(getMember, T, m)))
+                    {
+                        static if(hasUDA!(__traits(getMember, T, m), MenuItem))
+                        {
+                            alias uda = getUDA!(__traits(getMember, T, m), MenuItem);
+
+                            items ~= EditorMenuItem(uda.name, &__traits(getMember, T, m));
+                        }
+                    }
+                }
+            }
+        }
+
         override void serialize(ref UESerializer serializer) 
         {
             import unecht.meta.uda;
@@ -132,6 +155,9 @@ abstract class UEComponent : UEObject
 	{
 		ue.events.register(UEEventReceiver(this,_type,_callback));
 	}
+
+    ///
+    version(UEIncludeEditor)void getMenuItems(ref EditorMenuItem[] items){}
 
 package:
 	final void setEntity(UEEntity _entity) { this._entity = _entity; }
