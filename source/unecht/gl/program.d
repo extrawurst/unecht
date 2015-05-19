@@ -44,8 +44,8 @@ final class GLProgram
         int success;
         glGetProgramiv(program, GL_LINK_STATUS, &success);
         if (success == 0) {
-            GLchar[1024] log;
-            GLsizei logLen;
+            static GLchar[1024] log;
+            static GLsizei logLen;
             glGetProgramInfoLog(program, log.sizeof, &logLen, log.ptr);
             import std.stdio;
             import std.conv;

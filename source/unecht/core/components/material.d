@@ -55,6 +55,7 @@ static class UEMaterialInspector : IComponentEditor
         ig_Checkbox("polygonFill",&thisT.polygonFill);
         ig_Checkbox("depthTest",&thisT.depthTest);
         UEGui.EnumCombo("cull",thisT.cullMode);
+        UEGui.Text("shader: "~thisT._shaderName);
         UEGui.Text("texture:");
         if(thisT._tex)
             ig_Image(cast(void*)thisT._tex.tex,ImVec2(TEX_SIZE,TEX_SIZE));
@@ -117,8 +118,11 @@ final class UEMaterial : UEComponent
         _tex = new GLTexture();
         _tex.create(dummyTex);
         _tex.pointFiltering = true;
-        
-        setProgram(vs_flat,fs_flat, "flat");
+
+        if(_vshader.length == 0 || _fshader.length == 0 || _shaderName.length == 0)
+            setProgram(vs_flat,fs_flat, "flat");
+        else
+            setProgram(_vshader, _fshader, _shaderName);
     }
 
     ///
@@ -135,13 +139,17 @@ final class UEMaterial : UEComponent
     ///
     void setProgram(string _vs, string _fs, string _name)
     {
-        auto vshader = scoped!GLShader();
-        auto fshader = scoped!GLShader();
+        _fshader = _fs;
+        _vshader = _vs;
+        _shaderName = _name;
+
+        auto vshader = new GLShader();
+        auto fshader = new GLShader();
         scope(exit) vshader.destroy();
         scope(exit) fshader.destroy();
         
-        vshader.create(ShaderType.vertex, _vs);
-        fshader.create(ShaderType.fragment, _fs);
+        vshader.create(ShaderType.vertex, _vshader);
+        fshader.create(ShaderType.fragment, _fshader);
         
         _program.create(vshader,fshader, _name);
     }
@@ -209,4 +217,11 @@ protected:
 private:
     GLTexture _tex;
     GLProgram _program;
+
+    @Serialize
+    string _vshader;
+    @Serialize
+    string _fshader;
+    @Serialize
+    string _shaderName;
 }
