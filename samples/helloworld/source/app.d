@@ -8,6 +8,7 @@ final class TestLogic : UEComponent
 {
     mixin(UERegisterObject!());
 
+    @Serialize
     private UEEntity ballRoot;
 
     @UEInspectorTooltip("try me")
@@ -21,9 +22,12 @@ final class TestLogic : UEComponent
         registerEvent(UEEventType.joystickButton, &OnJoystick);
         registerEvent(UEEventType.joystickAxes, &OnJoystick);
 
-        ballRoot = UEEntity.create("balls");
+        if(!ballRoot)
+        {
+            ballRoot = UEEntity.create("balls");
 
-        spawnBall();
+            spawnBall();
+        }
     }
 
     override void onUpdate() {
