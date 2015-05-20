@@ -89,10 +89,21 @@ template UERegisterObject()
                     static if(hasSerializeUDA)
                     {
                         alias M = typeof(__traits(getMember, v, m));
-                        
-                        //enum memberOffset = __traits(getMember, v, m).offsetof;
-                        
-                        serializer.serializeObjectMember!(T,M)(this, m, __traits(getMember, v, m));
+
+                        enum hasCustomSerializerUDA = hasUDA!(__traits(getMember, T, m), CustomSerializer);
+
+                        static if(!hasCustomSerializerUDA)
+                        {
+                            serializer.serializeObjectMember!(T,M)(this, m, __traits(getMember, v, m));
+                        }
+                        else
+                        {
+                            enum customSerializerUDA = getUDA!(__traits(getMember, T, m), CustomSerializer);
+
+                            enum n = customSerializerUDA.serializerTypeName;
+
+                            serializer.serializeObjectMember!(T,M,n)(this, m, __traits(getMember, v, m));
+                        }
                     }
                 }
             }
@@ -130,8 +141,21 @@ template UERegisterObject()
                     static if(hasSerializeUDA)
                     {
                         alias M = typeof(__traits(getMember, v, m));
+
+                        enum hasCustomSerializerUDA = hasUDA!(__traits(getMember, T, m), CustomSerializer);
                         
-                        serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m));
+                        static if(!hasCustomSerializerUDA)
+                        {
+                            serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m));
+                        }
+                        else
+                        {
+                            enum customSerializerUDA = getUDA!(__traits(getMember, T, m), CustomSerializer);
+                            
+                            enum n = customSerializerUDA.serializerTypeName;
+                            
+                            serializer.deserializeObjectMember!(T,M,n)(this, uid, m, __traits(getMember, v, m));
+                        }
                     }
                 }
             }

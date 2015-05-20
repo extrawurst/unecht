@@ -84,7 +84,7 @@ struct UESerializer
     mixin generateSerializeFunc!serializeMemberWithName;
 
     ///
-    void serializeObjectMember(T,M)(T obj, string name, ref M member)
+    public void serializeObjectMember(T,M, string custom=null)(T obj, string name, ref M member)
         if(is(T : UEObject))
     {
         if(!content)
@@ -93,7 +93,7 @@ struct UESerializer
             content.name = "content";
         }
 
-        serializeTo!(T,M)(obj, name, member, content);
+        serializeTo!(T,M,custom)(obj, name, member, content);
     }
 
     private void serializeMemberWithName(T)(T v, Tag tag, string membername)
@@ -128,14 +128,21 @@ struct UESerializer
         return typeTag;
     }
 
-    private void serializeTo(T,M)(T v, string name, ref M member, Tag parent)
+    private void serializeTo(T,M, string custom=null)(T v, string name, ref M member, Tag parent)
     {
         auto componentTag = getTag(v.instanceId.toString(), Unqual!(T).stringof, parent);
 
         Tag memberTag = new Tag(componentTag);
         memberTag.name = name;
 
-        serializeMember(member, memberTag);
+        static if(custom == null)
+        {
+            serializeMember(member, memberTag);
+        }
+        else
+        {
+            mixin(format("%s.serialize(member,this,memberTag);",custom));
+        }
     }
 
     private Tag getInstanceTag(string id)
@@ -262,7 +269,7 @@ struct UEDeserializer
         }
     }
     
-    public void deserializeObjectMember(T,M)(T obj, string uid, string membername, ref M member)
+    public void deserializeObjectMember(T,M,string custom=null)(T obj, string uid, string membername, ref M member)
         if(is(T : UEObject))
     {
         if(!uid || uid.length == 0)
@@ -273,7 +280,7 @@ struct UEDeserializer
 
             storeLoadedRef(obj,uid);
 
-            deserializeFromTag!(T,M)(obj, membername, member, contentRoot);
+            deserializeFromTag!(T,M,custom)(obj, membername, member, contentRoot);
         }
         else
         {
@@ -282,7 +289,7 @@ struct UEDeserializer
 
             storeLoadedRef(obj,uid);
             
-            deserializeFromTag!(T,M)(obj, membername, member, tag);
+            deserializeFromTag!(T,M,custom)(obj, membername, member, tag);
         }
     }
 
@@ -302,7 +309,7 @@ struct UEDeserializer
         return null;
     }
 
-    private void deserializeFromTag(T,M)(T obj, string membername, ref M member, Tag parent)
+    private void deserializeFromTag(T,M,string custom=null)(T obj, string membername, ref M member, Tag parent)
     {
         auto tags = parent.all.tags[Unqual!(T).stringof];
 
@@ -319,7 +326,14 @@ struct UEDeserializer
         if(membertags.empty)
             return;
 
-        deserializeMember(member, membertags[0]);
+        static if(custom == null)
+        {
+            deserializeMember(member, membertags[0]);
+        }
+        else
+        {
+            mixin(format("%s.deserialize(member,this,membertags[0]);",custom));
+        }
     }
 
     private void deserializeFromMemberName(T)(ref T v, Tag tag, string membername)
@@ -437,11 +451,34 @@ struct UEDeserializer
 
 /// UDA to mark serialization fields
 struct Serialize{}
-/// UDA to mark a type that contains custom serialization methods
-struct CustomSerializer{}
 
-//version(unittest):
+/// UDA to mark a type that contains custom serialization methods
+struct CustomSerializer
+{
+    string serializerTypeName;
+}
+
+version(unittest):
 import unecht;
+
+struct CustomTestSerializer
+{
+    static void serialize(ref CustomSerializeTestStruct v, ref UESerializer serializer, Tag parent)
+    {
+        serializer.serializeMember(v.foobar, parent);
+    }
+                        
+    static void deserialize(ref CustomSerializeTestStruct v, ref UEDeserializer serializer, Tag parent)
+    {
+        serializer.deserializeMember(v.foobar, parent);
+    }
+}
+                    
+struct CustomSerializeTestStruct
+{
+    int ignoreTest = 1;
+    private int foobar = 2;
+}
 
 class Comp1: UEComponent
 {
@@ -476,6 +513,8 @@ class Comp2: BaseComp
     int[2] intStatArr = [0,0];
     ubyte ub;
     ubyte[2] ubArr;
+    @CustomSerializer("CustomTestSerializer")
+    CustomSerializeTestStruct customSer;
     
     enum LocalEnum{foo,bar}
     vec2 v;
@@ -523,6 +562,8 @@ unittest
     c.dont = 1;
     c.e=Comp2.LocalEnum.foo;
     c.comp1_ = comp1;
+    c.customSer.ignoreTest = -1;
+    c.customSer.foobar = -1;
 
     UESerializer s;
     c.serialize(s);
@@ -554,6 +595,8 @@ unittest
     assert(c2.e == c.e);
     assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
     assert(c2.dont != c.dont);
+    assert(c2.customSer.ignoreTest == CustomSerializeTestStruct.init.ignoreTest);
+    assert(c2.customSer.foobar == c.customSer.foobar);
     assert(c2.entity !is null);
     assert(c2.entity.name == "test");
     assert(c2.compArr.length == 3);
