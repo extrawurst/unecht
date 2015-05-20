@@ -51,6 +51,10 @@ template UERegisterObject()
 
         override void serialize(ref UESerializer serializer) 
         {
+            import unecht.core.hideFlags;
+            if(hideFlags.isSet(HideFlags.dontSaveInScene))
+                return;
+
             import unecht.meta.uda;
 
             alias T = typeof(this);

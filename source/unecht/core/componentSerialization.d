@@ -154,6 +154,12 @@ struct UESerializer
     {
         if(val !is null)
         {
+            if(val.hideFlags.isSet(HideFlags.dontSaveInScene))
+            {
+                parent.remove();
+                return;
+            }
+
             string instanceId = val.instanceId.toString();
 
             if(!getInstanceTag(instanceId))
@@ -292,6 +298,9 @@ struct UEDeserializer
             return;
 
         auto typeTag = tags[0];
+
+        if(!(membername in typeTag.all.tags))
+            return;
 
         auto membertags = typeTag.all.tags[membername];
 
@@ -447,6 +456,7 @@ class Comp2: BaseComp
     bool b;
     float inf = 1;
     UEComponent comp1;
+    Comp1 compHide;
     Comp1 comp1_;
     Comp1 compCheckNull;
     int[] intArr = [0,1];
@@ -475,7 +485,6 @@ unittest
     import std.stdio;
     import unecht.core.components.sceneNode;
 
-    
     UESceneNode n = new UESceneNode;
     UEEntity e = UEEntity.create("test",n);
     e.sceneNode.angles = vec3(90,0,0);
@@ -485,6 +494,9 @@ unittest
     c.hideFlags = c.hideFlags.set(HideFlags.hideInInspector);
     c.compArr = [comp1,comp1,c];
     c.comp1 = comp1;
+    c.compHide = e.addComponent!Comp1;
+    c.compHide.val = 42;
+    c.compHide.hideFlags.set(HideFlags.dontSaveInScene);
     c.v = vec2(10,20);
     c.ub = 2;
     c.q.y = 0.5f;
