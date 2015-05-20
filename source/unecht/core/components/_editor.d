@@ -14,6 +14,7 @@ import unecht.core.components.renderer;
 import unecht.core.components.internal.gui;
 
 import unecht.core.components.editor.editorGui;
+import unecht.core.components.editor.editorMenus;
 import unecht.core.components.editor.grid;
 import unecht.core.components.editor.mouseControls;
 
@@ -184,12 +185,14 @@ final class EditorRootComponent : UEComponent {
 		super.onCreate;
 
         sceneNode.hideFlags.set(HideFlags.hideInHirarchie);
+        sceneNode.hideFlags.set(HideFlags.dontSaveInScene);
 		
 		registerEvent(UEEventType.key, &OnKeyEvent);
         registerEvent(UEEventType.updateEditMode, &onEditorUpdate);
 
         _editorGUI = entity.addComponent!UEEditorGUI;
 
+        entity.addComponent!UEEditorMenus;
         entity.addComponent!UEEditorMouseControls;
 
 		_editorCam = entity.addComponent!UECamera;
