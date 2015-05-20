@@ -17,3 +17,5 @@ samples/pong/pong.exe
 samples/soundtest/soundtest.exe
 dub.selections.json
 samples/enettest/enettest
+__test__library__.exe
+samples/assimptest/assimptest.exe
