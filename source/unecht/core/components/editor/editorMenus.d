@@ -42,7 +42,15 @@ final class UEEditorMenus : UEComponent
     @MenuItem("new scene")
     private static void newScene()
     {
-        //UEEntity.create("new entity",EditorRootComponent.currentEntity?EditorRootComponent.currentEntity.sceneNode:null);
+        import unecht.core.hideFlags;
+
+        EditorRootComponent.selectEntity(null);
+
+        foreach(rootChild; ue.scene.root.children)
+        {
+            if(!rootChild.hideFlags.isSet(HideFlags.hideInHirarchie))
+                UEEntity.destroy(rootChild.entity);
+        }
     }
 
     ///
@@ -72,5 +80,7 @@ final class UEEditorMenus : UEComponent
         node.parent = EditorRootComponent.currentEntity.sceneNode.parent;
         node.entity.name = node.entity.name~'_';
         node.onCreate();
+
+        EditorRootComponent.selectEntity(node.entity);
     }
 }

@@ -110,6 +110,8 @@ final class UEEntity : UEObject
 		{
 			c.onDestroy();
             ue.application.events.removeComponent(c);
+
+            //TODO: crossreferenced components get deleted twice (#101)
 			.destroy(c);
 
 			_components = _components.remove(idx);
@@ -125,6 +127,7 @@ final class UEEntity : UEObject
     ///
     static void destroy(UEEntity entity)
     {
+        assert(entity);
         entity._destroyed = true;
     }
 
@@ -160,7 +163,7 @@ private:
     {
         foreach(child; this._sceneNode.children)
             child.entity.doDestroy();
-
+            
         //unparenting of local components
         broadcast!("onDestroy")();
 
@@ -172,6 +175,7 @@ private:
         {
             component.setEntity(null);
             ue.events.removeComponent(component);
+            //TODO: crossreferenced components get deleted twice (#101)
             .destroy(component);
         }
         _components.length = 0;

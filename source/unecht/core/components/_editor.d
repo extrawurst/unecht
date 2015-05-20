@@ -302,7 +302,7 @@ final class EditorRootComponent : UEComponent {
 	}
 
     ///
-    package static void selectEntity(UEEntity _entity)
+    public static void selectEntity(UEEntity _entity)
     {
         if(_entity)
         {
