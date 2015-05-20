@@ -1,13 +1,10 @@
 ﻿module unecht.core.components.material;
 
-import std.typecons:scoped;
-
 import derelict.opengl3.gl3;
 
 import gl3n.linalg;
 
 import unecht.core.component;
-import unecht.core.components.editor.menus;
 
 import unecht.gl.shader;
 import unecht.gl.program;
@@ -140,12 +137,14 @@ final class UEMaterial : UEComponent
     ///
     void setProgram(string _vs, string _fs, string _name)
     {
+        import std.typecons:scoped;
+
         _fshader = _fs;
         _vshader = _vs;
         _shaderName = _name;
 
-        auto vshader = new GLShader();
-        auto fshader = new GLShader();
+        auto vshader = scoped!GLShader();
+        auto fshader = scoped!GLShader();
         scope(exit) vshader.destroy();
         scope(exit) fshader.destroy();
         

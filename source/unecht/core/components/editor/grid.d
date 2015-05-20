@@ -10,7 +10,6 @@ import unecht.core.component;
 import unecht.core.components.material;
 import unecht.core.components.misc;
 import unecht.core.components.renderer;
-import unecht.core.components.editor.menus;
 
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;

@@ -1,7 +1,6 @@
 ﻿module unecht.core.components.misc;
 
 import unecht.core.component;
-import unecht.core.components.editor.menus;
 
 import unecht.gl.vertexBufferObject;
 import unecht.gl.vertexArrayObject;

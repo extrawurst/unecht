@@ -5,9 +5,7 @@ import std.string:toStringz;
 import unecht.core.component;
 import unecht.core.components.camera;
 import unecht.core.components.sceneNode;
-import unecht.core.components.editor.menus;
 import unecht.core.events;
-import unecht.meta.uda;
 
 import gl3n.linalg;
 

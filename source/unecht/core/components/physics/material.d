@@ -4,7 +4,6 @@ import derelict.ode.ode;
 import derelict.util.system;
 
 import unecht.core.component;
-import unecht.core.components.editor.menus;
 
 import gl3n.linalg;
 

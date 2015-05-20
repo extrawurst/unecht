@@ -9,7 +9,6 @@ import unecht.gl.vertexArrayObject;
 import unecht.core.entity;
 import unecht.core.components.renderer;
 import unecht.core.components.material;
-import unecht.core.components.editor.menus;
 
 import gl3n.linalg;
 

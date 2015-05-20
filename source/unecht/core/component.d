@@ -1,7 +1,6 @@
 module unecht.core.component;
 
 import derelict.util.system;
-public import sdlang;
 
 public import unecht.core.componentSerialization;
 import unecht.core.events:UEEventType;
@@ -18,6 +17,9 @@ template UERegisterObject()
 
         static if(!is(typeof(this) == UEComponent) && is(typeof(this) : UEComponent))
         {
+            version(UEIncludeEditor)import unecht.core.components.editor.menus;
+            version(UEIncludeEditor)import unecht.meta.uda;
+
             version(UEIncludeEditor)override void getMenuItems(ref EditorMenuItem[] items)
             {
                 super.getMenuItems(items);

@@ -7,8 +7,6 @@ import unecht.core.hideFlags;
 import unecht.core.component;
 import unecht.core.defaultInspector;
 import unecht.core.components.physics.material;
-import unecht.core.components.editor.menus;
-import unecht.meta.uda;
 
 import gl3n.linalg;
 
