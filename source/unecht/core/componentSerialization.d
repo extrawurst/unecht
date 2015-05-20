@@ -78,7 +78,8 @@ mixin template generateSerializeFunc(alias Func)
 ///
 struct UESerializer
 {
-    private Tag content;
+    //TODO: make package-protected once this module moved to serialization package
+    public Tag content;
 
     mixin generateSerializeFunc!serializeMemberWithName;
 
@@ -234,6 +235,7 @@ struct UEDeserializer
     }
 
     private Tag content;
+    public Tag root;
     private bool rootRead;
     private LoadedObject[] objectsLoaded;
     private UESceneNode dummy;
@@ -245,7 +247,7 @@ struct UEDeserializer
     {
         dummy = new UESceneNode;
         import std.stdio;
-        auto root =  parseSource(input);
+        root =  parseSource(input);
 
         content = root.all.tags["content"][0];
         assert(content !is null);

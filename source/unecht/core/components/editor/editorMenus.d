@@ -19,11 +19,11 @@ final class UEEditorMenus : UEComponent
         import std.file;
         write(filename, content);
     }
-    /+static string loadFromFile(string filename)
+    static string loadFromFile(string filename)
     {
         import std.file;
         return cast(string)read(filename);
-    }+/
+    }
 
     ///
     private static bool entitySelected()
@@ -62,6 +62,38 @@ final class UEEditorMenus : UEComponent
         UESerializer s;
         EditorRootComponent.currentEntity.sceneNode.serialize(s);
         saveToFile("assets/dummy.entity", s.toString());
+    }
+
+    ///
+    @MenuItem("load scene")
+    private static void loadScene()
+    {
+        import unecht.core.hideFlags;
+        import unecht.core.serialization.sceneSerialization;
+
+        newScene();
+        UESceneDeserializer d = UESceneDeserializer(loadFromFile("assets/dummy.scene"));
+        d.deserialize(ue.scene.root);
+    }
+
+    ///
+    @MenuItem("save scene")
+    private static void saveScene()
+    {
+        import unecht.core.hideFlags;
+        import unecht.core.serialization.sceneSerialization;
+
+        UESceneSerializer s;
+       
+        foreach(rootChild; ue.scene.root.children)
+        {
+            if(!rootChild.hideFlags.isSet(HideFlags.hideInHirarchie))
+            {
+                s.serialize(rootChild);
+            }
+        }
+
+        saveToFile("assets/dummy.scene", s.toString());
     }
     
     ///
