@@ -132,6 +132,9 @@ struct UESerializer
     {
         auto componentTag = getTag(v.instanceId.toString(), Unqual!(T).stringof, parent);
 
+        if(name in componentTag.all.tags)
+            return;
+
         Tag memberTag = new Tag(componentTag);
         memberTag.name = name;
 
