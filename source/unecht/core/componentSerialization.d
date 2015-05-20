@@ -240,6 +240,7 @@ struct UEDeserializer
 
     mixin generateSerializeFunc!deserializeFromMemberName;
 
+    ///
     this(string input)
     {
         dummy = new UESceneNode;
@@ -248,6 +249,15 @@ struct UEDeserializer
 
         content = root.all.tags["content"][0];
         assert(content !is null);
+    }
+
+    /// renew each id of every loaded object
+    public void createNewIds()
+    {
+        foreach(o; objectsLoaded)
+        {
+            o.o.newInstanceId();
+        }
     }
     
     public void deserializeObjectMember(T,M)(T obj, string uid, string membername, ref M member)

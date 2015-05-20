@@ -67,6 +67,8 @@ final class UEEditorMenus : UEComponent
         UEDeserializer d = UEDeserializer(s.toString);
         UESceneNode node = new UESceneNode;
         node.deserialize(d);
+        d.createNewIds();
+
         node.parent = EditorRootComponent.currentEntity.sceneNode.parent;
         node.entity.name = node.entity.name~'_';
         node.onCreate();

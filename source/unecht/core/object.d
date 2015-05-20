@@ -15,7 +15,7 @@ abstract class UEObject
         //TODO: find out why this is called at compile time (#87)
         if(!__ctfe)
         {
-            _instanceId = randomUUID();
+            newInstanceId();
         }
     }
 
@@ -31,6 +31,8 @@ abstract class UEObject
     public ref HideFlagSet hideFlags() { return _hideFlags; }
     ///
     public UUID instanceId() const { return _instanceId; }
+    ///
+    public void newInstanceId() { _instanceId = randomUUID(); }
     ///
     public @property bool hideInHirarchie() const { return _hideFlags.isSet(HideFlags.hideInHirarchie); }
 
