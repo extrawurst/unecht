@@ -21,7 +21,7 @@ struct UESceneSerializer
             sceneNodesTag = new Tag();
             sceneNodesTag.name = "nodes";
         }
-        
+
         node.serialize(baseSerializer);
         
         auto nodeTag = new Tag(sceneNodesTag);
@@ -47,10 +47,12 @@ struct UESceneDeserializer
     alias base this;
     
     private Tag sceneNodesTag;
+    private UESceneNode _sceneRoot;
     
     this(string input)
     {
-        base = UEDeserializer(input);
+        _sceneRoot = new UESceneNode;
+        base = UEDeserializer(input, _sceneRoot);
 
         sceneNodesTag = root.all.tags["nodes"][0];
         assert(sceneNodesTag !is null);
@@ -58,13 +60,32 @@ struct UESceneDeserializer
     
     void deserialize(UESceneNode root)
     {
+        assert(root);
+
         foreach(Tag node; sceneNodesTag.all.tags)
         {
             auto id = node.values[0].get!string;
 
-            auto scenenode = new UESceneNode;
-            scenenode.parent = root;
-            scenenode.deserialize(this,id);
+            auto scenenode = cast(UESceneNode)base.findObject(id);
+            //TODO: can this happen ?
+            assert(scenenode is null);
+
+            if(scenenode is null)
+            {
+                scenenode = new UESceneNode;
+                scenenode.deserialize(this,id);
+                scenenode.parent = root;
+
+                //import std.stdio;
+                //writefln("new node added: %s (%s,%s)",scenenode.entity.name,scenenode.parent.children.length,scenenode.children.length);
+                //writefln("->: %s parent: %s",scenenode.instanceId,scenenode.parent.instanceId);
+            }
+        }
+
+        // validity check
+        foreach(sn; _sceneRoot.children)
+        {
+            assert(sn.parent.hasChild(sn));
         }
     }
 }

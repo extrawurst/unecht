@@ -110,8 +110,6 @@ final class UEEntity : UEObject
 		{
 			c.onDestroy();
             ue.application.events.removeComponent(c);
-
-            //TODO: crossreferenced components get deleted twice (#101)
 			.destroy(c);
 
 			_components = _components.remove(idx);
@@ -125,9 +123,16 @@ final class UEEntity : UEObject
 	}
 
     ///
+    static auto createForDeserialize()
+    {
+        return new UEEntity();
+    }
+
+    ///
     static void destroy(UEEntity entity)
     {
         assert(entity);
+        assert(entity._sceneNode.parent);
         entity._destroyed = true;
     }
 
@@ -139,16 +144,20 @@ final class UEEntity : UEObject
 
 private:
 
+    /// used for default construction in the deserializer
+    this()
+    {}
+
 	this(UESceneNode _parent, string _name)
 	{
 		if(_name)
 			this._name = _name;
 
 		this._sceneNode = new UESceneNode();
-		this._sceneNode.parent = _parent;
+        addComponent(this._sceneNode);
 
-		addComponent(this._sceneNode);
-	}
+		this._sceneNode.parent = _parent;
+    }
 
 	void addComponent(UEComponent _comp)
 	{
@@ -175,7 +184,6 @@ private:
         {
             component.setEntity(null);
             ue.events.removeComponent(component);
-            //TODO: crossreferenced components get deleted twice (#101)
             .destroy(component);
         }
         _components.length = 0;

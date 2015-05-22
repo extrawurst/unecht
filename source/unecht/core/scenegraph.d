@@ -20,15 +20,20 @@ public:
 	///
 	@property void step() { _singleStep = true; }
 
+    ///
+    this()
+    {
+        _root = new UESceneNode();
+        import unecht.core.hideFlags;
+        _root.hideFlags.set(HideFlags.dontSaveInScene);
+    }
+
 	///
 	void update()
 	{
 		updateNode(_root);
 
-        foreach(toDestroy; _destroyedEntites)
-            UEEntity.destroyImmediate(toDestroy);
-
-        _destroyedEntites.length = 0;
+        executeDestruction();
 
 		if(_playing || _singleStep)
 		{
@@ -84,8 +89,37 @@ public:
 			updateNode(node);
 	}
 
+    private void executeDestruction()
+    {
+        if(_destroyedEntites.length > 0)
+        {
+            dump();
+
+            import std.stdio;
+            writefln("executeDestruction: %s",_destroyedEntites.length);
+
+            foreach(toDestroy; _destroyedEntites)
+                UEEntity.destroyImmediate(toDestroy);
+            
+            _destroyedEntites.length = 0;
+
+            dump();
+        }
+    }
+
+    public void dump()
+    {
+        import std.stdio;
+        writefln("dump: %s",_root.children.length);
+        
+        foreach(child; _root.children)
+        {
+            writefln(" - %s (%s)",child.entity.name,child.sceneNode.parent);
+        }
+    }
+
 private:
-	UESceneNode _root = new UESceneNode();
+    UESceneNode _root;
     UEEntity[] _destroyedEntites;
 	bool _playing=true;
 	bool _singleStep=false;

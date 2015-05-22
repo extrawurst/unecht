@@ -80,6 +80,17 @@ public:
     @property vec3 right() const { return cross(_dir,_up); }
     ///
     @property vec3 up() const { return _up; }
+
+    ///
+    bool hasChild(UESceneNode node) const nothrow
+    {
+        import std.algorithm:countUntil;
+
+        try return countUntil(children, node) != -1;
+        catch{}
+
+        return false;
+    }
     
 private:
     
@@ -97,17 +108,18 @@ private:
         
         this._parent.attachChild(this);
     }
-    
+
     ///
     public void detachChild(UESceneNode _node)
     {
         import unecht.core.stdex;
         children = children.removeElement(_node);
     }
-    
+
     ///
-    void attachChild(UESceneNode _node)
+    private void attachChild(UESceneNode _node)
     {
+        assert(_node.parent is this);
         children ~= _node;
     }
 
@@ -150,6 +162,7 @@ private:
     }
     
 private:
+    @Serialize
     UESceneNode _parent;
 
     @Serialize vec3 _position = vec3(0);

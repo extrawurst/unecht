@@ -248,14 +248,16 @@ struct UEDeserializer
     public Tag root;
     private bool rootRead;
     private LoadedObject[] objectsLoaded;
-    private UESceneNode dummy;
+    private UESceneNode _sceneRoot;
 
     mixin generateSerializeFunc!deserializeFromMemberName;
 
     ///
-    this(string input)
+    this(string input, UESceneNode sceneRoot)
     {
-        dummy = new UESceneNode;
+        assert(sceneRoot);
+        _sceneRoot = sceneRoot;
+
         import std.stdio;
         root =  parseSource(input);
 
@@ -275,7 +277,7 @@ struct UEDeserializer
     public void deserializeObjectMember(T,M,string custom=null)(T obj, string uid, string membername, ref M member)
         if(is(T : UEObject))
     {
-        if(!uid || uid.length == 0)
+        if(uid is null || uid.length == 0)
         {
             auto contentRoot = content.all.tags.front;
 
@@ -296,7 +298,8 @@ struct UEDeserializer
         }
     }
 
-    private Tag findObject(string objectId)
+    //TODO: make package once it is in serializer package
+    public Tag findObject(string objectId)
     {
         auto objects = content.all.tags["obj"];
         foreach(Tag o; objects)
@@ -351,7 +354,11 @@ struct UEDeserializer
         if(is(T : UEObject))
     {
         if(parent.values.length == 0)
+        {
+            import std.stdio;
+            writefln("deserializeMember(%s) no values found in %s", T.stringof, parent.name);
             return;
+        }
 
         assert(parent.values.length == 1, format("[%s] wrong value count %s",T.stringof,parent.values.length));
 
@@ -373,7 +380,7 @@ struct UEDeserializer
                 assert(val, format("could not create: %s",typename));
             }
             else
-                val = UEEntity.create(null,dummy);
+                val = UEEntity.createForDeserialize();
 
             storeLoadedRef(val,uid);
 
@@ -381,6 +388,15 @@ struct UEDeserializer
 
             static if(is(T : UEComponent))
                 val.onCreate();
+            else
+            {
+                UEEntity en = val;
+                if(!en.sceneNode.parent)
+                {
+                    // parent wurde mit null deserialisiert
+                    en.sceneNode.parent = _sceneRoot;
+                }
+            }
         }
     }
 
@@ -540,6 +556,7 @@ unittest
     import unecht.core.components.sceneNode;
 
     UESceneNode n = new UESceneNode;
+    n.hideFlags.set(HideFlags.dontSaveInScene);
     UEEntity e = UEEntity.create("test",n);
     e.sceneNode.angles = vec3(90,0,0);
     Comp1 comp1 = new Comp1();
@@ -577,7 +594,8 @@ unittest
     write("serializationTest.txt", serializeString);
 
     Comp2 c2 = new Comp2();
-    UEDeserializer d = UEDeserializer(serializeString);
+    UESceneNode n2 = new UESceneNode;
+    UEDeserializer d = UEDeserializer(serializeString,n2);
     c2.deserialize(d);
    
     assert(d.findObject(to!string(e.instanceId)));

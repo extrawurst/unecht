@@ -51,6 +51,7 @@ final class UEEditorMenus : UEComponent
             if(!rootChild.hideFlags.isSet(HideFlags.hideInHirarchie))
                 UEEntity.destroy(rootChild.entity);
         }
+        ue.scene.dump();
     }
 
     ///
@@ -74,6 +75,8 @@ final class UEEditorMenus : UEComponent
         newScene();
         UESceneDeserializer d = UESceneDeserializer(loadFromFile("assets/dummy.scene"));
         d.deserialize(ue.scene.root);
+
+        ue.scene.dump();
     }
 
     ///
@@ -104,8 +107,9 @@ final class UEEditorMenus : UEComponent
         
         UESerializer s;
         EditorRootComponent.currentEntity.sceneNode.serialize(s);
-        UEDeserializer d = UEDeserializer(s.toString);
+
         UESceneNode node = new UESceneNode;
+        UEDeserializer d = UEDeserializer(s.toString,node);
         node.deserialize(d);
         d.createNewIds();
 
