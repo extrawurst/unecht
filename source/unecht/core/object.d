@@ -1,7 +1,7 @@
 ﻿module unecht.core.object;
 
 public import unecht.core.hideFlags;
-import unecht.core.componentSerialization;
+import unecht.core.serialization.serializer;
 import unecht.meta.uda;
 
 ///

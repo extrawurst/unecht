@@ -1,7 +1,7 @@
 ﻿module unecht.core.serialization.sceneSerialization;
 
 import unecht.core.components.sceneNode;
-import unecht.core.componentSerialization;
+import unecht.core.serialization.serializer;
 
 import sdlang;
 

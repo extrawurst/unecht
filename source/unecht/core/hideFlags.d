@@ -1,6 +1,6 @@
 ﻿module unecht.core.hideFlags;
 
-import unecht.core.componentSerialization;
+import unecht.core.serialization.serializer;
 
 ///
 enum HideFlags : int

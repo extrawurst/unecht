@@ -1,4 +1,4 @@
-﻿module unecht.core.componentSerialization;
+﻿module unecht.core.serialization.serializer;
 
 import std.conv;
 import std.uuid;

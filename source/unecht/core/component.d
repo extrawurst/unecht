@@ -2,7 +2,7 @@ module unecht.core.component;
 
 import derelict.util.system;
 
-public import unecht.core.componentSerialization;
+public import unecht.core.serialization.serializer;
 import unecht.core.events:UEEventType;
 import unecht.core.entity;
 import unecht.core.components.sceneNode;
