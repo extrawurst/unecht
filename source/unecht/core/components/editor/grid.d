@@ -22,12 +22,14 @@ final class UEEditorgridComponent : UEComponent {
 	override void onCreate() {
 		super.onCreate;
 		
+        import unecht.core.entity;
+        entity.layer = UELayer.editor;
+
 		auto renderer = entity.addComponent!UERenderer;
 		auto mesh = entity.addComponent!UEMesh;
 		
 		renderer.mesh = mesh;
 		auto material = renderer.material = this.entity.addComponent!UEMaterial;
-		material.polygonFill = false;
 
 		mesh.vertexArrayObject = new GLVertexArrayObject();
 		mesh.vertexArrayObject.bind();

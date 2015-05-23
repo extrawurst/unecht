@@ -281,21 +281,27 @@ final class EditorRootComponent : UEComponent {
 			_editorCam.render();
 
             {
+                // render gismo
+                _editorCam.visibleLayers = 1<<UELayer.editor;
+                _editorCam.clearBitColor=false;
+                _editorCam.clearBitDepth=false;
+                _editorCam.render();
+                _editorCam.clearBitDepth=true;
+                _editorCam.clearBitColor=true;
+                _editorCam.visibleLayers = UECameraDefaultLayers;
+            }
+
+            {
                 // render wireframes
                 UERenderer.editorMaterial = editorMaterial;
                 scope(exit)UERenderer.editorMaterial = null;
                 _editorCam.clearBitColor=false;
                 scope(exit)_editorCam.clearBitColor=true;
+                _editorCam.clearBitDepth=false;
+                scope(exit)_editorCam.clearBitDepth=true;
 
                 _editorCam.render();
             }
-
-            // render gismo
-            _editorCam.visibleLayers = 1<<UELayer.editor;
-            _editorCam.clearBitColor=false;
-            _editorCam.render();
-            _editorCam.clearBitColor=true;
-            _editorCam.visibleLayers = UECameraDefaultLayers;
 		}
 
         _editorGUI.render();
