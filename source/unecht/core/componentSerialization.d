@@ -81,6 +81,8 @@ struct UESerializer
     //TODO: make package-protected once this module moved to serialization package
     public Tag content;
 
+    public UUID[] blacklist;
+
     mixin generateSerializeFunc!serializeMemberWithName;
 
     ///
@@ -147,6 +149,12 @@ struct UESerializer
             mixin(format("%s.serialize(member,this,memberTag);",custom));
         }
     }
+                                                            
+    private bool isBlacklisted(in UUID id) const
+    {
+        import std.algorithm:countUntil;
+        return countUntil(blacklist, id) != -1;
+    }
 
     private Tag getInstanceTag(string id)
     {
@@ -165,7 +173,7 @@ struct UESerializer
     {
         if(val !is null)
         {
-            if(val.hideFlags.isSet(HideFlags.dontSaveInScene))
+            if(isBlacklisted(val.instanceId) || val.hideFlags.isSet(HideFlags.dontSaveInScene))
             {
                 parent.remove();
                 return;
@@ -247,17 +255,13 @@ struct UEDeserializer
     private Tag content;
     public Tag root;
     private bool rootRead;
-    private LoadedObject[] objectsLoaded;
-    private UESceneNode _sceneRoot;
+    public LoadedObject[] objectsLoaded;
 
     mixin generateSerializeFunc!deserializeFromMemberName;
 
     ///
-    this(string input, UESceneNode sceneRoot)
+    this(string input)
     {
-        assert(sceneRoot);
-        _sceneRoot = sceneRoot;
-
         import std.stdio;
         root =  parseSource(input);
 
@@ -273,33 +277,44 @@ struct UEDeserializer
             o.o.newInstanceId();
         }
     }
-    
+
+    ///
+    public auto deserializeFirst(T)()
+        if(is(T:UEObject))
+    {
+        auto result = new T;
+        storeLoadedRef(result, findFirstID);
+        result.deserialize(this, findFirstID);
+        return result;
+    }
+
+    private string findFirstID()
+    {
+        auto contentRoot = content.all.tags.front;
+
+        return contentRoot.attributes["id"][0].value.get!string; 
+    }
+
     public void deserializeObjectMember(T,M,string custom=null)(T obj, string uid, string membername, ref M member)
         if(is(T : UEObject))
     {
         if(uid is null || uid.length == 0)
         {
-            auto contentRoot = content.all.tags.front;
-
-            uid = contentRoot.attributes["id"][0].value.get!string;
-
-            storeLoadedRef(obj,uid);
-
-            deserializeFromTag!(T,M,custom)(obj, membername, member, contentRoot);
+            assert(false);
         }
         else
         {
             auto tag = findObject(uid);
             assert(tag, format("obj not found: '%s' (%s)",T.stringof, uid));
 
-            storeLoadedRef(obj,uid);
+            if(!findObject(uid))
+                storeLoadedRef(obj,uid);
             
             deserializeFromTag!(T,M,custom)(obj, membername, member, tag);
         }
     }
 
-    //TODO: make package once it is in serializer package
-    public Tag findObject(string objectId)
+    private Tag findObject(string objectId)
     {
         auto objects = content.all.tags["obj"];
         foreach(Tag o; objects)
@@ -354,12 +369,8 @@ struct UEDeserializer
         if(is(T : UEObject))
     {
         if(parent.values.length == 0)
-        {
-            import std.stdio;
-            writefln("deserializeMember(%s) no values found in %s", T.stringof, parent.name);
             return;
-        }
-
+            
         assert(parent.values.length == 1, format("[%s] wrong value count %s",T.stringof,parent.values.length));
 
         const uid = parent.values[0].get!string;
@@ -373,48 +384,41 @@ struct UEDeserializer
         }
         else
         {
-            static if(is(T:UEComponent))
-            {
-                auto typename = parent.attributes["type"][0].value.get!string;
-                val = cast(T)Object.factory(typename);
-                assert(val, format("could not create: %s",typename));
-            }
-            else
-                val = UEEntity.createForDeserialize();
-
+            auto typename = parent.attributes["type"][0].value.get!string;
+            val = cast(T)Object.factory(typename);
+            assert(val, format("could not create: %s",typename));
+            
             storeLoadedRef(val,uid);
 
             val.deserialize(this, uid);
 
             static if(is(T : UEComponent))
                 val.onCreate();
-            else
-            {
-                UEEntity en = val;
-                if(!en.sceneNode.parent)
-                {
-                    // parent wurde mit null deserialisiert
-                    en.sceneNode.parent = _sceneRoot;
-                }
-            }
         }
     }
 
-    private UEObject findLoadedRef(string uid)
+    //TODO: make package once it is in serializer package
+    public UEObject findLoadedRef(string uid)
     {
         alias objArray = objectsLoaded;
 
         foreach(o; objArray)
         {
             if(o.uid == uid)
+            {
                 return o.o;
+            }
         }
 
         return null;
     }
 
-    private void storeLoadedRef(UEObject v, string uid)
+    public void storeLoadedRef(UEObject v, string uid)
     {
+        assert(v !is null);
+
+        assert(!findLoadedRef(uid));
+
         objectsLoaded ~= LoadedObject(v,uid);
     }
     
@@ -593,10 +597,8 @@ unittest
     import std.file:write;
     write("serializationTest.txt", serializeString);
 
-    Comp2 c2 = new Comp2();
-    UESceneNode n2 = new UESceneNode;
-    UEDeserializer d = UEDeserializer(serializeString,n2);
-    c2.deserialize(d);
+    UEDeserializer d = UEDeserializer(serializeString);
+    Comp2 c2 = d.deserializeFirst!Comp2;
    
     assert(d.findObject(to!string(e.instanceId)));
     assert(c2.i == c.i, format("%s != %s",c2.i,c.i));
@@ -622,7 +624,7 @@ unittest
     assert(c2.entity.name == "test");
     assert(c2.compArr.length == 3);
     assert(c2.compArr[0] == c2.compArr[1]);
-    assert(c2.compArr[2] == c2, format("%s != %s",c2.compArr[2].instanceId,c2.instanceId));
+    assert(c2.compArr[2] is c2, format("%s != %s",c2.compArr[2].instanceId,c2.instanceId));
     assert((cast(Comp1)c2.comp1).val == (cast(Comp1)c.comp1).val);
     assert(c2.comp1 is c2.comp1_);
     assert(c2.entity.instanceId == c.entity.instanceId, format("%s != %s", c2.entity.instanceId,c.entity.instanceId));

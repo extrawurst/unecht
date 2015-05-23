@@ -8,13 +8,15 @@ import sdlang;
 ///
 struct UESceneSerializer
 {
-    UESerializer baseSerializer;
-    
+    private UESerializer baseSerializer;
+
+    ///
     alias baseSerializer this;
     
     private Tag sceneNodesTag;
-    
-    void serialize(UESceneNode node)
+
+    ///
+    public void serialize(UESceneNode root)
     {
         if(!sceneNodesTag)
         {
@@ -22,12 +24,27 @@ struct UESceneSerializer
             sceneNodesTag.name = "nodes";
         }
 
-        node.serialize(baseSerializer);
-        
-        auto nodeTag = new Tag(sceneNodesTag);
-        nodeTag.add(Value(node.instanceId.toString()));
+        baseSerializer.blacklist ~= root.instanceId;
+
+        foreach(rootChild; root.children)
+        {
+            serializeNode(rootChild);
+        }
     }
-    
+
+    private void serializeNode(UESceneNode node)
+    {
+        import unecht.core.hideFlags;
+        if(!node.hideFlags.isSet(HideFlags.hideInHirarchie))
+        {
+            node.serialize(baseSerializer);
+            
+            auto nodeTag = new Tag(sceneNodesTag);
+            nodeTag.add(Value(node.instanceId.toString()));
+        }
+    }
+
+    ///
     public string toString()
     {
         auto root = new Tag;
@@ -42,23 +59,24 @@ struct UESceneSerializer
 ///
 struct UESceneDeserializer
 {
-    UEDeserializer base;
-    
+    private UEDeserializer base;
+
+    ///
     alias base this;
     
     private Tag sceneNodesTag;
-    private UESceneNode _sceneRoot;
-    
+
+    ///
     this(string input)
     {
-        _sceneRoot = new UESceneNode;
-        base = UEDeserializer(input, _sceneRoot);
+        base = UEDeserializer(input);
 
         sceneNodesTag = root.all.tags["nodes"][0];
         assert(sceneNodesTag !is null);
     }
-    
-    void deserialize(UESceneNode root)
+
+    ///
+    public void deserialize(UESceneNode root)
     {
         assert(root);
 
@@ -66,26 +84,72 @@ struct UESceneDeserializer
         {
             auto id = node.values[0].get!string;
 
-            auto scenenode = cast(UESceneNode)base.findObject(id);
-            //TODO: can this happen ?
-            assert(scenenode is null);
+            auto scenenode = cast(UESceneNode)base.findLoadedRef(id);
 
             if(scenenode is null)
             {
                 scenenode = new UESceneNode;
+                base.storeLoadedRef(scenenode,id);
                 scenenode.deserialize(this,id);
+                assert(scenenode.parent is null);
                 scenenode.parent = root;
 
                 //import std.stdio;
                 //writefln("new node added: %s (%s,%s)",scenenode.entity.name,scenenode.parent.children.length,scenenode.children.length);
                 //writefln("->: %s parent: %s",scenenode.instanceId,scenenode.parent.instanceId);
             }
+            else
+            {
+                assert(scenenode.parent is root || scenenode.parent is null);
+                if(scenenode.parent is null)
+                    scenenode.parent = root;
+            }
+        }
+
+        foreach(i,lo; base.objectsLoaded)
+        {
+            import unecht.core.object;
+            import unecht.core.entity;
+            UEObject o = lo.o;
+            assert(o);
+
+            //import std.stdio;
+            //writefln("loaded [%s]: %s", i, o.instanceId);
+
+            if(cast(UESceneNode)o)
+            {
+                UESceneNode n = cast(UESceneNode)o;
+                assert(n.entity);
+                //writefln(" sceneNode -> %s ('%s')", n.children.length, n.entity.name);
+                //if(n.parent)
+                //    writefln(" parent -> %s", n.parent.instanceId);
+            }
+            if(cast(UEEntity)o)
+            {
+                UEEntity e = cast(UEEntity)o;
+                assert(e.sceneNode);
+                //writefln(" entity '%s': %s", e.name, e.sceneNode.instanceId);
+            }
+        }
+        
+        void val(UESceneNode n,UESceneNode root)
+        {
+            assert(n);
+
+            if(n !is root)
+            {
+                assert(n.parent, format("no parent: %s",n.instanceId));
+                assert(n.parent.hasChild(n));
+            }
+
+            foreach(sn; n.children)
+            {
+                assert(sn.parent is n, format("'%s'.%s !is '%s'.%s", sn.entity.name, sn.parent.instanceId, n.entity.name,n.instanceId));
+                val(sn,root);
+            }
         }
 
         // validity check
-        foreach(sn; _sceneRoot.children)
-        {
-            assert(sn.parent.hasChild(sn));
-        }
+        val(root,root);
     }
 }
