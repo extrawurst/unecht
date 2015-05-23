@@ -78,9 +78,9 @@ mixin template generateSerializeFunc(alias Func)
 ///
 struct UESerializer
 {
-    //TODO: make package-protected once this module moved to serialization package
-    public Tag content;
+    package Tag content;
 
+    ///
     public UUID[] blacklist;
 
     mixin generateSerializeFunc!serializeMemberWithName;
@@ -231,6 +231,7 @@ struct UESerializer
             parent.add(Value(to!string(val)));
     }
 
+    ///
     public string toString()
     {
         auto root = new Tag;
@@ -253,8 +254,7 @@ struct UEDeserializer
     }
 
     private Tag content;
-    public Tag root;
-    private bool rootRead;
+    package Tag root;
     public LoadedObject[] objectsLoaded;
 
     mixin generateSerializeFunc!deserializeFromMemberName;
@@ -295,6 +295,7 @@ struct UEDeserializer
         return contentRoot.attributes["id"][0].value.get!string; 
     }
 
+    ///
     public void deserializeObjectMember(T,M,string custom=null)(T obj, string uid, string membername, ref M member)
         if(is(T : UEObject))
     {
@@ -371,7 +372,7 @@ struct UEDeserializer
         deserializeMember(v, memberTag);
     }
     
-    void deserializeMember(T)(ref T val, Tag parent)
+    private void deserializeMember(T)(ref T val, Tag parent)
         if(is(T : UEObject))
     {
         if(parent.values.length == 0)
@@ -403,8 +404,8 @@ struct UEDeserializer
         }
     }
 
-    //TODO: make package once it is in serializer package
-    public UEObject findLoadedRef(string uid)
+    ///
+    package UEObject findLoadedRef(string uid)
     {
         alias objArray = objectsLoaded;
 
@@ -419,7 +420,8 @@ struct UEDeserializer
         return null;
     }
 
-    public void storeLoadedRef(UEObject v, string uid)
+    ///
+    package void storeLoadedRef(UEObject v, string uid)
     {
         assert(v !is null);
 
