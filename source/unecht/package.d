@@ -10,6 +10,7 @@ public import unecht.core.components.shapes;
 public import unecht.core.components.material;
 public import unecht.core.components.internal.gui;
 public import unecht.core.defaultInspector;
+public import unecht.core.fibers;
 version(UEIncludeEditor){
 public import unecht.core.components.editor.menus;
 public import unecht.meta.uda;

@@ -92,6 +92,13 @@ struct UEApplication
 
                 {
                     version(UEProfiling)
+                        auto profZone = Zone(profiler, "fibers run");
+                    
+                    UEFibers.runFibers();
+                }
+
+                {
+                    version(UEProfiling)
                     auto profZone = Zone(profiler, "scene update");
 
         		    ue.scene.update();

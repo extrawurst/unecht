@@ -71,9 +71,13 @@ final class UEEditorMenus : UEComponent
         import unecht.core.hideFlags;
         import unecht.core.serialization.sceneSerialization;
 
-        newScene();
-        UESceneDeserializer d = UESceneDeserializer(loadFromFile("assets/dummy.scene"));
-        d.deserialize(ue.scene.root);
+        UEFibers.startFiber(
+            {
+                UEEditorMenus.newScene();
+                Fiber.yield();
+                UESceneDeserializer d = UESceneDeserializer(UEEditorMenus.loadFromFile("assets/dummy.scene"));
+                d.deserialize(ue.scene.root);
+            });
     }
 
     ///
