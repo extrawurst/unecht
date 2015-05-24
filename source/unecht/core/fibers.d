@@ -12,7 +12,8 @@ final class UEFiber : Fiber
 {
     private Fiber child;
 
-    public this( void delegate() fn ) nothrow
+    //TODO: make nothrow once we loose the dmd<2067 compat
+    public this( void delegate() fn )
     {
         super(fn);
 
