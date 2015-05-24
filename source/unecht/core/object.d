@@ -103,8 +103,12 @@ abstract class UEObject
                         enum customSerializerUDA = getUDA!(__traits(getMember, T, m), CustomSerializer);
                         
                         enum n = customSerializerUDA.serializerTypeName;
+
+                        import sdlang;
+
+                        UECustomFuncSerialize!M func = mixin("&"~n~".serialize");
                         
-                        serializer.serializeObjectMember!(T,M,n)(this, m, __traits(getMember, v, m));
+                        serializer.serializeObjectMember!(T,M)(this, m, __traits(getMember, v, m), func);
                     }
                 }
             }
@@ -150,8 +154,12 @@ abstract class UEObject
                         enum customSerializerUDA = getUDA!(__traits(getMember, T, m), CustomSerializer);
                         
                         enum n = customSerializerUDA.serializerTypeName;
+
+                        import sdlang;
                         
-                        serializer.deserializeObjectMember!(T,M,n)(this, uid, m, __traits(getMember, v, m));
+                        UECustomFuncDeserialize!M func = mixin("&"~n~".deserialize");
+                        
+                        serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m), func);
                     }
                 }
             }

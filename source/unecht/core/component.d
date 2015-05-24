@@ -102,7 +102,11 @@ template UERegisterObject()
 
                             enum n = customSerializerUDA.serializerTypeName;
 
-                            serializer.serializeObjectMember!(T,M,n)(this, m, __traits(getMember, v, m));
+                            import sdlang;
+                            
+                            UECustomFuncSerialize!M func = mixin("&"~n~".serialize");
+                            
+                            serializer.serializeObjectMember!(T,M)(this, m, __traits(getMember, v, m), func);
                         }
                     }
                 }
@@ -154,7 +158,11 @@ template UERegisterObject()
                             
                             enum n = customSerializerUDA.serializerTypeName;
                             
-                            serializer.deserializeObjectMember!(T,M,n)(this, uid, m, __traits(getMember, v, m));
+                            import sdlang;
+                            
+                            UECustomFuncDeserialize!M func = mixin("&"~n~".deserialize");
+                            
+                            serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m), func);
                         }
                     }
                 }

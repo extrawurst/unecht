@@ -6,7 +6,7 @@ import unecht;
 import unecht.core.serialization.serializer;
 import unecht.core.hideFlags;
 import sdlang;
-/+
+
 struct CustomTestSerializer
 {
     static void serialize(ref CustomSerializeTestStruct v, ref UESerializer serializer, Tag parent)
@@ -24,7 +24,7 @@ struct CustomSerializeTestStruct
 {
     int ignoreTest = 1;
     private int foobar = 2;
-}+/
+}
 
 class Comp1: UEComponent
 {
@@ -59,8 +59,8 @@ class Comp2: BaseComp
         int[2] intStatArr = [0,0];
         ubyte ub;
         ubyte[2] ubArr;
-        //@CustomSerializer("CustomTestSerializer")
-        //CustomSerializeTestStruct customSer;
+        @CustomSerializer("CustomTestSerializer")
+        CustomSerializeTestStruct customSer;
         
         enum LocalEnum{foo,bar}
         vec2 v;
@@ -109,8 +109,8 @@ unittest
     c.dont = 1;
     c.e=Comp2.LocalEnum.foo;
     c.comp1_ = comp1;
-    //c.customSer.ignoreTest = -1;
-    //c.customSer.foobar = -1;
+    c.customSer.ignoreTest = -1;
+    c.customSer.foobar = -1;
     
     UESerializer s;
     c.serialize(s);
@@ -141,8 +141,8 @@ unittest
     assert(c2.e == c.e);
     assert(c2.baseClassMember == c.baseClassMember, format("%s != %s",c2.baseClassMember,c.baseClassMember));
     assert(c2.dont != c.dont);
-    //assert(c2.customSer.ignoreTest == CustomSerializeTestStruct.init.ignoreTest);
-    //assert(c2.customSer.foobar == c.customSer.foobar);
+    assert(c2.customSer.ignoreTest == CustomSerializeTestStruct.init.ignoreTest);
+    assert(c2.customSer.foobar == c.customSer.foobar);
     assert(c2.entity !is null);
     assert(c2.entity.name == "test");
     assert(c2.compArr.length == 3);

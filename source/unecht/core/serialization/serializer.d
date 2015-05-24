@@ -86,7 +86,7 @@ struct UESerializer
     mixin generateSerializeFunc!serializeMemberWithName;
 
     ///
-    public void serializeObjectMember(T,M, string custom=null)(T obj, string name, ref M member)
+    public void serializeObjectMember(T,M)(T obj, string name, ref M member, UECustomFuncSerialize!M customFunc=null)
         if(is(T : UEObject))
     {
         if(!content)
@@ -95,7 +95,7 @@ struct UESerializer
             content.name = "content";
         }
 
-        serializeTo!(T,M,custom)(obj, name, member, content);
+        serializeTo!(T,M)(obj, name, member, content, customFunc);
     }
 
     private void serializeMemberWithName(T)(T v, Tag tag, string membername)
@@ -130,7 +130,7 @@ struct UESerializer
         return typeTag;
     }
 
-    private void serializeTo(T,M, string custom=null)(T v, string name, ref M member, Tag parent)
+    private void serializeTo(T,M)(T v, string name, ref M member, Tag parent, UECustomFuncSerialize!M func=null)
     {
         auto componentTag = getTag(v.instanceId.toString(), Unqual!(T).stringof, parent);
 
@@ -140,14 +140,10 @@ struct UESerializer
         Tag memberTag = new Tag(componentTag);
         memberTag.name = name;
 
-        static if(custom == null)
-        {
-            serializeMember(member, memberTag);
-        }
+        if(func)
+            func(member,this,memberTag);
         else
-        {
-            mixin(format("%s.serialize(member,this,memberTag);",custom));
-        }
+            serializeMember(member, memberTag);
     }
                                                             
     private bool isBlacklisted(in UUID id) const
@@ -296,7 +292,7 @@ struct UEDeserializer
     }
 
     ///
-    public void deserializeObjectMember(T,M,string custom=null)(T obj, string uid, string membername, ref M member)
+    public void deserializeObjectMember(T,M)(T obj, string uid, string membername, ref M member, UECustomFuncDeserialize!M customFunc=null)
         if(is(T : UEObject))
     {
         if(uid is null || uid.length == 0)
@@ -311,7 +307,7 @@ struct UEDeserializer
             if(!findObject(uid))
                 storeLoadedRef(obj,uid);
             
-            deserializeFromTag!(T,M,custom)(obj, membername, member, tag);
+            deserializeFromTag!(T,M)(obj, membername, member, tag, customFunc);
         }
     }
 
@@ -337,7 +333,7 @@ struct UEDeserializer
         return null;
     }
 
-    private void deserializeFromTag(T,M,string custom=null)(T obj, string membername, ref M member, Tag parent)
+    private void deserializeFromTag(T,M)(T obj, string membername, ref M member, Tag parent, UECustomFuncDeserialize!M customFunc=null)
     {
         auto tags = parent.all.tags[Unqual!(T).stringof];
 
@@ -353,15 +349,11 @@ struct UEDeserializer
 
         if(membertags.empty)
             return;
-
-        static if(custom == null)
-        {
-            deserializeMember(member, membertags[0]);
-        }
+            
+        if(customFunc)
+            customFunc(member, this, membertags[0]);
         else
-        {
-            mixin(format("%s.deserialize(member,this,membertags[0]);",custom));
-        }
+            deserializeMember(member, membertags[0]);
     }
 
     private void deserializeFromMemberName(T)(ref T v, Tag tag, string membername)
@@ -482,6 +474,11 @@ struct UEDeserializer
 
 /// UDA to mark serialization fields
 struct Serialize{}
+
+///
+alias UECustomFuncSerialize(T) = void function(ref T, ref UESerializer, Tag);
+///
+alias UECustomFuncDeserialize(T) = void function(ref T, ref UEDeserializer, Tag);
 
 /// UDA to mark a type that contains custom serialization methods
 struct CustomSerializer
