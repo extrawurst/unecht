@@ -1,14 +1,16 @@
 ﻿module unecht.core.object;
 
+import std.uuid;
+
 public import unecht.core.hideFlags;
 import unecht.core.serialization.serializer;
+import unecht.core.serialization.mixins;
 import unecht.meta.uda;
 
 ///
 static struct UECustomSerializeUUID
 {
     import sdlang;
-    import std.uuid;
 
     static void serialize(ref UUID v, ref UESerializer serializer, Tag parent)
     {
@@ -26,8 +28,6 @@ static struct UECustomSerializeUUID
 ///
 abstract class UEObject
 {
-    import std.uuid;
-
     ///
     this()
     {
@@ -36,13 +36,6 @@ abstract class UEObject
         {
             newInstanceId();
         }
-    }
-
-    @Serialize private
-    {
-        @CustomSerializer("UECustomSerializeUUID")
-        UUID _instanceId;
-        HideFlagSet _hideFlags;
     }
 
     ///
@@ -56,114 +49,24 @@ abstract class UEObject
     ///
     public @property bool hideInHirarchie() const { return _hideFlags.isSet(HideFlags.hideInHirarchie); }
 
-    version(UEIncludeEditor)abstract @property string typename();
+    version(UEIncludeEditor)public abstract @property string typename();
 
     ///
-    void serialize(ref UESerializer serializer) 
+    public void serialize(ref UESerializer serializer) 
     {
-        alias T = typeof(this);
-        alias v = this;
-
-        //pragma (msg, "----------------------------------------");
-        //pragma (msg, T.stringof);
-        //pragma (msg, __traits(derivedMembers, T));
+        if(hideFlags.isSet(HideFlags.dontSaveInScene))
+            return;
         
-        foreach(m; __traits(derivedMembers, T))
-        {
-            enum isMemberVariable = is(typeof(() {
-                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
-                    }));
-            
-            enum isMethod = is(typeof(() {
-                        __traits(getMember, v, m)();
-                    }));
-            
-            enum isNonStatic = !is(typeof(mixin("&T."~m)));
-            
-            //pragma(msg, .format("- %s (%s,%s,%s)",m,isMemberVariable,isNonStatic,isMethod));
-
-            static if(isMemberVariable && isNonStatic && !isMethod) {
-                
-                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
-                
-                //pragma(msg, .format("> '%s' (%s)", m, hasSerializeUDA));
-                
-                static if(hasSerializeUDA)
-                {
-                    alias M = typeof(__traits(getMember, v, m));
-
-                    enum hasCustomSerializerUDA = hasUDA!(__traits(getMember, T, m), CustomSerializer);
-                    
-                    static if(!hasCustomSerializerUDA)
-                    {
-                        serializer.serializeObjectMember!(T,M)(this, m, __traits(getMember, v, m));
-                    }
-                    else
-                    {
-                        enum customSerializerUDA = getUDA!(__traits(getMember, T, m), CustomSerializer);
-                        
-                        enum n = customSerializerUDA.serializerTypeName;
-
-                        import sdlang;
-
-                        UECustomFuncSerialize!M func = mixin("&"~n~".serialize");
-                        
-                        serializer.serializeObjectMember!(T,M)(this, m, __traits(getMember, v, m), func);
-                    }
-                }
-            }
-        }
+        iterateAllSerializables!(UEObject)(this, serializer);
     }
 
     ///
-    void deserialize(ref UEDeserializer serializer, string uid=null) 
+    public void deserialize(ref UEDeserializer serializer, string uid=null) 
     {
-        import unecht.meta.uda;
-        
-        alias T = typeof(this);
-        alias v = this;
-        
-        foreach(m; __traits(derivedMembers, T))
-        {
-            enum isMemberVariable = is(typeof(() {
-                        __traits(getMember, v, m) = __traits(getMember, v, m).init;
-                    }));
-            
-            enum isMethod = is(typeof(() {
-                        __traits(getMember, v, m)();
-                    }));
-            
-            enum isNonStatic = !is(typeof(mixin("&T."~m)));
-            
-            static if(isMemberVariable && isNonStatic && !isMethod) {
-                
-                enum hasSerializeUDA = hasUDA!(mixin("T."~m), Serialize);
-                
-                static if(hasSerializeUDA)
-                {
-                    alias M = typeof(__traits(getMember, v, m));
-                    
-                    enum hasCustomSerializerUDA = hasUDA!(__traits(getMember, T, m), CustomSerializer);
-                    
-                    static if(!hasCustomSerializerUDA)
-                    {
-                        serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m));
-                    }
-                    else
-                    {
-                        enum customSerializerUDA = getUDA!(__traits(getMember, T, m), CustomSerializer);
-                        
-                        enum n = customSerializerUDA.serializerTypeName;
+        if(uid != null)
+            _instanceId = UUID(uid);
 
-                        import sdlang;
-                        
-                        UECustomFuncDeserialize!M func = mixin("&"~n~".deserialize");
-                        
-                        serializer.deserializeObjectMember!(T,M)(this, uid, m, __traits(getMember, v, m), func);
-                    }
-                }
-            }
-        }
+        iterateAllSerializables!(UEObject)(this, serializer);
     }
     
     ///TBD
@@ -171,5 +74,32 @@ abstract class UEObject
     {
         //TODO:
         return null;
+    }
+
+private:
+    mixin generateObjectSerializeFunc!(serializeMember, UESerializer, "serialize");
+    mixin generateObjectSerializeFunc!(deserializeMember, UEDeserializer, "deserialize");
+    
+    void serializeMember(T,M)(string m,ref M member, ref UESerializer serializer, UECustomFuncSerialize!M customFunc=null)
+    {
+        serializer.serializeObjectMember!(T,M)(this, m, member, customFunc);
+    }
+
+    void deserializeMember(T,M)(string m, ref M member, ref UEDeserializer serializer, UECustomFuncDeserialize!M customFunc=null)
+    {
+        string uid = null;
+
+        if(_instanceId != UUID.init)
+            uid = _instanceId.toString();
+
+        serializer.deserializeObjectMember!(T,M)(this, uid, m, member, customFunc);
+    }
+
+
+    @Serialize
+    {
+        @CustomSerializer("UECustomSerializeUUID")
+        UUID _instanceId;
+        HideFlagSet _hideFlags;
     }
 }
