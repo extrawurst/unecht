@@ -23,7 +23,7 @@ final class UEFiber : Fiber
         initParent();
     }
 
-    private nothrow void initParent()
+    private void initParent()
     {
         UEFiber parent = cast(UEFiber)Fiber.getThis();
         if(parent)
