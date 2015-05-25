@@ -36,47 +36,58 @@ version(UEIncludeEditor)
                     
                     static if(__traits(compiles, mixin("T."~memberName)))
                     {
-                        //pragma(msg, " ->access allowed");
+                        enum isMemberVariable = is(typeof(() {
+                                    __traits(getMember, thisT, memberName) = __traits(getMember, thisT, memberName).init;
+                                }));
                         
-                        alias member = aliasHelper!(__traits(getMember, T, memberName));
+                        enum isMethod = is(typeof(() {
+                                    __traits(getMember, thisT, memberName)();
+                                }));
                         
-                        static if(is(typeof(member) : bool))
+                        enum isNonStatic = !is(typeof(mixin("&T."~memberName)));
+
+                        static if(isNonStatic && !isMethod && isMemberVariable)
                         {
-                            //pragma(msg, " -->bool");
+                            alias member = aliasHelper!(__traits(getMember, T, memberName));
                             
-                            UEGui.checkbox(member.stringof, mixin("thisT."~memberName));
-                            
-                            static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                            static if(is(typeof(member) : bool))
                             {
-                                enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                if (ig_IsItemHovered())
-                                    ig_SetTooltip(txt);
+                                //pragma(msg, " -->bool");
+                                
+                                UEGui.checkbox(member.stringof, mixin("thisT."~memberName));
+                                
+                                static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                                {
+                                    enum txt = getUDA!(member,UEInspectorTooltip).txt;
+                                    if (ig_IsItemHovered())
+                                        ig_SetTooltip(txt);
+                                }
                             }
-                        }
-                        else static if(is(typeof(member) : int))
-                        {
-                            //pragma(msg, " -->int");
-                            
-                            UEGui.DragInt(member.stringof, mixin("thisT."~memberName));
-                            
-                            static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                            else static if(is(typeof(member) : int))
                             {
-                                enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                if (ig_IsItemHovered())
-                                    ig_SetTooltip(txt);
+                                //pragma(msg, " -->int");
+                                
+                                UEGui.DragInt(member.stringof, mixin("thisT."~memberName));
+                                
+                                static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                                {
+                                    enum txt = getUDA!(member,UEInspectorTooltip).txt;
+                                    if (ig_IsItemHovered())
+                                        ig_SetTooltip(txt);
+                                }
                             }
-                        }
-                        else static if(is(typeof(member) : float))
-                        {
-                            //pragma(msg, " -->float");
-                            
-                            UEGui.DragFloat(member.stringof, mixin("thisT."~memberName));
-                            
-                            static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                            else static if(is(typeof(member) : float))
                             {
-                                enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                if (ig_IsItemHovered())
-                                    ig_SetTooltip(txt);
+                                //pragma(msg, " -->float");
+                                
+                                UEGui.DragFloat(member.stringof, mixin("thisT."~memberName));
+                                
+                                static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
+                                {
+                                    enum txt = getUDA!(member,UEInspectorTooltip).txt;
+                                    if (ig_IsItemHovered())
+                                        ig_SetTooltip(txt);
+                                }
                             }
                         }
                     }
