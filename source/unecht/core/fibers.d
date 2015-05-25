@@ -6,7 +6,9 @@ import std.datetime:Duration;
 
 import derelict.util.system;
 
+///
 alias UEFiberFunc = void function();
+///
 alias UEFiberDelegate = void delegate();
 
 /// add child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
@@ -63,7 +65,7 @@ struct UEFibers
         startFiber(func.toDelegate());
     }
 
-    ///
+    /// 
     public static void startFiber(UEFiberDelegate func)
     {
         UEFiber newFiber = findFreeFiber();
@@ -93,7 +95,7 @@ struct UEFibers
         return null;
     }
 
-    ///
+    /// yield the current fiber until func is finished running
     public static yield(UEFiberDelegate func)
     {
         assert(Fiber.getThis());
@@ -110,7 +112,7 @@ struct UEFibers
         yield(func.toDelegate());
     }
 
-    ///
+    /// calls all running fibers that do not wait for a child to finish
     public static void runFibers()
     {
         foreach(f; fibers)

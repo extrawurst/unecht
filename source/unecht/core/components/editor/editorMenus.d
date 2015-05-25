@@ -13,7 +13,6 @@ final class UEEditorMenus : UEComponent
 {
     mixin(UERegisterObject!());
 
-    ///
     private static void saveToFile(string filename, string content)
     {
         import std.file;
