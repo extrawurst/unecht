@@ -37,14 +37,14 @@ final class UEFiber : Fiber
 /++
  + 
  + example:
- + UEFibers.yield(waitFiber!(2.seconds));
+ + UEFibers.yield(waitFiber!"2.seconds");
  +/
-@nogc UEFiberFunc waitFiber(Duration d)()
+UEFiberFunc waitFiber(string d)()
 {
     import std.datetime;
 
     return {
-        auto targetTime = Clock.currTime + d;
+        auto targetTime = Clock.currTime + mixin(d);
         while(Clock.currTime < targetTime)
             Fiber.yield;
     };
@@ -245,7 +245,7 @@ unittest
     auto now = Clock.currTime;
     UEFibers.startFiber(
         {
-            UEFibers.yield(waitFiber!(1.msecs));
+            UEFibers.yield(waitFiber!"1.msecs");
 
             run = true;
         });
