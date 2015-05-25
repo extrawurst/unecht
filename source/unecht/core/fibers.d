@@ -4,6 +4,8 @@ public import core.thread:Fiber;
 import core.thread:Thread;
 import std.datetime:Duration;
 
+import derelict.util.system;
+
 alias UEFiberFunc = void function();
 alias UEFiberDelegate = void delegate();
 
@@ -13,10 +15,16 @@ final class UEFiber : Fiber
     private Fiber child;
 
     //TODO: make nothrow once we loose the dmd<2067 compat
-    public this( void delegate() fn )
+    public this(T)( T fn )
+        if(is(T == UEFiberFunc) || is(T == UEFiberDelegate))
     {
         super(fn);
 
+        initParent();
+    }
+
+    private nothrow void initParent()
+    {
         UEFiber parent = cast(UEFiber)Fiber.getThis();
         if(parent)
         {
@@ -29,9 +37,9 @@ final class UEFiber : Fiber
 /++
  + 
  + example:
- + UEFibers.yield(waitFiber(2.seconds));
+ + UEFibers.yield(waitFiber!(2.seconds));
  +/
-UEFiberDelegate waitFiber(Duration d)
+@nogc UEFiberFunc waitFiber(Duration d)()
 {
     import std.datetime;
 
@@ -47,6 +55,14 @@ struct UEFibers
 {
     private static UEFiber[] fibers; 
    
+    ///
+    public static void startFiber(UEFiberFunc func)
+    {
+        import std.functional:toDelegate;
+
+        startFiber(func.toDelegate());
+    }
+
     ///
     public static void startFiber(UEFiberDelegate func)
     {
@@ -85,6 +101,13 @@ struct UEFibers
         startFiber(func);
 
         Fiber.yield();
+    }
+
+    /// ditto
+    public static yield(UEFiberFunc func)
+    {
+        import std.functional:toDelegate;
+        yield(func.toDelegate());
     }
 
     ///
@@ -209,4 +232,31 @@ unittest
     assert(i == 10);
 
     assert(UEFibers.fibers.length == 5);
+}
+
+// test wait fiber
+unittest
+{
+    import std.datetime;
+
+    UEFibers.fibers.length = 0;
+    bool run=false;
+
+    auto now = Clock.currTime;
+    UEFibers.startFiber(
+        {
+            UEFibers.yield(waitFiber!(1.msecs));
+
+            run = true;
+        });
+
+    int cycles=0;
+    while(!run)
+    {
+        UEFibers.runFibers();
+        cycles++;
+    }
+
+    assert(Clock.currTime - now >= 1.msecs);
+    assert(cycles > 10, "this should at least take 10 cylces");
 }
