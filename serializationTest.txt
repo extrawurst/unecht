@@ -1,20 +1,20 @@
 content {
-	obj id="c0892d95-f3ce-49fc-a754-8262362e387f" {
+	obj id="4ac49b46-2173-40f7-b30a-cb4355371810" {
 		Comp2 {
 			i 2
 			b true
 			inf "inf"
-			comp1 "4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
-			comp1_ "4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
+			comp1 "1286e88c-8294-492a-815c-9c4ca9e41514" type="unecht.test.serializer.Comp1"
+			comp1_ "1286e88c-8294-492a-815c-9c4ca9e41514" type="unecht.test.serializer.Comp1"
 			compCheckNull
 			intArr {
 				1
 				2
 			}
 			compArr {
-				"4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
-				"4bcb6475-92a2-41ff-9fb4-8f354d86c880" type="unecht.core.componentSerialization.Comp1"
-				"c0892d95-f3ce-49fc-a754-8262362e387f" type="unecht.core.componentSerialization.Comp2"
+				"1286e88c-8294-492a-815c-9c4ca9e41514" type="unecht.test.serializer.Comp1"
+				"1286e88c-8294-492a-815c-9c4ca9e41514" type="unecht.test.serializer.Comp1"
+				"4ac49b46-2173-40f7-b30a-cb4355371810" type="unecht.test.serializer.Comp2"
 			}
 			intStatArr {
 				3
@@ -25,6 +25,7 @@ content {
 				"128"
 				"0"
 			}
+			customSer -1
 			v {
 				vector {
 					"10"
@@ -47,36 +48,17 @@ content {
 			baseClassMember 42
 		}
 		UEComponent {
-			_entity "7531449d-7228-49e0-8b8d-dc23f54687fe" type="unecht.core.entity.UEEntity"
+			_entity "41f84675-afa4-4d32-ae92-6fb56a31d683" type="unecht.core.entity.UEEntity"
 			_enabled true
 		}
 		UEObject {
-			_instanceId {
-				data {
-					"192"
-					"137"
-					"45"
-					"149"
-					"243"
-					"206"
-					"73"
-					"252"
-					"167"
-					"84"
-					"130"
-					"98"
-					"54"
-					"46"
-					"56"
-					"127"
-				}
-			}
+			_instanceId "4ac49b46-2173-40f7-b30a-cb4355371810"
 			_hideFlags {
 				mValue 2
 			}
 		}
 	}
-	obj id="4bcb6475-92a2-41ff-9fb4-8f354d86c880" {
+	obj id="1286e88c-8294-492a-815c-9c4ca9e41514" {
 		Comp1 {
 			val 50
 		}
@@ -85,69 +67,30 @@ content {
 			_enabled true
 		}
 		UEObject {
-			_instanceId {
-				data {
-					"75"
-					"203"
-					"100"
-					"117"
-					"146"
-					"162"
-					"65"
-					"255"
-					"159"
-					"180"
-					"143"
-					"53"
-					"77"
-					"134"
-					"200"
-					"128"
-				}
-			}
+			_instanceId "1286e88c-8294-492a-815c-9c4ca9e41514"
 			_hideFlags {
 				mValue 0
 			}
 		}
 	}
-	obj id="7531449d-7228-49e0-8b8d-dc23f54687fe" {
+	obj id="41f84675-afa4-4d32-ae92-6fb56a31d683" {
 		UEEntity {
-			hideInEditor false
 			_name "test"
 			_layer 0
-			_sceneNode "aaa21fbc-7da3-4114-9ebf-ad6aa6b0564c" type="unecht.core.components.sceneNode.UESceneNode"
+			_sceneNode "de569e44-22ca-4112-abe8-56ede26bf07d" type="unecht.core.components.sceneNode.UESceneNode"
 			_components {
-				"aaa21fbc-7da3-4114-9ebf-ad6aa6b0564c" type="unecht.core.components.sceneNode.UESceneNode"
-				"c0892d95-f3ce-49fc-a754-8262362e387f" type="unecht.core.componentSerialization.Comp2"
+				"de569e44-22ca-4112-abe8-56ede26bf07d" type="unecht.core.components.sceneNode.UESceneNode"
+				"4ac49b46-2173-40f7-b30a-cb4355371810" type="unecht.test.serializer.Comp2"
 			}
 		}
 		UEObject {
-			_instanceId {
-				data {
-					"117"
-					"49"
-					"68"
-					"157"
-					"114"
-					"40"
-					"73"
-					"224"
-					"139"
-					"141"
-					"220"
-					"35"
-					"245"
-					"70"
-					"135"
-					"254"
-				}
-			}
+			_instanceId "41f84675-afa4-4d32-ae92-6fb56a31d683"
 			_hideFlags {
 				mValue 0
 			}
 		}
 	}
-	obj id="aaa21fbc-7da3-4114-9ebf-ad6aa6b0564c" {
+	obj id="de569e44-22ca-4112-abe8-56ede26bf07d" {
 		UESceneNode {
 			children
 			_position {
@@ -195,30 +138,11 @@ content {
 			}
 		}
 		UEComponent {
-			_entity "7531449d-7228-49e0-8b8d-dc23f54687fe" type="unecht.core.entity.UEEntity"
+			_entity "41f84675-afa4-4d32-ae92-6fb56a31d683" type="unecht.core.entity.UEEntity"
 			_enabled true
 		}
 		UEObject {
-			_instanceId {
-				data {
-					"170"
-					"162"
-					"31"
-					"188"
-					"125"
-					"163"
-					"65"
-					"20"
-					"158"
-					"191"
-					"173"
-					"106"
-					"166"
-					"176"
-					"86"
-					"76"
-				}
-			}
+			_instanceId "de569e44-22ca-4112-abe8-56ede26bf07d"
 			_hideFlags {
 				mValue 0
 			}
