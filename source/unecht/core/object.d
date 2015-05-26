@@ -12,12 +12,12 @@ static struct UECustomSerializeUUID
 {
     import sdlang;
 
-    static void serialize(ref UUID v, ref UESerializer serializer, Tag parent)
+    private static void serialize(ref UUID v, ref UESerializer serializer, Tag parent)
     {
         serializer.serializeMember(v.toString(), parent);
     }
-    
-    static void deserialize(ref UUID v, ref UEDeserializer serializer, Tag parent)
+
+    private static void deserialize(ref UUID v, ref UEDeserializer serializer, Tag parent)
     {
         string uuidStr;
         serializer.deserializeMember(uuidStr, parent);
@@ -25,7 +25,7 @@ static struct UECustomSerializeUUID
     }
 }
 
-///
+/// base class for all serializable objects
 abstract class UEObject
 {
     ///
