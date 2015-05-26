@@ -7,6 +7,7 @@ import unecht;
 import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
+import unecht.core.components.editor.commands;
 
 ///
 final class UEEditorMenus : UEComponent 
@@ -37,6 +38,20 @@ final class UEEditorMenus : UEComponent
         UEEntity.create("new entity",EditorRootComponent.currentEntity?EditorRootComponent.currentEntity.sceneNode:null);
     }
 
+    ///
+    @MenuItem("delete Entity", &entitySelected)
+    public static void removeCurrentEntity()
+    {
+        UECommands.execute(new UECmdDelete());
+    }
+
+    ///
+    @MenuItem("undo")
+    public static void undo()
+    {
+        UECommands.undo();
+    }
+    
     ///
     @MenuItem("new scene")
     private static void newScene()

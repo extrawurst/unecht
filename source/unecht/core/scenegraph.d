@@ -1,10 +1,13 @@
 ﻿module unecht.core.scenegraph;
 
+import std.uuid;
+
 import gl3n.linalg;
 
 import unecht.core.component;
 import unecht.core.entity;
 import unecht.core.components.sceneNode;
+import unecht.core.object;
 
 ///
 final class UEScenegraph
@@ -60,6 +63,36 @@ public:
 		gatherAllComponentsInNode!T(_root,res);
 		return res;
 	}
+
+    ///
+    public UEObject findObject(UUID id)
+    {
+        return findObjectRecursive(root, id);
+    }
+
+    ///
+    private UEObject findObjectRecursive(UESceneNode node, UUID id)
+    {
+        if(node.instanceId == id)
+            return node;
+
+        if(node.entity)
+        {
+            foreach(c; node.entity.components)
+            {
+                if(c.instanceId == id)
+                    return c;
+            }
+        }
+
+        foreach(c; node.children)
+        {
+            if(c.instanceId == id)
+                return c;
+        }
+
+        return null;
+    }
 
 	private void gatherAllComponentsInNode(T : UEComponent)(UESceneNode _node, ref T[] _result)
 	{
