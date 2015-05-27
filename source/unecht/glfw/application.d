@@ -236,15 +236,6 @@ package:
         events.trigger(ev);
     }
 
-    ///
-    private void populateCurrentKeyMods(ref EventModKeys mods)
-    {
-        mods.set(glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
-            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
-            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS,
-            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS);
-    }
-
 	void glfwOnChar(uint codepoint)
 	{
 		UEEvent ev;
@@ -346,6 +337,15 @@ private:
 				cam.render();
 		}
 	}
+
+    ///
+    void populateCurrentKeyMods(ref EventModKeys mods)
+    {
+        mods.set(glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
+            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
+            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS,
+            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS);
+    }
 }
 
 private nothrow extern(C) void error_callback(int error, const(char)* description)
