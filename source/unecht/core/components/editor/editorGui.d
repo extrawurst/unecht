@@ -51,38 +51,40 @@ final class UEEditorGUI : UEComponent
         
         ig_Begin("scene",null,ImGuiWindowFlags_NoMove);
         
-        static bool menuOpen=false;
+        //static bool menuOpen=false;
         if(UEGui.Button("menu"))
-            menuOpen = true;
-        
-        if(menuOpen)
+            ig_OpenPopup("main");
+
         {
-            ig_BeginPopup(&menuOpen);
-            UEGui.Text("menu");
-            ig_Separator();
+            auto menuOpen = ig_BeginPopup("main");
+            scope(exit){if(menuOpen) ig_EndPopup();}
 
-            import unecht.core.componentManager;
-            foreach(item; UEComponentsManager.menuItems)
+            if(menuOpen)
             {
-                auto isValid = item.validateFunc?item.validateFunc():true;
+                UEGui.Text("menu");
+                ig_Separator();
 
-                if(!isValid)
-                    ig_PushStyleColor(ImGuiCol_Text, ImVec4(0.4,0.4,0.4,1));
-
-                if(UEGui.Button(item.name))
+                import unecht.core.componentManager;
+                foreach(item; UEComponentsManager.menuItems)
                 {
-                    if(isValid)
+                    auto isValid = item.validateFunc?item.validateFunc():true;
+
+                    if(!isValid)
+                        ig_PushStyleColor(ImGuiCol_Text, ImVec4(0.4,0.4,0.4,1));
+
+                    if(UEGui.Button(item.name))
                     {
-                        item.func();
-                        menuOpen = false;
+                        if(isValid)
+                        {
+                            item.func();
+                            ig_CloseCurrentPopup();
+                        }
                     }
+
+                    if(!isValid)
+                        ig_PopStyleColor();
                 }
-
-                if(!isValid)
-                    ig_PopStyleColor();
             }
-
-            ig_EndPopup();
         }
         
         ig_Separator();
@@ -138,6 +140,7 @@ final class UEEditorGUI : UEComponent
                 else
                     EditorRootComponent.selectEntity(_node.entity);
             }
+            ig_PopId();
 
 			if(ig_IsItemHovered() && ig_IsMouseDoubleClicked(0))
 				EditorRootComponent.lookAtNode(_node);
@@ -180,6 +183,7 @@ final class UEEditorGUI : UEComponent
 
 		if(component2Remove)
 		{
+            //TODO: broken ?
 			component2Remove.entity.removeComponent(component2Remove);
 			component2Remove = null;
 		}
@@ -194,6 +198,7 @@ final class UEEditorGUI : UEComponent
     private static void renderInspectorComponent(UEComponent c, bool isSceneNode)
     {
         auto openNode = false;
+
         if(!isSceneNode)
         {
             ig_PushIdPtr(cast(void*)c);
@@ -203,6 +208,7 @@ final class UEEditorGUI : UEComponent
         {
             UEGui.Text("UESceneNode");
         }
+
         if(openNode || isSceneNode)
         {
             if(!openNode)
@@ -228,6 +234,8 @@ final class UEEditorGUI : UEComponent
         
         if(isSceneNode)
             ig_Separator();
+        else
+            ig_PopId();
     }
     
 	static UEComponent componentEdit;
@@ -243,10 +251,12 @@ final class UEEditorGUI : UEComponent
 
         ig_SameLine(wndWidth-32);
         if(UEGui.SmallButton("#"))
+        {
 			componentEdit = c;
+            ig_OpenPopup("compedit");
+        }
 
-		if(componentEdit == c)
-			renderComponentEdit();
+		renderComponentEdit();
 
         ig_SameLine(wndWidth-15);
         if(UEGui.SmallButton(subtext))
@@ -257,48 +267,48 @@ final class UEEditorGUI : UEComponent
 
 	private static void renderComponentEdit()
 	{
-		bool menuOpen=true;
-		ig_BeginPopup(&menuOpen);
-		scope(exit)ig_EndPopup();
+        bool menuOpen = ig_BeginPopup("compedit");
+        scope(exit){ if(menuOpen) ig_EndPopup(); }
 
-		if(!menuOpen)
+        if(!menuOpen && !componentEdit)
 		{
+            ig_CloseCurrentPopup();
 			componentEdit = null;
 			return;
 		}
+        if(menuOpen)
+        {
+            UEGui.Text("edit");
+    		ig_Separator();
 
-		UEGui.Text("edit");
-		ig_Separator();
-
-		if(UEGui.Button("remove"))
-		{
-			component2Remove = componentEdit;
-			componentEdit = null;
-		}
+    		if(UEGui.Button("remove"))
+    		{
+    			component2Remove = componentEdit;
+    			componentEdit = null;
+                ig_CloseCurrentPopup();
+    		}
+        }
 	}
 
-    static bool addComponentOpen;
     static string componentToAdd;
 
     private static void renderInspectorFooter()
     {
         ig_Separator();
         if(UEGui.Button("add  component..."))
-            addComponentOpen = true;
+            ig_OpenPopup("addcomp");
+            
+        static string filterString;
 
-        if(addComponentOpen)
+        bool menuOpen=ig_BeginPopup("addcomp");
+        scope(exit){if(menuOpen) ig_EndPopup();}
+        if(!menuOpen)
         {
-            static string filterString;
-
-            bool menuOpen=true;
-            ig_BeginPopup(&menuOpen);
-            scope(exit)ig_EndPopup();
-            if(!menuOpen)
-            {
-                addComponentOpen=false;
-                filterString.length=0;
-            }
-
+            filterString.length=0;
+            return;
+        }
+        else
+        {
             UEGui.InputText("filter",filterString);
             ig_Separator();
 
@@ -312,7 +322,6 @@ final class UEEditorGUI : UEComponent
                 if(UEGui.Selectable(c,false))
                 {
                     componentToAdd = c;
-                    addComponentOpen=false;
                     filterString.length=0;
                 }
             }
