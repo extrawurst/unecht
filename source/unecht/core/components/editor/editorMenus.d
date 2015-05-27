@@ -32,28 +32,7 @@ final class UEEditorMenus : UEComponent
     }
     
     ///
-    @MenuItem("add entity")
-    private static void addEmptyEntity()
-    {
-        UEEntity.create("new entity",EditorRootComponent.currentEntity?EditorRootComponent.currentEntity.sceneNode:null);
-    }
-
-    ///
-    @MenuItem("delete Entity", &entitySelected)
-    public static void removeCurrentEntity()
-    {
-        UECommands.execute(new UECmdDelete());
-    }
-
-    ///
-    @MenuItem("undo")
-    public static void undo()
-    {
-        UECommands.undo();
-    }
-    
-    ///
-    @MenuItem("new scene")
+    @MenuItem("main/new scene")
     private static void newScene()
     {
         import unecht.core.hideFlags;
@@ -68,18 +47,7 @@ final class UEEditorMenus : UEComponent
     }
 
     ///
-    @MenuItem("save entity", &entitySelected)
-    private static void saveEntity()
-    {
-        assert(EditorRootComponent.currentEntity);
-        
-        UESerializer s;
-        EditorRootComponent.currentEntity.sceneNode.serialize(s);
-        saveToFile("assets/dummy.entity", s.toString());
-    }
-
-    ///
-    @MenuItem("load scene")
+    @MenuItem("main/load scene")
     private static void loadScene()
     {
         import unecht.core.hideFlags;
@@ -95,7 +63,7 @@ final class UEEditorMenus : UEComponent
     }
 
     ///
-    @MenuItem("save scene")
+    @MenuItem("main/save scene")
     private static void saveScene()
     {
         import unecht.core.hideFlags;
@@ -107,9 +75,23 @@ final class UEEditorMenus : UEComponent
 
         saveToFile("assets/dummy.scene", s.toString());
     }
+
+    ///
+    @MenuItem("edit/undo")
+    public static void undo()
+    {
+        UECommands.undo();
+    }
+
+    ///
+    @MenuItem("entity/add entity")
+    private static void addEmptyEntity()
+    {
+        UEEntity.create("new entity",EditorRootComponent.currentEntity?EditorRootComponent.currentEntity.sceneNode:null);
+    }
     
     ///
-    @MenuItem("clone entity", &entitySelected)
+    @MenuItem("entity/clone entity", &entitySelected)
     private static void cloneEntity()
     {
         assert(EditorRootComponent.currentEntity);
@@ -126,5 +108,23 @@ final class UEEditorMenus : UEComponent
         node.onCreate();
 
         EditorRootComponent.selectEntity(node.entity);
+    }
+
+    ///
+    @MenuItem("entity/save entity", &entitySelected)
+    private static void saveEntity()
+    {
+        assert(EditorRootComponent.currentEntity);
+        
+        UESerializer s;
+        EditorRootComponent.currentEntity.sceneNode.serialize(s);
+        saveToFile("assets/dummy.entity", s.toString());
+    }
+
+    ///
+    @MenuItem("entity/delete Entity", &entitySelected)
+    public static void removeCurrentEntity()
+    {
+        UECommands.execute(new UECmdDelete());
     }
 }

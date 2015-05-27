@@ -1,5 +1,7 @@
 ﻿module unecht.core.components.editor.menus;
 
+version(UEIncludeEditor):
+
 alias MenuItemFunc = void function();
 alias MenuItemValidateFunc = bool function();
 

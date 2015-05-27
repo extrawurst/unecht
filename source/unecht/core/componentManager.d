@@ -33,7 +33,7 @@ static struct UEComponentsManager
 {
 	static IComponentEditor[string] editors;
     static string[] componentNames;
-    static EditorMenuItem[] menuItems;
+    version(UEIncludeEditor)static EditorMenuItem[] menuItems;
 }
 
 ///
