@@ -37,9 +37,41 @@ final class UEEditorGUI : UEComponent
         
         if(EditorRootComponent.visible)
         {
+            renderMainMenu();
             renderControlPanel();
             renderScene();
             renderInspector();
+        }
+    }
+
+    private static void renderMainMenu()
+    {
+        auto menuBar = ig_BeginMainMenuBar();
+        scope(exit){if(menuBar)ig_EndMainMenuBar();}
+
+        if(menuBar)
+        {
+            auto mainMenu = ig_BeginMenu("main");
+            scope(exit){if(mainMenu)ig_EndMenu();}
+
+            if(mainMenu)
+            {
+                import unecht.core.componentManager;
+                import std.string:toStringz;
+
+                foreach(item; UEComponentsManager.menuItems)
+                {
+                    auto isValid = item.validateFunc?item.validateFunc():true;
+                    
+                    if(ig_MenuItem(item.name.toStringz,"",false,isValid))
+                    {
+                        if(isValid)
+                        {
+                            item.func();
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -47,48 +79,10 @@ final class UEEditorGUI : UEComponent
     ///
     private static void renderScene()
     {
-        ig_SetNextWindowPos(ImVec2(0,0), ImGuiSetCond_Always);
+        ig_SetNextWindowPos(ImVec2(0,20), ImGuiSetCond_Always);
         
         ig_Begin("scene",null,ImGuiWindowFlags_NoMove);
-        
-        //static bool menuOpen=false;
-        if(UEGui.Button("menu"))
-            ig_OpenPopup("main");
 
-        {
-            auto menuOpen = ig_BeginPopup("main");
-            scope(exit){if(menuOpen) ig_EndPopup();}
-
-            if(menuOpen)
-            {
-                UEGui.Text("menu");
-                ig_Separator();
-
-                import unecht.core.componentManager;
-                foreach(item; UEComponentsManager.menuItems)
-                {
-                    auto isValid = item.validateFunc?item.validateFunc():true;
-
-                    if(!isValid)
-                        ig_PushStyleColor(ImGuiCol_Text, ImVec4(0.4,0.4,0.4,1));
-
-                    if(UEGui.Button(item.name))
-                    {
-                        if(isValid)
-                        {
-                            item.func();
-                            ig_CloseCurrentPopup();
-                        }
-                    }
-
-                    if(!isValid)
-                        ig_PopStyleColor();
-                }
-            }
-        }
-        
-        ig_Separator();
-        
         foreach(n; ue.scene.root.children)
         {
             renderSceneNode(n);
@@ -153,7 +147,7 @@ final class UEEditorGUI : UEComponent
         if(!EditorRootComponent.currentEntity)
             return;
 
-        ig_SetNextWindowPos(ImVec2(sceneWindowWidth+1,0),ImGuiSetCond_Always);
+        ig_SetNextWindowPos(ImVec2(sceneWindowWidth+1,20),ImGuiSetCond_Always);
         bool closed;
         ig_Begin("inspector",&closed,
             ImGuiWindowFlags_AlwaysAutoResize|
