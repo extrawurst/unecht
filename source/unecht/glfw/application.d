@@ -171,6 +171,18 @@ struct UEApplication
 		mainWindow.close();
 	}
 
+    ///
+    void openProfiler()
+    {
+        version(UEProfiling)
+        {
+            if(!sender.sending)
+            {
+                sender.startDespiker();
+            }
+        }
+    }
+
 package:
 	void glfwOnKey(int key, int scancode, int action, int mods)
 	{
@@ -186,18 +198,7 @@ package:
 
         ev.keyEvent.mods.setFromBitMaskGLFW(mods);
 
-        version(UEProfiling)
-        {
-            if( action == GLFW_PRESS && 
-                key == GLFW_KEY_P && 
-                ev.keyEvent.mods.isModShift && ev.keyEvent.mods.isModSuper)
-            {
-                if(!sender.sending)
-                    sender.startDespiker();
-            }
-        }
-
-		events.trigger(ev);
+   		events.trigger(ev);
 	}
 
 	void glfwOnMouseMove(double x, double y)

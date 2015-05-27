@@ -178,10 +178,16 @@ final class UEEditorGUI : UEComponent
         {
             menuBar.render();
             renderControlPanel();
-            renderScene();
-            renderInspector();
+            if(showHirarchie)
+            {
+                renderScene();
+                renderInspector();
+            }
         }
     }
+
+    ///
+    package static bool showHirarchie = true;
 
     private static float sceneWindowWidth;
     ///
@@ -190,6 +196,7 @@ final class UEEditorGUI : UEComponent
         ig_SetNextWindowPos(ImVec2(0,20), ImGuiSetCond_Always);
         
         ig_Begin("scene",null,ImGuiWindowFlags_NoMove);
+        scope(exit){ig_End();}
 
         foreach(n; ue.scene.root.children)
         {
@@ -197,7 +204,6 @@ final class UEEditorGUI : UEComponent
         }
         
         sceneWindowWidth = ig_GetWindowWidth();
-        ig_End();
     }
 
     ///

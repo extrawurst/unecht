@@ -91,6 +91,22 @@ final class UEEditorMenus : UEComponent
     }
 
     ///
+    version(UEProfiling) 
+    @MenuItem("view/profiler")
+    private static void viewProfiler()
+    {
+        ue.application.openProfiler();
+    }
+
+    ///
+    @MenuItem("view/hirarchie")
+    private static void viewHirarchie()
+    {
+        import unecht.core.components.editor.editorGui;
+        UEEditorGUI.showHirarchie = !UEEditorGUI.showHirarchie;
+    }
+
+    ///
     @MenuItem("entity/add entity")
     private static void addEmptyEntity()
     {
