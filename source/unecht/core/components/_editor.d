@@ -148,8 +148,8 @@ final class UEEditorComponent : UEComponent {
 			}
 
             if(EditorRootComponent._currentEntity && 
-                (_ev.keyEvent.key == UEKey.backspace && _ev.keyEvent.mods.isModSuper) ||
-                _ev.keyEvent.key == UEKey.del)
+                ((_ev.keyEvent.key == UEKey.backspace && _ev.keyEvent.mods.isModSuper) ||
+                _ev.keyEvent.key == UEKey.del))
             {
                 UEEditorMenus.removeCurrentEntity();
             }
