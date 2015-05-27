@@ -264,8 +264,6 @@ final class EditorRootComponent : UEComponent {
 	{
 		auto camNode = _editorCam.sceneNode;
 
-		import std.stdio;
-		writefln("look at: %s %s",node.entity.name,node.position);
 		camNode.position = node.position + (camNode.forward*-10.0f);
 	}
 
