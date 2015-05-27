@@ -81,6 +81,7 @@ struct UEEvent
 	struct TextEvent
 	{
 		dchar character;
+        EventModKeys mods;
 	}
 	TextEvent textEvent;
 

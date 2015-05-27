@@ -207,13 +207,7 @@ package:
         ev.mousePosEvent.x = x;
         ev.mousePosEvent.y = y;
 
-
-        //TODO: buffer all keyDown/keyUp and just lookup from array here
-        auto isAltDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS;
-        auto isCtrlDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
-        auto isShiftDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
-        auto isSuperDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS;
-        ev.mousePosEvent.mods.set(isShiftDown,isCtrlDown,isAltDown,isSuperDown);
+        populateCurrentKeyMods(ev.mousePosEvent.mods);
 
         events.trigger(ev);
 	}
@@ -237,14 +231,18 @@ package:
         ev.mouseScrollEvent.xoffset = xoffset;
         ev.mouseScrollEvent.yoffset = yoffset;
 
-        //TODO: buffer all keyDown/keyUp and just lookup from array here
-        auto isAltDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS;
-        auto isCtrlDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
-        auto isShiftDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
-        auto isSuperDown = glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS;
-        ev.mouseScrollEvent.mods.set(isShiftDown,isCtrlDown,isAltDown,isSuperDown);
-        
+        populateCurrentKeyMods(ev.mousePosEvent.mods);
+
         events.trigger(ev);
+    }
+
+    ///
+    private void populateCurrentKeyMods(ref EventModKeys mods)
+    {
+        mods.set(glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
+            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
+            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS,
+            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS);
     }
 
 	void glfwOnChar(uint codepoint)
@@ -252,6 +250,8 @@ package:
 		UEEvent ev;
 		ev.eventType = UEEventType.text;
 		ev.textEvent.character = cast(dchar)codepoint;
+
+        populateCurrentKeyMods(ev.textEvent.mods);
 
 		events.trigger(ev);
 	}
