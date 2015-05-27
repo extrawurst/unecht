@@ -87,14 +87,19 @@ final class UEEditorMenuBar : UEComponent
 
     private void attachItem(string[] path, EditorMenuItem menuItem)
     {
+        assert(this.sceneNode);
+
         UESceneNode node = sceneNode;
         while(path.length > 1)
         {
             auto search = findMatchingMenu(path[0], node);
             if(!search)
             {
-                addMenuItem(path[0], node);
+                search = addMenuItem(path[0], node);
             }
+
+            assert(search);
+            assert(search.sceneNode);
 
             path = path[1..$];
             node = search.sceneNode;

@@ -77,6 +77,13 @@ final class UEEditorMenus : UEComponent
     }
 
     ///
+    @MenuItem("main/quit")
+    private static void quit()
+    {
+        ue.application.terminate();
+    }
+
+    ///
     @MenuItem("edit/undo")
     public static void undo()
     {
