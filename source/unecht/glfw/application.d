@@ -181,7 +181,11 @@ struct UEApplication
                 if(!sender.sending)
                 {
                     try sender.startDespiker();
-                    catch{}
+                    catch(Exception e)
+                    {
+                        import std.stdio;
+                        writefln("error starting despiker binary");
+                    }
                 }
             }
         }
