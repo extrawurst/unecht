@@ -176,9 +176,13 @@ struct UEApplication
     {
         version(UEProfiling)
         {
-            if(!sender.sending)
+            if(sender)
             {
-                sender.startDespiker();
+                if(!sender.sending)
+                {
+                    try sender.startDespiker();
+                    catch{}
+                }
             }
         }
     }
