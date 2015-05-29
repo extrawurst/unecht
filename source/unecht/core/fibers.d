@@ -38,7 +38,11 @@ final class UEFiber : Fiber
     ///
     public void safeCall()
     {
-        auto e = call(Fiber.Rethrow.no);
+        static if(__VERSION__ >= 2067)
+            auto e = call(Fiber.Rethrow.no);
+        else
+            auto e = call(false);
+
         if(e)
         {
             import std.stdio;
