@@ -139,6 +139,7 @@ final class UEEntity : UEObject
     ///
     static void destroyImmediate(UEEntity entity)
     {
+        assert(entity);
         entity.doDestroy();
     }
 
@@ -170,9 +171,14 @@ private:
 
     void doDestroy()
     {
-        foreach(child; this._sceneNode.children)
+        while(_sceneNode.children.length > 0)
+        {
+            auto child = _sceneNode.children[0];
+
+            assert(child.entity);
             child.entity.doDestroy();
-            
+        }
+
         //unparenting of local components
         broadcast!("onDestroy")();
 
