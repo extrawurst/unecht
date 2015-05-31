@@ -17,10 +17,20 @@ final class UEFiber : Fiber
     private Fiber child;
 
     //TODO: make nothrow once we loose the dmd<2067 compat
+    ///
     public this(T)( T fn )
         if(is(T == UEFiberFunc) || is(T == UEFiberDelegate))
     {
         super(fn);
+
+        initParent();
+    }
+
+    ///
+    public void reset(T)( T fn )
+        if(is(T == UEFiberFunc) || is(T == UEFiberDelegate))
+    {
+        super.reset(fn);
 
         initParent();
     }
@@ -261,4 +271,32 @@ unittest
 
     assert(Clock.currTime - now >= 1.msecs);
     assert(cycles > 10, "this should at least take 10 cylces");
+}
+
+// test bug about resetting existing fibers
+unittest
+{
+    import std.datetime;
+    
+    UEFibers.fibers.length = 0;
+    auto run=0;
+    
+    auto now = Clock.currTime;
+    UEFibers.startFiber(
+        {
+            foreach(i; 0..5)
+            {
+                UEFibers.yield(waitFiber!"1.msecs");
+                
+                run++;
+            }
+        });
+
+    while(run<5)
+    {
+        UEFibers.runFibers();
+    }
+
+    assert(UEFibers.fibers.length == 2);
+    assert(Clock.currTime - now >= 5.msecs);
 }
