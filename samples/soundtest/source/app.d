@@ -8,7 +8,7 @@ import derelict.fmod.fmod;
 ///
 final class CloseLogic : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     private SoundSource snd;
 
@@ -37,7 +37,7 @@ final class CloseLogic : UEComponent
 ///
 final class SoundSource : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
     static immutable string testSound = import("beep.wav");
 
@@ -74,9 +74,8 @@ final class SoundSource : UEComponent
 ///
 final class SoundSystem : UEComponent
 {
-    mixin(UERegisterComponent!());
+    mixin(UERegisterObject!());
 
-    @NonSerialize
     public static FMOD_SYSTEM* fmod;
 
     override void onCreate() {
