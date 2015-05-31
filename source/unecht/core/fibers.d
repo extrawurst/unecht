@@ -44,6 +44,21 @@ final class UEFiber : Fiber
             parent.child = this;
         }
     }
+
+    ///
+    public void safeCall()
+    {
+        static if(__VERSION__ >= 2067)
+            auto e = call(Fiber.Rethrow.no);
+        else
+            auto e = call(false);
+
+        if(e)
+        {
+            import std.stdio;
+            writefln("error: %s",e);
+        }
+    }
 }
 
 /++
@@ -90,7 +105,7 @@ struct UEFibers
             fibers ~= newFiber;
         }
 
-        newFiber.call();
+        newFiber.safeCall();
     }
 
     //TODO: use free list instead of linear search
@@ -131,14 +146,14 @@ struct UEFibers
             {
                 if(!f.child)
                 {
-                    f.call();
+                    f.safeCall();
                 }
                 else
                 {
                     if(f.child.state == Fiber.State.TERM)
                     {
                         f.child = null;
-                        f.call();
+                        f.safeCall();
                     }
                 }
             }
