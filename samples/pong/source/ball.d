@@ -10,8 +10,7 @@ final class BallLogic : UEComponent
     mixin(UERegisterObject!());
 
     TestControls controls;
-    static UEMaterial sharedMaterial;
-    
+
     override void onCreate() {
         super.onCreate;
         
@@ -20,12 +19,10 @@ final class BallLogic : UEComponent
         _physicsBody.setDamping(0);
         entity.addComponent!UEPhysicsColliderSphere;
         
-        if(!sharedMaterial)
-        {
-            sharedMaterial = entity.addComponent!UEMaterial;
-            sharedMaterial.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded,"shaded");
-            sharedMaterial.uniforms.setColor(vec4(1,0,0,1));
-        }
+        auto sharedMaterial = entity.addComponent!UEMaterial;
+        sharedMaterial.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded,"shaded");
+        sharedMaterial.uniforms.setColor(vec4(1,0,0,1));
+
         shape.renderer.material = sharedMaterial;
         
         auto material = entity.addComponent!UEPhysicsMaterial;

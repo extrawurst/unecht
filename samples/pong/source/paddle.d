@@ -13,9 +13,7 @@ final class PaddleLogic : UEComponent
     auto joystickId = 0;
     
     static immutable BORDER = 7.2f;
-    
-    static UEMaterial sharedMaterial;
-    
+
     override void onCreate() {
         super.onCreate;
         
@@ -25,15 +23,12 @@ final class PaddleLogic : UEComponent
         auto shape = entity.addComponent!UEShapeBox;
         entity.addComponent!UEPhysicsColliderBox;
 
-        if(!sharedMaterial)
-        {
-            sharedMaterial = entity.getComponent!UEMaterial;
-            sharedMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat,"flat");
-            sharedMaterial.uniforms.setColor(vec4(0,1,0,1));
-        }
-
+        auto sharedMaterial = entity.getComponent!UEMaterial;
+        sharedMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat,"flat");
+        sharedMaterial.uniforms.setColor(vec4(0,1,0,1));
+     
         import unecht.core.components.renderer;
-        this.entity.getComponent!(UERenderer).material = sharedMaterial;
+        entity.getComponent!(UERenderer).material = sharedMaterial;
         
         auto material = entity.addComponent!UEPhysicsMaterial;
         material.materialInfo.bouncyness = 1.0f;
