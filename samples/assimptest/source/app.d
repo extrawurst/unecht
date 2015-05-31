@@ -5,6 +5,11 @@ import derelict.assimp3.assimp;
 
 import std.stdio;
 
+shared static this()
+{
+    DerelictASSIMP3.load();
+}
+
 ///
 @UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
@@ -15,8 +20,6 @@ final class TestLogic : UEComponent
         super.onCreate;
 
         registerEvent(UEEventType.key, &OnKeyEvent);
-
-        DerelictASSIMP3.load();
 
         auto scene = aiImportFile("data/teddy.obj", aiProcess_Triangulate|aiProcess_GenSmoothNormals);
         assert(scene);

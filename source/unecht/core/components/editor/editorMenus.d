@@ -53,8 +53,7 @@ final class UEEditorMenus : UEComponent
         import unecht.core.hideFlags;
         import unecht.core.serialization.sceneSerialization;
 
-        UEFibers.startFiber(
-            {
+        UEFibers.startFiber({
                 UEEditorMenus.newScene();
                 Fiber.yield();
                 UESceneDeserializer d = UESceneDeserializer(UEEditorMenus.loadFromFile("assets/dummy.scene"));
@@ -66,14 +65,16 @@ final class UEEditorMenus : UEComponent
     @MenuItem("main/save scene")
     private static void saveScene()
     {
-        import unecht.core.hideFlags;
-        import unecht.core.serialization.sceneSerialization;
+        UEFibers.startFiber({
+                import unecht.core.hideFlags;
+                import unecht.core.serialization.sceneSerialization;
 
-        UESceneSerializer s;
-       
-        s.serialize(ue.scene.root);
+                UESceneSerializer s;
+               
+                s.serialize(ue.scene.root);
 
-        saveToFile("assets/dummy.scene", s.toString());
+                saveToFile("assets/dummy.scene", s.toString());
+            });
     }
 
     ///
