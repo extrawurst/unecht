@@ -19,3 +19,5 @@ dub.selections.json
 samples/enettest/enettest
 __test__library__.exe
 samples/assimptest/assimptest.exe
+samples/assimptest/assimptest
+samples/soundtest/soundtest
