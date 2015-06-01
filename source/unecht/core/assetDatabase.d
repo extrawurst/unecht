@@ -72,7 +72,7 @@ static struct UEAssetDatabase
     ///
     static void loadTextureAsset(string path)
     {
-        import std.path:exists;
+        import std.file:exists;
         import unecht.core.assets.texture;
 
         UETexture2D tex;
