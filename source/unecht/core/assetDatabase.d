@@ -16,16 +16,19 @@ static struct UEAssetDatabase
     static UEAsset[] assets;
 
     static immutable EXT_METAFILE = ".uem";
+    static immutable ASSETFOLDER = "/assets/";
+
+    static string assetPath() { 
+        import std.path:dirName;
+        import std.file:thisExePath;
+
+        return dirName(thisExePath()) ~ ASSETFOLDER; 
+    }
 
     ///
     static void refresh()
     {
-        import std.path:dirName;
-        import std.file:thisExePath;
-
-        auto binaryPath = dirName(thisExePath());
-
-        refresh(binaryPath ~ "/assets/");
+        refresh(assetPath());
     }
 
     ///
@@ -57,10 +60,10 @@ static struct UEAssetDatabase
     {
         import std.path:extension;
 
-        import std.stdio;
-        writefln("parse: '%s'",path);
-
         auto ext = extension(path);
+
+        import std.stdio;
+        writefln("parse: '%s' (%s)",path, ext);
 
         //TODO: solve different extension using a dictonary of assetimporters
         if(ext == ".png")
@@ -76,15 +79,16 @@ static struct UEAssetDatabase
         import unecht.core.assets.texture;
 
         UETexture2D tex;
+        string metaFilePath = assetPath ~ path ~ EXT_METAFILE;
       
-        if(exists(path ~ EXT_METAFILE))
+        if(exists(metaFilePath))
         {
-            tex = deserializeMetaFile!UETexture2D(path ~ EXT_METAFILE);
+            tex = deserializeMetaFile!UETexture2D(metaFilePath);
         }
         else
         {
             tex = new UETexture2D();
-            serializeMetaFile(tex, path);
+            serializeMetaFile(tex, metaFilePath);
         }
 
         tex.loadFromFile(path);
@@ -105,7 +109,13 @@ static struct UEAssetDatabase
 
         UESerializer s;
         obj.serialize(s);
-        write(path, s.toString());
+
+        auto serializedStr = s.toString();
+
+        write(path, serializedStr);
+
+        debug import std.stdio;
+        debug writefln("written uem: (%s) -> \n%s",path,serializedStr);
     }
 
     ///
@@ -113,6 +123,9 @@ static struct UEAssetDatabase
     {
         import std.file;
         string fileContent = cast(string)read(path);
+
+        debug import std.stdio;
+        debug writefln("uem read: (%s)",path);
 
         UEDeserializer d = UEDeserializer(fileContent);
         return d.deserializeFirst!T();

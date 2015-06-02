@@ -5,6 +5,7 @@
 	"authors": ["Stephan Dilly"],
 	"license": "MIT",
 	"targetType": "library",
+	"targetPath": "lib",
 	"mainSourceFile": "source/unecht/appmain.d",
 	"dependencies": 
 	{
