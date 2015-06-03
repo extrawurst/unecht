@@ -18,7 +18,7 @@ static struct UEAssetDatabase
     static immutable EXT_METAFILE = ".uem";
     static immutable ASSETFOLDER = "/assets/";
 
-    static string assetPath() { 
+    private static string assetPath() { 
         import std.path:dirName;
         import std.file:thisExePath;
 

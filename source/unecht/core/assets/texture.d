@@ -5,6 +5,21 @@ import unecht.core.object;
 import unecht.core.serialization.serializer;
 
 ///
+enum UETextureFiltering
+{
+    point,
+    linear,
+    trilinear
+}
+
+///
+enum UETextureRepeat
+{
+    clamp,
+    repeat
+}
+
+///
 class UETexture : UEObject
 {
     mixin(UERegisterObject!());
@@ -21,7 +36,21 @@ class UETexture : UEObject
     ///
     @property int height() const { return _height; }
 
+    ///
+    @property UETextureFiltering filter() const { return _filtering; }
+    ///
+    @property UETextureRepeat repeat() const { return _repeat; }
+    ///
+    @property void filter(UETextureFiltering v) { _filtering = v; }
+    ///
+    @property void repeat(UETextureRepeat v) { _repeat = v; }
+
 protected:
+    @Serialize
+    UETextureFiltering _filtering;
+    @Serialize
+    UETextureRepeat _repeat;
+
     int _width;
     int _height;
 }
