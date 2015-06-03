@@ -1,7 +1,7 @@
 unecht [![Stories in Ready](https://badge.waffle.io/Extrawurst/unecht.png?label=ready&title=Ready)](https://waffle.io/Extrawurst/unecht) [![Join the chat at https://gitter.im/Extrawurst/unecht](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Extrawurst/unecht?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Extrawurst/unecht.svg)](https://travis-ci.org/Extrawurst/unecht)
 ===
 
-Game Engine Framework for the D programming language
+Game Engine Framework written in #dlang
 
 ![menus](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-05-27 menus.gif)
 ![editor inspectors](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-04-15 editorInspectors.png)
