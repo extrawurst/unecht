@@ -1,14 +1,14 @@
 ﻿module unecht.core.profiler;
 
-version(UEProfiling):
+version(UEProfiling)
+{
+    public import tharsis.prof;
 
+    Profiler profiler;
 
-public import tharsis.prof;
-
-Profiler profiler;
-
-// Get 2 MB more than the minimum (maxEventBytes). Could also use malloc() here.
-ubyte[] storage = new ubyte[Profiler.maxEventBytes + 1024 * 1024 * 2];
+    // Get 2 MB more than the minimum (maxEventBytes). Could also use malloc() here.
+    ubyte[] storage = new ubyte[Profiler.maxEventBytes + 1024 * 1024 * 2];
+}
 
 static struct UEProfiling
 {
@@ -22,9 +22,6 @@ static struct UEProfiling
     {
         long durUSecs = d.usecs;
 
-        import std.stdio;
-        //writefln("%s",durUSecs);
-
         if(frameIdx < frameTimes.length)
             frameTimes[frameIdx++] = durUSecs;
         else
@@ -33,7 +30,5 @@ static struct UEProfiling
             memmove(frameTimes.ptr, frameTimes.ptr+1, (frameTimes.length-1)*float.sizeof);
             frameTimes[frameTimes.length-1] = durUSecs;
         }
-
-        //writefln("%s",frameTimes);
     }
 }
