@@ -80,7 +80,7 @@ struct UEApplication
             {
                 TickDuration a = sw.peek();
                 import unecht.core.profiler;
-                UEProfiling.addFrametime(a);
+                UEProfiling.addFrametime(a,UEGui.framerate);
             }
 
             {

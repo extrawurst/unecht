@@ -57,6 +57,8 @@ public:
 
     ///
     public static @property bool capturesMouse() { return g_capturesMouse; }
+    ///
+    public static @property float framerate() { return ig_GetIO().Framerate; }
 
     private void OnKeyInput(UEEvent event)
     {

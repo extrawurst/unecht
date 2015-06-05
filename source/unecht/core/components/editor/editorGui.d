@@ -195,6 +195,7 @@ final class UEEditorGUI : UEComponent
 
         import unecht.core.profiler;
         ig_PlotLines("framestimes",UEProfiling.frameTimes.ptr,UEProfiling.frameTimes.length,0,null,float.max,float.max,ImVec2(0,100));
+        ig_PlotLines("fps",UEProfiling.framerates.ptr,UEProfiling.framerates.length,0,null,float.max,float.max,ImVec2(0,100));
     }
 
     ///
