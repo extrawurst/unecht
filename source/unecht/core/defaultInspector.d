@@ -8,7 +8,7 @@ version(UEIncludeEditor)
     alias aliasHelper(alias T) = T;
     alias aliasHelper(T) = T;
 
-    ///
+    /// UDA
     struct UEInspectorTooltip
     {
         string txt;
@@ -64,7 +64,7 @@ version(UEIncludeEditor)
                                         ig_SetTooltip(txt);
                                 }
                             }
-                            else static if(is(typeof(member) : int))
+                            else static if(is(typeof(member) : int) && !is(typeof(member) == enum))
                             {
                                 //pragma(msg, " -->int");
                                 
@@ -76,6 +76,12 @@ version(UEIncludeEditor)
                                     if (ig_IsItemHovered())
                                         ig_SetTooltip(txt);
                                 }
+                            }
+                            else static if(is(typeof(member) == enum))
+                            {
+                                //pragma(msg, " -->enum");
+
+                                UEGui.EnumCombo(memberName, __traits(getMember, thisT, memberName));
                             }
                             else static if(is(typeof(member) : float))
                             {

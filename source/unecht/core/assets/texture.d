@@ -3,6 +3,7 @@
 import unecht.core.component;
 import unecht.core.object;
 import unecht.core.serialization.serializer;
+import unecht.core.defaultInspector;
 
 ///
 enum UETextureFiltering
@@ -45,7 +46,8 @@ class UETexture : UEObject
     ///
     @property void repeat(UETextureRepeat v) { _repeat = v; }
 
-protected:
+//TODO: make privte again once defaultInspector can edit private fields
+//protected:
     @Serialize
     UETextureFiltering _filtering;
     @Serialize
@@ -56,6 +58,7 @@ protected:
 }
 
 ///
+@UEDefaultInspector!UETexture2D
 final class UETexture2D : UETexture
 {
     import derelict.freeimage.freeimage;
@@ -89,8 +92,11 @@ final class UETexture2D : UETexture
         //TODO: check if bits are not 32 first
         FIBITMAP* pImage = FreeImage_ConvertTo32Bits(_image);
         scope(exit) FreeImage_Unload(pImage);
-        _width = FreeImage_GetWidth(pImage);
-        _height = FreeImage_GetHeight(pImage);
+        _width = FreeImage_GetWidth(_image);
+        _height = FreeImage_GetHeight(_image);
+        //TODO: dimensions are always 0
+        import std.stdio;
+        writefln("tex created: %sx%s",_width,_height);
         /+
         glGenTextures(1, &tex);
         
