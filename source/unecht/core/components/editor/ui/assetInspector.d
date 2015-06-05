@@ -51,6 +51,7 @@ final class UEEditorAssetInspector : UEComponent
         import unecht.core.componentManager;
         if(auto renderer = asset.obj.typename in UEComponentsManager.editors)
         {
+            //TODO: support upating meta file when object was altered
             renderer.render(asset.obj);
         }
     }
