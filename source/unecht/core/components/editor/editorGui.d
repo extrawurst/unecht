@@ -7,6 +7,7 @@ import unecht;
 import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
+import unecht.core.components.editor.ui.assets;
 
 import derelict.imgui.imgui;
 
@@ -124,6 +125,7 @@ final class UEEditorMenuBar : UEComponent
         return null;
     }
 
+    //TODO: #127
     void render()
     {
         auto menuBar = ig_BeginMainMenuBar();
@@ -147,13 +149,16 @@ final class UEEditorGUI : UEComponent
     mixin(UERegisterObject!());
 
     UEEditorMenuBar menuBar;
+    UEEditorAssetView assetView;
 
     override void onCreate() {
         super.onCreate;
 
         menuBar = this.entity.addComponent!UEEditorMenuBar;
+        assetView = this.entity.addComponent!UEEditorAssetView;
     }
-    
+
+    //TODO: #127
     void render() {
         
         {
@@ -185,6 +190,8 @@ final class UEEditorGUI : UEComponent
             }
             if(showDebug)
                 renderDebug();
+
+            assetView.render();
         }
     }
 

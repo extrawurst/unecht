@@ -275,6 +275,7 @@ final class EditorRootComponent : UEComponent {
     }
 
 	///
+    //TODO: #127
 	static void renderEditor()
 	{
 		if(_editorVisible)
