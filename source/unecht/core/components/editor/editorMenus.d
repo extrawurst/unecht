@@ -108,6 +108,14 @@ final class UEEditorMenus : UEComponent
     }
 
     ///
+    @MenuItem("view/debug")
+    private static void viewDebug()
+    {
+        import unecht.core.components.editor.editorGui;
+        UEEditorGUI.showDebug = !UEEditorGUI.showDebug;
+    }
+
+    ///
     @MenuItem("entity/add entity")
     private static void addEmptyEntity()
     {

@@ -74,6 +74,15 @@ struct UEApplication
 
 		while (!mainWindow.shouldClose)
 		{
+            import std.datetime:StopWatch,TickDuration,AutoStart;
+            auto sw = StopWatch(AutoStart.yes);
+            scope(exit)
+            {
+                TickDuration a = sw.peek();
+                import unecht.core.profiler;
+                UEProfiling.addFrametime(a,UEGui.framerate);
+            }
+
             {
                 version(UEProfiling)
                 auto frame = Zone(profiler, "frame");
