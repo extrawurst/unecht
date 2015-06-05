@@ -7,7 +7,7 @@ import unecht;
 import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
-import unecht.core.components.editor.ui.assets;
+import unecht.core.components.editor.ui.assetView;
 
 import derelict.imgui.imgui;
 

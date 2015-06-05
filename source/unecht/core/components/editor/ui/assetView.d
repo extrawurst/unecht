@@ -1,4 +1,4 @@
-﻿module unecht.core.components.editor.ui.assets;
+﻿module unecht.core.components.editor.ui.assetView;
 
 version(UEIncludeEditor):
 
@@ -18,13 +18,8 @@ final class UEEditorAssetView : UEComponent
 
     private static bool visible=false;
 
-    ///
     @MenuItem("view/assets")
-    private static void viewAssets()
-    {
-
-        visible = !visible;
-    }
+    private static void viewAssets() { visible = !visible; }
 
     //TODO: #127
     void render()
