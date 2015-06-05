@@ -37,10 +37,11 @@ struct GLMaterialUniforms
 version(UEIncludeEditor)
 {
 import unecht.core.componentManager;
+import unecht.core.object;
 @EditorInspector("UEMaterial")
 static class UEMaterialInspector : IComponentEditor
 {
-    override void render(UEComponent _component)
+    override void render(UEObject _component)
     {
         import derelict.imgui.imgui;
         import unecht.core.components.internal.gui;

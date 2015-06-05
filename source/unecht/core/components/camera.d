@@ -3,6 +3,7 @@
 import unecht.core.components.misc;
 import unecht.core.components.renderer;
 import unecht.core.component;
+import unecht.core.object;
 import unecht.core.componentManager;
 import unecht.core.entity;
 
@@ -15,7 +16,7 @@ version(UEIncludeEditor)
 @EditorInspector("UECamera")
 static class UECameraInspector : IComponentEditor
 {
-    override void render(UEComponent _component)
+    override void render(UEObject _component)
     {
         auto thisT = cast(UECamera)_component;
         

@@ -20,7 +20,8 @@ version(UEIncludeEditor)
         @EditorInspector(T.stringof)
         static class UEDefaultInspector(T) : IComponentEditor
         {
-            override void render(UEComponent _component)
+            import unecht.core.object;
+            override void render(UEObject _component)
             {
                 auto thisT = cast(T)_component;
                 

@@ -2,7 +2,7 @@
 
 version(UEIncludeEditor):
 
-import unecht.core.component:UEComponent;
+import unecht.core.object;
 import unecht.core.components.editor.menus:EditorMenuItem;
 
 ///
@@ -25,7 +25,7 @@ struct EditorInspector
 ///
 interface IComponentEditor
 {	
-	void render(UEComponent _component);
+	void render(UEObject _component);
 }
 
 ///
@@ -49,6 +49,7 @@ private bool hasBaseClass(in TypeInfo_Class v, in TypeInfo_Class base) pure noth
 
 shared static this()
 {
+    import unecht.core.component;
     auto tid = typeid(UEComponent);
    
     import std.stdio;

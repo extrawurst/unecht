@@ -3,6 +3,7 @@
 import gl3n.linalg;
 
 import unecht.core.component;
+import unecht.core.object;
 import unecht.core.componentManager;
 
 //TODO: create mixin
@@ -11,7 +12,7 @@ version(UEIncludeEditor)
     @EditorInspector("UESceneNode")
     static class UESceneNodeInspector : IComponentEditor
     {
-        override void render(UEComponent _component)
+        override void render(UEObject _component)
         {
             auto thisT = cast(UESceneNode)_component;
             
