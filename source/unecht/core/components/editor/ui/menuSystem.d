@@ -1,5 +1,7 @@
 ﻿module unecht.core.components.editor.ui.menuBar;
 
+version(UEIncludeEditor):
+
 import unecht.core.component;
 import unecht.core.components.sceneNode;
 import unecht.core.entity;
