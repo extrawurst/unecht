@@ -8,7 +8,7 @@ import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
 import unecht.core.components.editor.ui.assetView;
-import unecht.core.components.editor.ui.menuBar;
+import unecht.core.components.editor.ui.menuSystem;
 
 import derelict.imgui.imgui;
 

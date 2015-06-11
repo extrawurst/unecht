@@ -1,4 +1,4 @@
-﻿module unecht.core.components.editor.ui.menuBar;
+﻿module unecht.core.components.editor.ui.menuSystem;
 
 version(UEIncludeEditor):
 
