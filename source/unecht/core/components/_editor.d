@@ -14,7 +14,8 @@ import unecht.core.components.renderer;
 import unecht.core.components.internal.gui;
 
 import unecht.core.components.editor.editorGui;
-import unecht.core.components.editor.editorMenus;
+import unecht.core.components.editor.ui.menuBar;
+import unecht.core.components.editor.menuItems;
 import unecht.core.components.editor.grid;
 import unecht.core.components.editor.mouseControls;
 

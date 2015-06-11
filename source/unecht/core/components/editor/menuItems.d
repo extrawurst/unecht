@@ -1,4 +1,4 @@
-﻿module unecht.core.components.editor.editorMenus;
+﻿module unecht.core.components.editor.menuItems;
 
 version(UEIncludeEditor):
 
