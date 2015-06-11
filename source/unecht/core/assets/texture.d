@@ -74,16 +74,11 @@ final class UETexture2D : UETexture
     ///
     void loadFromFile(string path)
     {
-        FIMEMORY* stream;
-        stream = FreeImage_OpenMemory(cast(ubyte*)path.ptr, path.length);
-        assert(stream);
-        scope(exit) FreeImage_CloseMemory(stream);
-
-        auto ftype = FreeImage_GetFileTypeFromMemory(stream, cast(int)path.length);
+        import std.string:toStringz;
+        auto fn = toStringz(path);
         
-        FIBITMAP* bitmap = FreeImage_LoadFromMemory(ftype, stream);
+        FIBITMAP* bitmap = FreeImage_Load(FreeImage_GetFileType(fn, 0), fn);
         scope(exit) FreeImage_Unload(bitmap);
-        
         createRaw(bitmap);
     }
 
@@ -94,7 +89,7 @@ final class UETexture2D : UETexture
         scope(exit) FreeImage_Unload(pImage);
         _width = FreeImage_GetWidth(_image);
         _height = FreeImage_GetHeight(_image);
-        //TODO: dimensions are always 0
+
         import std.stdio;
         writefln("tex created: %sx%s",_width,_height);
         /+

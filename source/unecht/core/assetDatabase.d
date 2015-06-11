@@ -79,7 +79,8 @@ static struct UEAssetDatabase
         import unecht.core.assets.texture;
 
         UETexture2D tex;
-        string metaFilePath = assetPath ~ path ~ EXT_METAFILE;
+        immutable assetFile = assetPath ~ path;
+        immutable metaFilePath = assetFile ~ EXT_METAFILE;
       
         if(exists(metaFilePath))
         {
@@ -91,7 +92,7 @@ static struct UEAssetDatabase
             serializeMetaFile(tex, metaFilePath);
         }
 
-        tex.loadFromFile(path);
+        tex.loadFromFile(assetFile);
 
         addAsset(tex, path);
     }
