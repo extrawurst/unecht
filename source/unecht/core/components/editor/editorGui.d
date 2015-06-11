@@ -51,7 +51,6 @@ final class UEEditorGUI : UEComponent
         if(EditorRootComponent.visible)
         {
             menuBar.render();
-            renderControlPanel();
             if(showHirarchie)
             {
                 renderScene();
@@ -324,34 +323,5 @@ final class UEEditorGUI : UEComponent
             }
         }
     }
-    
-    ///
-    private static void renderControlPanel()
-    {
-        static float w=100;
-        ig_SetNextWindowPos(ImVec2(ue.application.mainWindow.size.width-w,0),ImGuiSetCond_Always);
-        
-        ig_Begin("controls",null,
-            ImGuiWindowFlags_NoTitleBar|
-            ImGuiWindowFlags_AlwaysAutoResize|
-            ImGuiWindowFlags_NoResize|
-            ImGuiWindowFlags_NoMove);
-        
-        if(ig_Button("play"))
-            ue.scene.playing = true;
-        
-        if(ue.scene.playing)
-        {
-            if(ig_Button("stop"))
-                ue.scene.playing = false;
-        }
-        else
-        {
-            if(ig_Button("step"))
-                ue.scene.step;
-        }
-        
-        w = ig_GetWindowWidth();
-        ig_End();
-    }
+
 }

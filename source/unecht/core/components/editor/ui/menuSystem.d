@@ -136,6 +136,29 @@ final class UEEditorMenuBar : UEComponent
                 if(subitem)
                     subitem.render();
             }
+
+            renderControlButtons();
+        }
+    }
+
+    private void renderControlButtons()
+    {
+        import unecht;
+
+        if(ig_Button("play"))
+            ue.scene.playing = true;
+
+        ig_SameLine();
+        
+        if(ue.scene.playing)
+        {
+            if(ig_Button("pause"))
+                ue.scene.playing = false;
+        }
+        else
+        {
+            if(ig_Button("step"))
+                ue.scene.step;
         }
     }
 }
