@@ -210,7 +210,7 @@ final class EditorRootComponent : UEComponent {
 		editorComponent.sceneNode.enabled = false;
 
         import unecht.core.components.editor.gismo;
-		//TODO: support recursive disabling and move it under the editor subcomponent
+		//TODO: support recursive disabling and move it under the editor subcomponent (#41)
 		gismo = UEEntity.create("editor gismo");
 		gismo.sceneNode.parent = this.sceneNode;
 		gismo.addComponent!UEEditorGismo;
