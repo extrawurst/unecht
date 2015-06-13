@@ -159,5 +159,5 @@ unittest
 {
 	//TODO:
     import unecht.core.logger;
-	info("TODO: write tests for scenegraph");
+	log.info("TODO: write tests for scenegraph");
 }
