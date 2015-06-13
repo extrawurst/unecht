@@ -128,9 +128,6 @@ public:
         {
             dump();
 
-            import std.stdio;
-            writefln("executeDestruction: %s",_destroyedEntites.length);
-
             foreach(toDestroy; _destroyedEntites)
                 UEEntity.destroyImmediate(toDestroy);
             
@@ -142,12 +139,12 @@ public:
 
     public void dump()
     {
-        import std.stdio;
-        writefln("dump: %s",_root.children.length);
+        import unecht.core.logger;
+        log.infof("dump: %s",_root.children.length);
         
         foreach(child; _root.children)
         {
-            writefln(" - %s (%s)",child.entity.name,child.sceneNode.parent);
+            log.infof(" - %s (%s)", child.entity.name, child.sceneNode.parent.toString());
         }
     }
 
@@ -161,6 +158,6 @@ private:
 unittest
 {
 	//TODO:
-	import std.stdio;
-	writefln("TODO: write tests for scenegraph");
+    import unecht.core.logger;
+	info("TODO: write tests for scenegraph");
 }

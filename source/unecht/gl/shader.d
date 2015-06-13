@@ -45,8 +45,8 @@ final class GLShader
 			import std.conv:to;
 			errors = to!string(InfoLog[0..logLen-1]);
 
-			import std.stdio;
-			writefln("Error compiling shader: '%s'", errors);
+            import unecht.core.logger;
+			log.errorf("Error compiling shader: '%s'", errors);
 		}
 	}
 

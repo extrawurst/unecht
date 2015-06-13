@@ -55,8 +55,8 @@ final class UEFiber : Fiber
 
         if(e)
         {
-            import std.stdio;
-            writefln("error: %s",e);
+            import std.experimental.logger;
+            errorf("error: %s",e.toString());
         }
     }
 }

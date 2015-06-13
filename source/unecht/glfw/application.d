@@ -192,8 +192,8 @@ struct UEApplication
                     try sender.startDespiker();
                     catch(Exception e)
                     {
-                        import std.stdio;
-                        writefln("error starting despiker binary");
+                        import unecht.core.logger;
+                        log.warning("error starting despiker binary");
                     }
                 }
             }
@@ -369,8 +369,9 @@ private:
 private nothrow extern(C) void error_callback(int error, const(char)* description)
 {
 	try {
-		import std.conv;
-		writefln("glfw err: %s '%s'", error, to!string(description));
+        import unecht.core.logger;
+        import std.conv:to;
+        log.errorf("glfw err: %s '%s'", error, to!string(description));
 	}
 	catch{}
 }

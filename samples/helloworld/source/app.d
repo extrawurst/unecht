@@ -41,13 +41,13 @@ final class TestLogic : UEComponent
 
     void OnJoystick(UEEvent _ev)
     {
-        import std.stdio;
+        import unecht.core.logger;
         if(_ev.eventType == UEEventType.joystickStatus)
-            writefln("joystatus: %s",_ev.joystickStatus);
+            log.infof("joystatus: %s",_ev.joystickStatus);
         if(_ev.eventType == UEEventType.joystickButton)
-            writefln("joybutton: %s",_ev.joystickButton);
+            log.infof("joybutton: %s",_ev.joystickButton);
         if(_ev.eventType == UEEventType.joystickAxes)
-            writefln("joyaxes: %s",_ev.joystickAxes);
+            log.infof("joyaxes: %s",_ev.joystickAxes);
     }
 
     void OnKeyEvent(UEEvent _ev)
