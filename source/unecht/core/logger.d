@@ -7,16 +7,12 @@ Logger log;
 shared static this()
 {
     import std.stdio:stdout;
-    import std.experimental.logger:MultiLogger,FileLogger;
+    import std.experimental.logger:MultiLogger,FileLogger,sharedLog;
 
     auto logger = new MultiLogger();
     logger.insertLogger("stdout",new FileLogger(stdout));
     logger.insertLogger("unechtlog",new FileLogger("unecht.log"));
     log = logger;
 
-    import std.experimental.logger.core:stdlog;
-    stdlog = log;
-    
-    //import std.experimental.logger.core:sharedLog;
-    //sharedLog = log;
+    sharedLog = log;
 }
