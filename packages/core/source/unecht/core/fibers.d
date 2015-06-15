@@ -4,8 +4,6 @@ public import core.thread:Fiber;
 import core.thread:Thread;
 import std.datetime:Duration;
 
-import derelict.util.system;
-
 ///
 alias UEFiberFunc = void function();
 ///
@@ -231,6 +229,9 @@ unittest
     assert(log=="abcde");
 
     assert(UEFibers.fibers.length == 2);
+
+    import std.stdio;
+    writefln("FOOOOO");
 }
 
 

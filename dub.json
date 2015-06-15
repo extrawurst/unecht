@@ -7,8 +7,14 @@
 	"targetType": "library",
 	"targetPath": "lib",
 	"mainSourceFile": "source/unecht/appmain.d",
+
+    "subPackages": [
+        "packages/core/",
+    ],
+
 	"dependencies": 
 	{
+        "unecht:core": "*",
 		"derelict-imgui": {"version": "~master", "path": "submodules/DerelictImgui/"},
 		"gl3n": {"version":"~master", "path": "submodules/gl3n/"},
         "tharsis-prof": {"version":"~master", "path": "submodules/tharsis.prof/"},
