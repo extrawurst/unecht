@@ -14,6 +14,7 @@ static struct UEProfiling
 {
     import std.datetime;
 
+    //TODO: use StaticRingBuffer here (#132)
     static float[128] frameTimes;
     static float[128] framerates;
 

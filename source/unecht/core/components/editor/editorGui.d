@@ -7,6 +7,7 @@ import unecht;
 import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
+import unecht.core.components.editor.ui.console;
 
 import derelict.imgui.imgui;
 
@@ -147,11 +148,13 @@ final class UEEditorGUI : UEComponent
     mixin(UERegisterObject!());
 
     UEEditorMenuBar menuBar;
+    UEEditorConsole console;
 
     override void onCreate() {
         super.onCreate;
 
-        menuBar = this.entity.addComponent!UEEditorMenuBar;
+        menuBar = entity.addComponent!UEEditorMenuBar;
+        console = entity.addComponent!UEEditorConsole;
     }
     
     void render() {
@@ -185,6 +188,9 @@ final class UEEditorGUI : UEComponent
             }
             if(showDebug)
                 renderDebug();
+
+            if(console.enabled)
+                console.render();
         }
     }
 
