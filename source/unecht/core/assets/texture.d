@@ -90,8 +90,8 @@ final class UETexture2D : UETexture
         _width = FreeImage_GetWidth(_image);
         _height = FreeImage_GetHeight(_image);
 
-        import std.stdio;
-        writefln("tex created: %sx%s",_width,_height);
+        import unecht.core.logger;
+        log.infof("tex created: %sx%s",_width,_height);
         /+
         glGenTextures(1, &tex);
         

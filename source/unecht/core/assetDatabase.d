@@ -62,8 +62,8 @@ static struct UEAssetDatabase
 
         auto ext = extension(path);
 
-        import std.stdio;
-        writefln("parse: '%s' (%s)",path, ext);
+        import unecht.core.logger;
+        log.infof("parse: '%s' (%s)",path, ext);
 
         //TODO: solve different extension using a dictonary of assetimporters
         if(ext == ".png")
@@ -115,8 +115,8 @@ static struct UEAssetDatabase
 
         write(path, serializedStr);
 
-        debug import std.stdio;
-        debug writefln("written uem: (%s) -> \n%s",path,serializedStr);
+        import unecht.core.logger;
+        log.infof("written uem: (%s) -> \n%s",path,serializedStr);
     }
 
     ///
@@ -125,8 +125,8 @@ static struct UEAssetDatabase
         import std.file;
         string fileContent = cast(string)read(path);
 
-        debug import std.stdio;
-        debug writefln("uem read: (%s)",path);
+        import unecht.core.logger;
+        log.infof("uem read: (%s)",path);
 
         UEDeserializer d = UEDeserializer(fileContent);
         return d.deserializeFirst!T();
