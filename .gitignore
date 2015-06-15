@@ -10,7 +10,6 @@ samples/*/dub.selections.json
 unecht.lib
 __test__library__
 despiker
-helloworld
 imgui.ini
 samples/enettest/enettest.exe
 samples/pong/pong.exe
@@ -19,3 +18,4 @@ dub.selections.json
 samples/enettest/enettest
 __test__library__.exe
 samples/assimptest/assimptest.exe
+samples/helloworld/helloworld.exe
