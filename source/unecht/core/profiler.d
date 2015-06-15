@@ -13,9 +13,10 @@ version(UEProfiling)
 static struct UEProfiling
 {
     import std.datetime;
+    import unecht.core.staticRingBuffer;
 
-    static float[128] frameTimes;
-    static float[128] framerates;
+    static StaticRingBuffer!(128,float) frameTimes;
+    static StaticRingBuffer!(128,float) framerates;
 
     static int frameIdx;
 
@@ -23,19 +24,7 @@ static struct UEProfiling
     {
         long durUSecs = d.usecs;
 
-        if(frameIdx < frameTimes.length)
-        {
-            frameTimes[frameIdx] = durUSecs;
-            framerates[frameIdx] = framerate;
-            frameIdx++;
-        }
-        else
-        {
-            import core.stdc.string:memmove;
-            memmove(frameTimes.ptr, frameTimes.ptr+1, (frameTimes.length-1)*float.sizeof);
-            memmove(framerates.ptr, framerates.ptr+1, (framerates.length-1)*float.sizeof);
-            frameTimes[frameTimes.length-1] = durUSecs;
-            framerates[framerates.length-1] = framerate;
-        }
+        frameTimes ~= durUSecs;
+        framerates ~= framerate;
     }
 }

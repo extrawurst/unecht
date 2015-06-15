@@ -144,9 +144,9 @@ static void checkGLError()
 	{
 		auto err = glGetError();
 		
-		import std.stdio;
+		import unecht.core.logger;
 		if(err != GL_NO_ERROR)
-			writefln("Error: gl err [%s]: '%s'", i, getGLErrorAsString(err));
+			log.errorf("Error: gl err [%s]: '%s'", i, getGLErrorAsString(err));
 		else
 			break;
 		

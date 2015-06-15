@@ -44,12 +44,12 @@ final class GLProgram
         int success;
         glGetProgramiv(program, GL_LINK_STATUS, &success);
         if (success == 0) {
-            static GLchar[1024] log;
+            static GLchar[1024] logBuff;
             static GLsizei logLen;
-            glGetProgramInfoLog(program, log.sizeof, &logLen, log.ptr);
-            import std.stdio;
+            glGetProgramInfoLog(program, logBuff.sizeof, &logLen, logBuff.ptr);
+            import unecht.core.logger;
             import std.conv;
-            writefln("Error: linking program: '%s': %s", _name, to!string(log[0..logLen-1]));
+            log.errorf("Error: linking program: '%s': %s", _name, to!string(logBuff[0..logLen-1]));
             return;
         }
         
@@ -69,7 +69,7 @@ final class GLProgram
     
     private GLint addUniform(string _name)
     {
-        import std.stdio;
+        import unecht.core.logger;
         import std.string:toStringz;
         
         auto loc = glGetUniformLocation(program, toStringz(_name));
@@ -79,7 +79,7 @@ final class GLProgram
         if(loc != -1)
         {
             uniforms[_name] = loc;
-            writefln("Debug: Program uniform location found: '%s' at %s", _name, loc);
+            log.infof("Program uniform location found: '%s' at %s", _name, loc);
             return loc;
         }
         else
@@ -147,12 +147,12 @@ final class GLProgram
         GLint success;
         glGetProgramiv(program, GL_VALIDATE_STATUS, &success);
         if (!success) {
-            GLchar[1024] log;
+            GLchar[1024] logBuff;
             GLsizei logLen;
-            glGetProgramInfoLog(program, log.sizeof, &logLen, log.ptr);
-            import std.stdio;
+            glGetProgramInfoLog(program, logBuff.sizeof, &logLen, logBuff.ptr);
+            import unecht.core.logger;
             import std.conv;
-            writefln("Error validating program: '%s'", to!string(log[0..logLen-1]));
+            log.errorf("Error validating program: '%s'", to!string(logBuff[0..logLen-1]));
         }
     }
     

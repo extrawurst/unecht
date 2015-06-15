@@ -9,6 +9,7 @@ import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
 import unecht.core.components.editor.ui.assetView;
 import unecht.core.components.editor.ui.menuSystem;
+import unecht.core.components.editor.ui.console;
 
 import derelict.imgui.imgui;
 
@@ -19,12 +20,14 @@ final class UEEditorGUI : UEComponent
 
     UEEditorMenuBar menuBar;
     UEEditorAssetView assetView;
+    UEEditorConsole console;
 
     override void onCreate() {
         super.onCreate;
 
-        menuBar = this.entity.addComponent!UEEditorMenuBar;
-        assetView = this.entity.addComponent!UEEditorAssetView;
+        assetView = entity.addComponent!UEEditorAssetView;
+        menuBar = entity.addComponent!UEEditorMenuBar;
+        console = entity.addComponent!UEEditorConsole;
     }
 
     //TODO: #127
@@ -60,6 +63,9 @@ final class UEEditorGUI : UEComponent
                 renderDebug();
 
             assetView.render();
+
+            if(console.enabled)
+                console.render();
         }
     }
 
@@ -69,8 +75,8 @@ final class UEEditorGUI : UEComponent
         scope(exit) ig_End();
 
         import unecht.core.profiler;
-        ig_PlotLines("framestimes",UEProfiling.frameTimes.ptr,UEProfiling.frameTimes.length,0,null,float.max,float.max,ImVec2(0,100));
-        ig_PlotLines("fps",UEProfiling.framerates.ptr,UEProfiling.framerates.length,0,null,float.max,float.max,ImVec2(0,100));
+        ig_PlotLines("framestimes",UEProfiling.frameTimes.ptr,cast(int)UEProfiling.frameTimes.length,0,null,float.max,float.max,ImVec2(0,100));
+        ig_PlotLines("fps",UEProfiling.framerates.ptr,cast(int)UEProfiling.framerates.length,0,null,float.max,float.max,ImVec2(0,100));
     }
 
     ///
