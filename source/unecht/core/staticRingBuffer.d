@@ -38,6 +38,8 @@ struct StaticRingBuffer(size_t size,T)
     }
 
     @property size_t length() const { return spaceUsed; }
+
+    @property T* ptr() { return data.ptr; }
 }
 
 unittest
