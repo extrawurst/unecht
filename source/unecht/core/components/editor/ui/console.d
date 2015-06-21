@@ -29,7 +29,7 @@ final class UEEditorConsole : UEComponent
         singleton.enabled = !singleton.enabled;
     }
 
-    //TODO: use onUpdate
+    //TODO: #127
     void render()
     {
         if(!enabled)
