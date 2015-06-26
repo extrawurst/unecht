@@ -12,7 +12,11 @@ import unecht;
 ///
 struct UEWindow
 {
+	/// framebuffer size
 	UESize size;
+	/// actual window size
+	UESize windowSize;
+	///
 	UEPos pos;
 
 package:
@@ -33,13 +37,17 @@ package:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		
+
+		windowSize = _size;
+
 		glfwWindow = glfwCreateWindow(
 			_size.width, 
 			_size.height, 
 			toStringz(_title), null, null);
 
-		size = _size;
+		int w,h;
+		glfwGetFramebufferSize(glfwWindow, &w, &h);
+		size = UESize(w,h);
 		
 		if (!glfwWindow)
 			return false;
