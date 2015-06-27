@@ -39,8 +39,6 @@ package:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		windowSize = _size;
-
 		glfwWindow = glfwCreateWindow(
 			_size.width, 
 			_size.height, 
@@ -54,6 +52,9 @@ package:
         int w,h;
         glfwGetFramebufferSize(glfwWindow, &w, &h);
         size = UESize(w,h);
+
+        glfwGetWindowSize(glfwWindow, &w, &h);
+        windowSize = UESize(w,h);
 
         //TODO: support for fixed updates befor disabling vsync
 		//glfwSwapInterval(0);
@@ -133,9 +134,6 @@ private nothrow extern(C)
 
 	void wnd_size_callback(GLFWwindow* window, int width, int height) nothrow
 	{
-		ue.application.mainWindow.size.width = width;
-		ue.application.mainWindow.size.height = height;
-
 		try ue.application.glfwOnWndSize(width,height);
 		catch{}
 	}
