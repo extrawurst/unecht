@@ -160,6 +160,7 @@ final class UEEditorGUI : UEComponent
     void render() {
         
         {
+			//TODO: unhardcode font size
             ig_SetNextWindowPos(ImVec2(0,ue.application.mainWindow.size.height-25),ImGuiSetCond_Always);
             
             ig_PushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
@@ -212,7 +213,8 @@ final class UEEditorGUI : UEComponent
     ///
     private static void renderScene()
     {
-        ig_SetNextWindowPos(ImVec2(0,20), ImGuiSetCond_Always);
+		const top = ig_GetItemsLineHeightWithSpacing();
+        ig_SetNextWindowPos(ImVec2(0,top), ImGuiSetCond_Always);
         
         ig_Begin("scene",null,ImGuiWindowFlags_NoMove);
         scope(exit){ig_End();}
@@ -242,8 +244,8 @@ final class UEEditorGUI : UEComponent
                 if(EditorRootComponent.currentEntity !is _node.entity)
                     EditorRootComponent.selectEntity(_node.entity);
             }
-			if(ig_IsItemHovered() && ig_IsMouseDoubleClicked(0))
-					EditorRootComponent.lookAtNode(_node);
+            if(ig_IsItemHovered() && ig_IsMouseDoubleClicked(0))
+                EditorRootComponent.lookAtNode(_node);
             
             if(!expanded)
                 return;
@@ -269,8 +271,8 @@ final class UEEditorGUI : UEComponent
             }
             ig_PopId();
 
-			if(ig_IsItemHovered() && ig_IsMouseDoubleClicked(0))
-				EditorRootComponent.lookAtNode(_node);
+            if(ig_IsItemHovered() && ig_IsMouseDoubleClicked(0))
+                EditorRootComponent.lookAtNode(_node);
         }
     }
 
@@ -280,7 +282,8 @@ final class UEEditorGUI : UEComponent
         if(!EditorRootComponent.currentEntity)
             return;
 
-        ig_SetNextWindowPos(ImVec2(sceneWindowWidth+1,20),ImGuiSetCond_Always);
+        const top = ig_GetItemsLineHeightWithSpacing();
+        ig_SetNextWindowPos(ImVec2(sceneWindowWidth+1,top),ImGuiSetCond_Always);
         bool closed;
         ig_Begin("inspector",&closed,
             ImGuiWindowFlags_AlwaysAutoResize|
@@ -376,7 +379,10 @@ final class UEEditorGUI : UEComponent
         ig_GetWindowContentRegionMax(&size);
         const wndWidth = cast(int)size.x;
 
-        ig_SameLine(wndWidth-32);
+		ig_CalcTextSize(&size,"#");
+        const charWidth = 2 + cast(int)size.x*2;
+
+        ig_SameLine(wndWidth-charWidth*2);
         if(UEGui.SmallButton("#"))
         {
 			componentEdit = c;
@@ -385,7 +391,7 @@ final class UEEditorGUI : UEComponent
 
 		renderComponentEdit();
 
-        ig_SameLine(wndWidth-15);
+        ig_SameLine(wndWidth - charWidth);
         if(UEGui.SmallButton(subtext))
             c.enabled = !c.enabled;
     }

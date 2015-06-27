@@ -21,6 +21,7 @@ struct UEWindow
 
 package:
 	
+    public @property bool isRetina() const { return size.width >= 2048 && size.height >= 1374;}
 	///
 	@property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
     ///
@@ -44,15 +45,16 @@ package:
 			_size.width, 
 			_size.height, 
 			toStringz(_title), null, null);
-
-		int w,h;
-		glfwGetFramebufferSize(glfwWindow, &w, &h);
-		size = UESize(w,h);
 		
 		if (!glfwWindow)
 			return false;
 		
 		glfwMakeContextCurrent(glfwWindow);
+
+        int w,h;
+        glfwGetFramebufferSize(glfwWindow, &w, &h);
+        size = UESize(w,h);
+
         //TODO: support for fixed updates befor disabling vsync
 		//glfwSwapInterval(0);
         glfwSwapInterval(1);
