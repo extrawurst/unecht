@@ -48,19 +48,19 @@ final class UECamera : UEComponent
     @property auto projectionLook() const { return matProjection * matLook; }
 
     @Serialize{
-	float fieldOfView = 60;
-	float clipNear = 1;
-	float clipFar = 1000;
-
-	vec4 clearColor = vec4(0,0,0,1);
-	bool clearBitColor = true;
-	bool clearBitDepth = true;
-    int visibleLayers = UECameraDefaultLayers;
-
-    bool isOrthographic=false;
-    float orthoSize=1;
-
-	UERect viewport;
+        float fieldOfView = 60;
+        float clipNear = 1;
+        float clipFar = 1000;
+        
+        vec4 clearColor = vec4(0,0,0,1);
+        bool clearBitColor = true;
+        bool clearBitDepth = true;
+        int visibleLayers = UECameraDefaultLayers;
+        
+        bool isOrthographic=false;
+        float orthoSize=1;
+        
+        UERect viewport;
     }
 
 	void updateLook()
@@ -77,7 +77,7 @@ final class UECamera : UEComponent
 			import unecht;
 			auto w = ue.application.mainWindow.size.width;
 			auto h = ue.application.mainWindow.size.height;
-		    matProjection = mat4.perspective(w,h,fieldOfView,clipNear,clipFar);
+		    matProjection = mat4.perspective(w, h, fieldOfView, clipNear, clipFar);
 		}
         else
         {
