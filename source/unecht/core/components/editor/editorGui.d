@@ -160,8 +160,8 @@ final class UEEditorGUI : UEComponent
     void render() {
         
         {
-			//TODO: unhardcode font size
-            ig_SetNextWindowPos(ImVec2(0,ue.application.mainWindow.size.height-25),ImGuiSetCond_Always);
+            const height = ig_GetItemsLineHeightWithSpacing();
+            ig_SetNextWindowPos(ImVec2(0,ue.application.mainWindow.size.height-height),ImGuiSetCond_Always);
             
             ig_PushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
             ig_Begin("editor",null,
