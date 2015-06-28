@@ -41,7 +41,7 @@ final class UEEditorAssetView : UEComponent
 
         inspector.render();
 
-        ig_Begin("assets");
+        ig_Begin("assets", &visible);
         scope(exit) ig_End();
 
         foreach(a; UEAssetDatabase.assets)
