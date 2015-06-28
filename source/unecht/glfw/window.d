@@ -12,11 +12,17 @@ import unecht;
 ///
 struct UEWindow
 {
+	/// framebuffer size
 	UESize size;
+	/// actual window size
+	UESize windowSize;
+	///
 	UEPos pos;
 
 package:
 	
+    ///
+    public @property bool isRetina() const { return size.width > windowSize.width && size.height > windowSize.height; }
 	///
 	@property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
     ///
@@ -33,18 +39,24 @@ package:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		
+
 		glfwWindow = glfwCreateWindow(
 			_size.width, 
 			_size.height, 
 			toStringz(_title), null, null);
-
-		size = _size;
 		
 		if (!glfwWindow)
 			return false;
 		
 		glfwMakeContextCurrent(glfwWindow);
+
+        int w,h;
+        glfwGetFramebufferSize(glfwWindow, &w, &h);
+        size = UESize(w,h);
+
+        glfwGetWindowSize(glfwWindow, &w, &h);
+        windowSize = UESize(w,h);
+
         //TODO: support for fixed updates befor disabling vsync
 		//glfwSwapInterval(0);
         glfwSwapInterval(1);
@@ -123,9 +135,6 @@ private nothrow extern(C)
 
 	void wnd_size_callback(GLFWwindow* window, int width, int height) nothrow
 	{
-		ue.application.mainWindow.size.width = width;
-		ue.application.mainWindow.size.height = height;
-
 		try ue.application.glfwOnWndSize(width,height);
 		catch{}
 	}

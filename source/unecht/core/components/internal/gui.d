@@ -53,6 +53,8 @@ public:
         io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
               
         io.RenderDrawListsFn = &renderDrawLists;
+        if(ue.application.mainWindow.isRetina)
+		    io.FontGlobalScale = 2;
     }
 
     ///

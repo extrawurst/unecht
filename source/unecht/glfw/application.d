@@ -271,7 +271,10 @@ package:
 		ev.eventType = UEEventType.windowSize;
 		ev.windowSizeEvent.size = UESize(width,height);
 
-		ue.application.mainWindow.size = ev.windowSizeEvent.size;
+        //import unecht.core.logger;
+        //log.infof("glfwOnWndSize: %s -> %s",ue.application.mainWindow.windowSize, ev.windowSizeEvent.size);
+
+		ue.application.mainWindow.windowSize = ev.windowSizeEvent.size;
 
 		events.trigger(ev);
 	}
@@ -282,6 +285,11 @@ package:
 		ev.eventType = UEEventType.framebufferSize;
 		ev.framebufferSizeEvent.size = UESize(width,height);
 		
+        //import unecht.core.logger;
+        //log.infof("glfwOnFramebufferSize: %s -> %s",ue.application.mainWindow.size, ev.framebufferSizeEvent.size);
+
+        ue.application.mainWindow.size = ev.framebufferSizeEvent.size;
+
 		events.trigger(ev);
 	}
 
