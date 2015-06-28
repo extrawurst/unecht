@@ -21,7 +21,8 @@ struct UEWindow
 
 package:
 	
-    public @property bool isRetina() const { return size.width >= 2048 && size.height >= 1374;}
+    ///
+    public @property bool isRetina() const { return size.width > windowSize.width && size.height > windowSize.height; }
 	///
 	@property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
     ///
