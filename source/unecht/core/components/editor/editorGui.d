@@ -197,7 +197,7 @@ final class UEEditorGUI : UEComponent
 
     private static void renderDebug()
     {
-        ig_Begin("debug");
+        ig_Begin("debug", &showDebug);
         scope(exit) ig_End();
 
         import unecht.core.profiler;
