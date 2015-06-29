@@ -88,8 +88,7 @@ final class UEEditorGUI : UEComponent
     ///
     private static void renderScene()
     {
-		const top = ig_GetItemsLineHeightWithSpacing();
-        ig_SetNextWindowPos(ImVec2(0,top), ImGuiSetCond_Always);
+        ig_SetNextWindowPos(ImVec2(0, UEEditorMenuBar.height + 1), ImGuiSetCond_Always);
         
         ig_Begin("scene",null,ImGuiWindowFlags_NoMove);
         scope(exit){ig_End();}

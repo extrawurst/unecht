@@ -58,6 +58,10 @@ final class UEEditorMenuItem : UEComponent
 final class UEEditorMenuBar : UEComponent 
 {
     mixin(UERegisterObject!());
+
+    static ImVec2 _size;
+
+    static @property float height() { return _size.y; }
     
     override void onCreate() {
         super.onCreate;
@@ -126,6 +130,7 @@ final class UEEditorMenuBar : UEComponent
     void render()
     {
         auto menuBar = ig_BeginMainMenuBar();
+        ig_GetWindowSize(&_size);
         scope(exit){if(menuBar)ig_EndMainMenuBar();}
         
         if(menuBar)
