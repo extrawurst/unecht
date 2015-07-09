@@ -36,8 +36,8 @@ final class UEEditorConsole : UEComponent
             return;
 
         bool open=true;
-        ig_Begin("console", &open);
-        scope(exit)ig_End();
+        igBegin("console", &open);
+        scope(exit)igEnd();
 
         if(!open)
         {
@@ -48,7 +48,7 @@ final class UEEditorConsole : UEComponent
         version(EnableConsole)
             renderItems();
         else
-            ig_Text("this only works in versions compiled with D >= 2067");
+            igText("this only works in versions compiled with D >= 2067");
     }
 
     version(EnableConsole)
@@ -80,8 +80,8 @@ final class UEEditorConsole : UEComponent
 
         void renderItems()
         {
-            ig_BeginChild("ScrollingRegion");
-            scope(exit) ig_EndChild();
+            igBeginChild("ScrollingRegion");
+            scope(exit) igEndChild();
 
             import unecht.core.logger;
             import std.experimental.logger;
@@ -92,8 +92,8 @@ final class UEEditorConsole : UEComponent
 
                 ImVec4 col = LogLevelToColor(entry.logLevel);
 
-                ig_PushStyleColor(ImGuiCol_Text, col);
-                scope(exit)ig_PopStyleColor();
+                igPushStyleColor(ImGuiCol_Text, col);
+                scope(exit)igPopStyleColor();
 
                 UEGui.Text(entry.msg);
             }

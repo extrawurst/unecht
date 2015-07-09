@@ -59,8 +59,8 @@ version(UEIncludeEditor)
                                 static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
                                 {
                                     enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                    if (ig_IsItemHovered())
-                                        ig_SetTooltip(txt);
+                                    if (igIsItemHovered())
+                                        igSetTooltip(txt);
                                 }
                             }
                             else static if(is(typeof(member) : int))
@@ -72,8 +72,8 @@ version(UEIncludeEditor)
                                 static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
                                 {
                                     enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                    if (ig_IsItemHovered())
-                                        ig_SetTooltip(txt);
+                                    if (igIsItemHovered())
+                                        igSetTooltip(txt);
                                 }
                             }
                             else static if(is(typeof(member) : float))
@@ -85,8 +85,8 @@ version(UEIncludeEditor)
                                 static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
                                 {
                                     enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                    if (ig_IsItemHovered())
-                                        ig_SetTooltip(txt);
+                                    if (igIsItemHovered())
+                                        igSetTooltip(txt);
                                 }
                             }
                         }

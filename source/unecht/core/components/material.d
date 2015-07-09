@@ -50,13 +50,13 @@ static class UEMaterialInspector : IComponentEditor
 
         static immutable TEX_SIZE = 100;
 
-        ig_Checkbox("polygonFill",&thisT.polygonFill);
-        ig_Checkbox("depthTest",&thisT.depthTest);
+        igCheckbox("polygonFill",&thisT.polygonFill);
+        igCheckbox("depthTest",&thisT.depthTest);
         UEGui.EnumCombo("cull",thisT.cullMode);
         UEGui.Text("shader: "~thisT._shaderName);
         UEGui.Text("texture:");
         if(thisT._tex)
-            ig_Image(cast(void*)thisT._tex.tex,ImVec2(TEX_SIZE,TEX_SIZE));
+            igImage(cast(void*)thisT._tex.tex,ImVec2(TEX_SIZE,TEX_SIZE));
         else
             UEGui.Text("<none>");
     }
