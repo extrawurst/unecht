@@ -44,14 +44,14 @@ final class TestControls : UEComponent
         if(ue.tickTime - lastBallCreated > ballCount*2)
             spawnBall();
 
-        ig_PushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
+        igPushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
         auto labelWidth = 100;
-        ig_SetNextWindowPos(ImVec2((ue.application.mainWindow.size.width-labelWidth)/2));
-        ig_SetNextWindowSize(ImVec2(labelWidth,-1),ImGuiSetCond_Once);
-        ig_Begin("",null,ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize);
+        igSetNextWindowPos(ImVec2((ue.application.mainWindow.size.width-labelWidth)/2));
+        igSetNextWindowSize(ImVec2(labelWidth,-1),ImGuiSetCond_Once);
+        igBegin("",null,ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize);
         UEGui.Text(.format("%s - %s",scoreLeft,scoreRight));
-        ig_End();
-        ig_PopStyleColor();
+        igEnd();
+        igPopStyleColor();
     }
 
     void OnKeyEvent(UEEvent _ev)
