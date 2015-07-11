@@ -14,8 +14,8 @@
         "derelict-ode": {"version": "~master", "path": "submodules/DerelictODE/"},
         "sdlang-d": {"version": "~master", "path": "submodules/SDLang-D/"},
 		"derelict-glfw3": "~>1.1.0",
-		"derelict-gl3": "~>1.0.12",
-		"derelict-fi": "~>1.9.0",
+		"derelict-gl3": "~>1.0.13",
+		"derelict-fi": "~>2.0.1",
         "derelict-util": "~>2.0.0",
 	},
 
