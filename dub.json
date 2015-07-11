@@ -16,7 +16,7 @@
 		"derelict-glfw3": "~>1.1.0",
 		"derelict-gl3": "~>1.0.12",
 		"derelict-fi": "~>1.9.0",
-        "derelict-util": "~>1.9.1",
+        "derelict-util": "~>2.0.0",
 	},
 
     "versions":["DerelictODE_Single"],
