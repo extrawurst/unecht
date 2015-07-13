@@ -9,15 +9,15 @@
 	"mainSourceFile": "source/unecht/appmain.d",
 	"dependencies": 
 	{
-		"derelict-imgui": {"version": "~master", "path": "submodules/DerelictImgui/"},
 		"gl3n": {"version":"~master", "path": "submodules/gl3n/"},
         "tharsis-prof": {"version":"~master", "path": "submodules/tharsis.prof/"},
         "derelict-ode": {"version": "~master", "path": "submodules/DerelictODE/"},
         "sdlang-d": {"version": "~master", "path": "submodules/SDLang-D/"},
+        "derelict-imgui": "~>0.5.0",
 		"derelict-glfw3": "~>1.1.0",
-		"derelict-gl3": "~>1.0.12",
-		"derelict-fi": "~>1.9.0",
-        "derelict-util": "~>1.9.1",
+		"derelict-gl3": "~>1.0.13",
+		"derelict-fi": "~>2.0.1",
+        "derelict-util": "~>2.0.0",
 	},
 
     "versions":["DerelictODE_Single"],

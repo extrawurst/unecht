@@ -30,14 +30,14 @@ final class UEEditorAssetInspector : UEComponent
             return;
         
         bool closed;
-        ig_Begin("asset inspector",&closed,
+        igBegin("asset inspector",&closed,
             //ImGuiWindowFlags_AlwaysAutoResize|
             ImGuiWindowFlags_NoCollapse
             //ImGuiWindowFlags_NoMove|
             //ImGuiWindowFlags_NoResize
             );
         
-        scope(exit)ig_End();
+        scope(exit)igEnd();
         
         if(closed)
         {

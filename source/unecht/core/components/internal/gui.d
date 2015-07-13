@@ -32,7 +32,7 @@ public:
 
         g_window = ue.application.mainWindow.window;
 
-        ImGuiIO* io = ig_GetIO();
+        ImGuiIO* io = igGetIO();
 
         io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;                 // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
         io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
@@ -60,11 +60,11 @@ public:
     ///
     public static @property bool capturesMouse() { return g_capturesMouse; }
     ///
-    public static @property float framerate() { return ig_GetIO().Framerate; }
+    public static @property float framerate() { return igGetIO().Framerate; }
 
     private void OnKeyInput(UEEvent event)
     {
-        auto io = ig_GetIO();
+        auto io = igGetIO();
 
         if (UEEvent.KeyEvent.Action.Down == event.keyEvent.action)
             io.KeysDown[event.keyEvent.key] = true;
@@ -96,17 +96,17 @@ public:
 
     static bool TreeNode(string txt)
     {
-        return ig_TreeNode(toStringz(txt));
+        return igTreeNode(toStringz(txt));
     }
 
     static bool TreeNode(const void* pid, string txt)
     {
-        return ig_TreeNodePtr(pid, toStringz(txt));
+        return igTreeNodePtr(pid, toStringz(txt));
     }
 
     static bool checkbox(string label, ref bool v)
     {
-        return ig_Checkbox(toStringz(label), &v);
+        return igCheckbox(toStringz(label), &v);
     }
 
     ///
@@ -133,7 +133,7 @@ public:
             if(enumMember == v)
                 currentItem = i;
 
-        auto res = ig_Combo3(toStringz(label),&currentItem,&getItemText,null,enumElemCount);
+        auto res = igCombo3(toStringz(label),&currentItem,&getItemText,null,enumElemCount);
 
         v = cast(T)currentItem;
         return res;
@@ -141,17 +141,17 @@ public:
 
     static bool InputVec(string label, ref vec3 v)
     {
-        return ig_DragFloat3(toStringz(label), v.vector);
+        return igDragFloat3(toStringz(label), v.vector);
     }
     
     static void DragFloat(string label, ref float v, float min=0.0f, float max=0.0f)
     {
-        ig_DragFloat(toStringz(label),&v,1,min,max);
+        igDragFloat(toStringz(label),&v,1,min,max);
     }
 
     static void DragInt(string label, ref int v, int min=0, int max=0)
     {
-        ig_DragInt(toStringz(label),&v,1,min,max);
+        igDragInt(toStringz(label),&v,1,min,max);
     }
 
     static bool InputText(int MaxLength=64)(string label, ref string v)
@@ -163,7 +163,7 @@ public:
         buf[] = '\0';
         buf[0..v.length] = v[];
 
-        auto res = ig_InputText(toStringz(label), buf.ptr, MaxLength, ImGuiInputTextFlags_EnterReturnsTrue);
+        auto res = igInputText(toStringz(label), buf.ptr, MaxLength, ImGuiInputTextFlags_EnterReturnsTrue);
 
         import std.c.string:strlen;
         auto newLength = strlen(buf.ptr);
@@ -179,27 +179,27 @@ public:
 
     static void Text(string txt)
     {
-        ig_Text(toStringz(txt));
+        igText(toStringz(txt));
     }
 
     static void BulletText(string txt)
     {
-        ig_BulletText(toStringz(txt));
+        igBulletText(toStringz(txt));
     }
 
     static bool Button(string txt)
     {
-        return ig_Button(toStringz(txt));
+        return igButton(toStringz(txt));
     }
 
     static bool Selectable(string txt, bool selected)
     {
-        return ig_Selectable(toStringz(txt), selected);
+        return igSelectable(toStringz(txt), selected);
     }
 
     static bool SmallButton(string txt)
     {
-        return ig_SmallButton(toStringz(txt));
+        return igSmallButton(toStringz(txt));
     }
 
     static void startFrame()
@@ -207,7 +207,7 @@ public:
         if (!g_FontTexture)
             createDeviceObjects();
         
-        auto io = ig_GetIO();
+        auto io = igGetIO();
         
         // Setup display size (every frame to accommodate for window resizing)
         int w, h;
@@ -247,14 +247,14 @@ public:
         io.MouseWheel = g_MouseWheel;
         g_MouseWheel = 0.0f;
 
-        ig_NewFrame();
+        igNewFrame();
 
         g_capturesMouse = io.WantCaptureMouse;
     }
 
     static void renderGUI()
     {
-        ig_Render();
+        igRender();
     }
 
 private:
@@ -287,7 +287,7 @@ private:
         glEnable(GL_SCISSOR_TEST);
         glActiveTexture(GL_TEXTURE0);
         
-        auto io = ig_GetIO();
+        auto io = igGetIO();
         // Setup orthographic projection matrix
         const float width = io.DisplaySize.x;
         const float height = io.DisplaySize.y;
@@ -438,7 +438,7 @@ private:
 
     static void createFontsTexture()
     {
-        ImGuiIO* io = ig_GetIO();
+        ImGuiIO* io = igGetIO();
         
         ubyte* pixels;
         int width, height;

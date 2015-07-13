@@ -23,8 +23,8 @@ final class UEEditorMenuItem : UEComponent
         
         if(sceneNode.children.length>0)
         {
-            auto open = ig_BeginMenu(this.entity.name.toStringz);
-            scope(exit){if(open)ig_EndMenu();}
+            auto open = igBeginMenu(this.entity.name.toStringz);
+            scope(exit){if(open)igEndMenu();}
             
             if(open)
             {
@@ -42,7 +42,7 @@ final class UEEditorMenuItem : UEComponent
             {
                 auto isValid = menuItem.validateFunc?menuItem.validateFunc():true;
                 
-                if(ig_MenuItem(this.entity.name.toStringz,"",false,isValid))
+                if(igMenuItem(this.entity.name.toStringz,"",false,isValid))
                 {
                     if(isValid)
                     {
@@ -129,9 +129,9 @@ final class UEEditorMenuBar : UEComponent
     //TODO: #127
     void render()
     {
-        auto menuBar = ig_BeginMainMenuBar();
-        ig_GetWindowSize(&_size);
-        scope(exit){if(menuBar)ig_EndMainMenuBar();}
+        auto menuBar = igBeginMainMenuBar();
+        igGetWindowSize(&_size);
+        scope(exit){if(menuBar)igEndMainMenuBar();}
         
         if(menuBar)
         {
@@ -150,19 +150,19 @@ final class UEEditorMenuBar : UEComponent
     {
         import unecht;
 
-        if(ig_Button("play"))
+        if(igButton("play"))
             ue.scene.playing = true;
 
-        ig_SameLine();
+        igSameLine();
         
         if(ue.scene.playing)
         {
-            if(ig_Button("pause"))
+            if(igButton("pause"))
                 ue.scene.playing = false;
         }
         else
         {
-            if(ig_Button("step"))
+            if(igButton("step"))
                 ue.scene.step;
         }
     }
