@@ -1,5 +1,7 @@
 language: d
 
+sudo: false
+
 d:
   #- dmd is 2.067.0 on travis-ci right now
   - dmd-2.068.0-b2
