@@ -9,7 +9,7 @@ d:
   - dmd-2.066.1
   - dmd-2.065.0
   - ldc-0.15.1
-  #- ldc-0.16.0-alpha3
+  - ldc-0.16.0-beta1
   #- gdc-4.9.2 hangs forever in pong build
 
 script:
