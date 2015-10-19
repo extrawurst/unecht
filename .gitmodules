@@ -16,6 +16,3 @@
 [submodule "submodules/DerelictENet"]
 	path = submodules/DerelictENet
 	url = https://github.com/Extrawurst/DerelictENet
-[submodule "submodules/DerelictFmod"]
-	path = submodules/DerelictFmod
-	url = https://github.com/Extrawurst/DerelictFmod.git

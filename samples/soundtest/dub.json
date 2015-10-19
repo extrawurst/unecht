@@ -5,7 +5,7 @@
 	"authors": ["Stephan Dilly"],
 	"dependencies": {
 		"unecht" : {"version": "~master", "path": "../../"},
-        "derelict-fmod" : {"version": "~master", "path": "../../submodules/DerelictFmod"},
+        "derelict-fmod" : "~>0.2.0",
 	},
 	
     "versions": ["UEIncludeEditor","UEProfiling"],

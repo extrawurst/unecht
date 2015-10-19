@@ -1,13 +1,15 @@
 language: d
 
+sudo: false
+
 d:
-  #- dmd is 2.067.0 on travis-ci right now
-  - dmd-2.068.0-b1
+  - dmd #is 2.068.1 on travis-ci right now
+  - dmd-2.069.0-b1
   - dmd-2.067.1
-  - dmd-2.067.0
   - dmd-2.066.1
   - dmd-2.065.0
   - ldc-0.15.1
+  - ldc-0.16.0-beta2
   #- gdc-4.9.2 hangs forever in pong build
 
 script:

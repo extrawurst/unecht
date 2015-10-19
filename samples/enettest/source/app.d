@@ -110,8 +110,8 @@ final class TestLogic : UEComponent
 
             renderEnetHostGUI(client,"client");
 
-            ig_Begin("chat");
-            scope(exit) ig_End();
+            igBegin("chat");
+            scope(exit) igEnd();
 
             static string currentInput;
             if(UEGui.InputText!128("send",currentInput))
@@ -163,20 +163,20 @@ final class TestLogic : UEComponent
 
     private void renderEnetHostGUI(ENetHost* host, const(char)* name)
     {
-        ig_Begin(name);
-        scope(exit) ig_End();
+        igBegin(name);
+        scope(exit) igEnd();
         
-        ig_Text("incomingBandwidth: %d",        host.incomingBandwidth);
-        ig_Text("outgoingBandwidth: %d",        host.outgoingBandwidth);
-        ig_Text("bandwidthThrottleEpoch: %d",   host.bandwidthThrottleEpoch);
-        ig_Text("mtu: %d",                      host.mtu);
-        ig_Text("totalSentData: %d",            host.totalSentData);
-        ig_Text("totalSentPackets: %d",         host.totalSentPackets);
-        ig_Text("totalReceivedData: %d",        host.totalReceivedData);
-        ig_Text("totalReceivedPackets: %d",     host.totalReceivedPackets);
-        ig_Text("connectedPeers: %d",           host.connectedPeers);
-        ig_Text("peerCount: %d",                host.peerCount);
-        ig_Text("bandwidthLimitedPeers: %d",    host.bandwidthLimitedPeers);
+        igText("incomingBandwidth: %d",        host.incomingBandwidth);
+        igText("outgoingBandwidth: %d",        host.outgoingBandwidth);
+        igText("bandwidthThrottleEpoch: %d",   host.bandwidthThrottleEpoch);
+        igText("mtu: %d",                      host.mtu);
+        igText("totalSentData: %d",            host.totalSentData);
+        igText("totalSentPackets: %d",         host.totalSentPackets);
+        igText("totalReceivedData: %d",        host.totalReceivedData);
+        igText("totalReceivedPackets: %d",     host.totalReceivedPackets);
+        igText("connectedPeers: %d",           host.connectedPeers);
+        igText("peerCount: %d",                host.peerCount);
+        igText("bandwidthLimitedPeers: %d",    host.bandwidthLimitedPeers);
 
         foreach(i, p; host.peers[0..host.peerCount])
         {
@@ -185,21 +185,21 @@ final class TestLogic : UEComponent
                 if(UEGui.TreeNode(format("peer %s",i)))
                 {
                     UEGui.Text(format("state: %s",p.state));
-                    ig_Text("incomingBandwidth: %d", p.incomingBandwidth);
-                    ig_Text("outgoingBandwidth: %d", p.outgoingBandwidth);
-                    ig_Text("incomingDataTotal: %d", p.incomingDataTotal);
-                    ig_Text("outgoingDataTotal: %d", p.outgoingDataTotal);
-                    ig_Text("packetsSent: %d", p.packetsSent);
-                    ig_Text("packetsLost: %d", p.packetsLost);
-                    ig_Text("pingInterval: %d", p.pingInterval);
-                    ig_Text("lastRoundTripTime: %d", p.lastRoundTripTime);
-                    ig_Text("lowestRoundTripTime: %d", p.lowestRoundTripTime);
-                    ig_Text("lastRoundTripTimeVariance: %d", p.lastRoundTripTimeVariance);
-                    ig_Text("highestRoundTripTimeVariance: %d", p.highestRoundTripTimeVariance);
-                    ig_Text("roundTripTime: %d", p.roundTripTime);
-                    ig_Text("mtu: %d", p.mtu);
+                    igText("incomingBandwidth: %d", p.incomingBandwidth);
+                    igText("outgoingBandwidth: %d", p.outgoingBandwidth);
+                    igText("incomingDataTotal: %d", p.incomingDataTotal);
+                    igText("outgoingDataTotal: %d", p.outgoingDataTotal);
+                    igText("packetsSent: %d", p.packetsSent);
+                    igText("packetsLost: %d", p.packetsLost);
+                    igText("pingInterval: %d", p.pingInterval);
+                    igText("lastRoundTripTime: %d", p.lastRoundTripTime);
+                    igText("lowestRoundTripTime: %d", p.lowestRoundTripTime);
+                    igText("lastRoundTripTimeVariance: %d", p.lastRoundTripTimeVariance);
+                    igText("highestRoundTripTimeVariance: %d", p.highestRoundTripTimeVariance);
+                    igText("roundTripTime: %d", p.roundTripTime);
+                    igText("mtu: %d", p.mtu);
 
-                    ig_TreePop();
+                    igTreePop();
                 }
             }
         }
