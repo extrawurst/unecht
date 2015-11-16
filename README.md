@@ -22,6 +22,7 @@ Game Engine Framework written in #dlang
 * freeimage library ([link](http://freeimage.sourceforge.net/))
 * frame profiling: despiker binary right besides engine binary ([guide](despiker_guide.md))
 * cimgui library ([link](https://github.com/Extrawurst/cimgui))
+* steamworks library ([link](https://github.com/Extrawurst/DerelitSteamworks)) (optionally enabled using `EnableSteam` version)
 * openassimp library ([link](http://assimp.sourceforge.net/)) (just in a sample for now)
 * fmod library ([link](http://www.fmod.org/download/#StudioAPI)) (just in a sample for now)
 * enet library ([link](http://enet.bespin.org/)) (just in a sample for now)
