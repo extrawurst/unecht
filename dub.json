@@ -17,6 +17,7 @@
 		"derelict-gl3": "~>1.0.13",
 		"derelict-fi": "~>2.0.1",
         "derelict-util": "~>2.0.0",
+        "derelict-steamworks": "~>0.0.4",
 	},
 
     "versions":["DerelictODE_Single"],

@@ -19,11 +19,15 @@ import unecht.core.components.misc;
 import unecht.core.components.internal.gui;
 import unecht.core.stdex;
 
+version(EnableSteam) import unecht.steamaccess;
 version(UEProfiling) import unecht.core.profiler;
 
 ///
 struct UEApplication
 {
+    version(EnableSteam)
+    SteamAccess steam;
+
 	UEWindow mainWindow;
 	UEEventsSystem events;
 	UEEntity rootEntity;
@@ -37,6 +41,11 @@ struct UEApplication
 	/// contains the game loop is run in main function
 	int run()
 	{
+        version(EnableSteam)
+        {
+            steam = new SteamAccess();
+        }
+
         version(UEProfiling)
         {
             profiler = new Profiler(storage);
@@ -136,6 +145,11 @@ struct UEApplication
                     auto profZone = Zone(profiler, "render gui");
 
                     UEGui.renderGUI();
+                }
+
+                {
+                    version(EnableSteam)
+                    steam.update();
                 }
 
                 {
