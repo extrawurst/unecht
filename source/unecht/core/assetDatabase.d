@@ -34,8 +34,8 @@ static struct UEAssetDatabase
     ///
     static void refresh(string path)
     {
-        import std.file:DirEntry,dirEntries,SpanMode;
-        import std.path:relativePath,exists;
+        import std.file:DirEntry,dirEntries,SpanMode,exists;
+        import std.path:relativePath;
 
         if(!exists(path))
             return;
