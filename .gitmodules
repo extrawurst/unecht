@@ -10,9 +10,9 @@
 [submodule "submodules/tinyendian"]
 	path = submodules/tinyendian
 	url = https://github.com/Extrawurst/tinyendian.git
-[submodule "submodules/SDLang-D"]
-	path = submodules/SDLang-D
-	url = https://github.com/Extrawurst/SDLang-D.git
 [submodule "submodules/DerelictENet"]
 	path = submodules/DerelictENet
 	url = https://github.com/Extrawurst/DerelictENet
+[submodule "submodules/libsdl-d"]
+	path = submodules/libsdl-d
+	url = https://github.com/Extrawurst/libsdl-d

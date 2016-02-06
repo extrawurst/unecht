@@ -8,7 +8,7 @@ import unecht.core.component;
 import unecht.meta.uda;
 import unecht.core.entity;
 import unecht.core.object;
-import sdlang;
+import lang.sdl;
 
 import std.string:format;
 
