@@ -4,6 +4,7 @@ import derelict.ode.ode;
 import derelict.util.system;
 
 import unecht.core.component;
+import unecht.core.object;
 
 import gl3n.linalg;
 
@@ -23,7 +24,7 @@ version(UEIncludeEditor)
     @EditorInspector("UEPhysicsMaterial")
     static class UEPhysicsMaterialInspector : IComponentEditor
     {
-        override void render(UEComponent _component)
+        override void render(UEObject _component)
         {
             import derelict.imgui.imgui;
             import unecht.core.components.internal.gui;

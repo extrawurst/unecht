@@ -14,7 +14,8 @@ import unecht.core.components.renderer;
 import unecht.core.components.internal.gui;
 
 import unecht.core.components.editor.editorGui;
-import unecht.core.components.editor.editorMenus;
+import unecht.core.components.editor.ui.menuSystem;
+import unecht.core.components.editor.menuItems;
 import unecht.core.components.editor.grid;
 import unecht.core.components.editor.mouseControls;
 
@@ -209,7 +210,7 @@ final class EditorRootComponent : UEComponent {
 		editorComponent.sceneNode.enabled = false;
 
         import unecht.core.components.editor.gismo;
-		//TODO: support recursive disabling and move it under the editor subcomponent
+		//TODO: support recursive disabling and move it under the editor subcomponent (#41)
 		gismo = UEEntity.create("editor gismo");
 		gismo.sceneNode.parent = this.sceneNode;
 		gismo.addComponent!UEEditorGismo;
@@ -275,6 +276,7 @@ final class EditorRootComponent : UEComponent {
     }
 
 	///
+    //TODO: #127
 	static void renderEditor()
 	{
 		if(_editorVisible)

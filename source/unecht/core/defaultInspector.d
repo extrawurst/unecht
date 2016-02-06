@@ -8,7 +8,7 @@ version(UEIncludeEditor)
     alias aliasHelper(alias T) = T;
     alias aliasHelper(T) = T;
 
-    ///
+    /// UDA
     struct UEInspectorTooltip
     {
         string txt;
@@ -20,15 +20,33 @@ version(UEIncludeEditor)
         @EditorInspector(T.stringof)
         static class UEDefaultInspector(T) : IComponentEditor
         {
-            override void render(UEComponent _component)
+            import unecht.core.object;
+            override void render(UEObject _component)
             {
                 auto thisT = cast(T)_component;
                 
                 import derelict.imgui.imgui;
                 import unecht.core.components.internal.gui;
                 import std.string:format;
-                
-                //pragma(msg, T.stringof);
+
+                /+ TODO: use orange way of finding members, this also implys to go up the class hirarchie at compile time
+
+                pragma(msg, "-------------------");
+                pragma(msg, T.stringof);
+                pragma(msg, typeof(T.tupleof));
+
+                import std.stdio;
+                foreach(i, dummy; typeof(T.tupleof))
+                {
+                    alias typeof(T.tupleof[i]) Type;
+
+                    //writefln("-%s",Type.stringof);
+
+                    enum nameOfFieldAt = __traits(identifier, T.tupleof[i]);
+
+                    pragma(msg, nameOfFieldAt);
+                }
+                +/
                 
                 foreach(memberName; __traits(allMembers, T))
                 {
@@ -63,7 +81,7 @@ version(UEIncludeEditor)
                                         igSetTooltip(txt);
                                 }
                             }
-                            else static if(is(typeof(member) : int))
+                            else static if(is(typeof(member) : int) && !is(typeof(member) == enum))
                             {
                                 //pragma(msg, " -->int");
                                 
@@ -75,6 +93,12 @@ version(UEIncludeEditor)
                                     if (igIsItemHovered())
                                         igSetTooltip(txt);
                                 }
+                            }
+                            else static if(is(typeof(member) == enum))
+                            {
+                                //pragma(msg, " -->enum");
+
+                                UEGui.EnumCombo(memberName, __traits(getMember, thisT, memberName));
                             }
                             else static if(is(typeof(member) : float))
                             {

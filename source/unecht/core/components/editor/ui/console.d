@@ -86,7 +86,7 @@ final class UEEditorConsole : UEComponent
             import unecht.core.logger;
             import std.experimental.logger;
 
-            foreach(i; 0..logHistory.history.length)
+            foreach_reverse(i; 0..logHistory.history.length)
             {
                 const entry = logHistory.history[i];
 
@@ -95,7 +95,10 @@ final class UEEditorConsole : UEComponent
                 igPushStyleColor(ImGuiCol_Text, col);
                 scope(exit)igPopStyleColor();
 
-                UEGui.Text(entry.msg);
+                if(UEGui.Selectable(entry.msg,false))
+                {
+                    //TODO: #133
+                }
             }
         }
     }

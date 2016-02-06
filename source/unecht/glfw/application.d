@@ -335,6 +335,9 @@ private:
 
         joysticks.init(events);
 
+        import unecht.core.assetDatabase;
+        UEAssetDatabase.refresh();
+
         insertGuiObj();
 
         insertPhysicsObj();

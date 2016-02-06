@@ -7,140 +7,11 @@ import unecht;
 import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
+import unecht.core.components.editor.ui.assetView;
+import unecht.core.components.editor.ui.menuSystem;
 import unecht.core.components.editor.ui.console;
 
 import derelict.imgui.imgui;
-
-///
-final class UEEditorMenuItem : UEComponent 
-{
-    mixin(UERegisterObject!());
-
-    import unecht.core.components.editor.menus;
-
-    EditorMenuItem menuItem;
-
-    void render()
-    {
-        import std.string:toStringz;
-
-        if(sceneNode.children.length>0)
-        {
-            auto open = igBeginMenu(this.entity.name.toStringz);
-            scope(exit){if(open)igEndMenu();}
-
-            if(open)
-            {
-                foreach(c; sceneNode.children)
-                {
-                    auto subitem = c.entity.getComponent!UEEditorMenuItem;
-                    if(subitem)
-                        subitem.render();
-                }
-            }
-        }
-        else
-        {
-            if(menuItem.func)
-            {
-                auto isValid = menuItem.validateFunc?menuItem.validateFunc():true;
-
-                if(igMenuItem(this.entity.name.toStringz,"",false,isValid))
-                {
-                    if(isValid)
-                    {
-                        menuItem.func();
-                    }
-                }
-            }
-        }
-    }
-}
-
-///
-final class UEEditorMenuBar : UEComponent 
-{
-    mixin(UERegisterObject!());
-
-    override void onCreate() {
-        super.onCreate;
-
-        addMenuItem("main", sceneNode);
-        addMenuItem("edit", sceneNode);
-        addMenuItem("entity", sceneNode);
-
-        import unecht.core.componentManager;
-        
-        foreach(ref m; UEComponentsManager.menuItems)
-        {
-            import std.string:split;
-            auto pathElements = split(m.name, "/");
-
-            attachItem(pathElements,m);
-        }
-    }
-
-    private UEEditorMenuItem addMenuItem(string name, UESceneNode node)
-    {
-        auto e = UEEntity.create(name, node);
-        return e.addComponent!UEEditorMenuItem;
-    }
-
-    private void attachItem(string[] path, EditorMenuItem menuItem)
-    {
-        assert(this.sceneNode);
-
-        UESceneNode node = sceneNode;
-        while(path.length > 1)
-        {
-            auto search = findMatchingMenu(path[0], node);
-            if(!search)
-            {
-                search = addMenuItem(path[0], node);
-            }
-
-            assert(search);
-            assert(search.sceneNode);
-
-            path = path[1..$];
-            node = search.sceneNode;
-        }
-
-        auto item = addMenuItem(path[0], node);
-        item.menuItem = menuItem;
-    }
-
-    private UEEditorMenuItem findMatchingMenu(string name, UESceneNode node)
-    {
-        foreach(c; node.children)
-        {
-            auto item = c.entity.getComponent!UEEditorMenuItem;
-            if(item)
-            {
-                if(item.entity.name == name)
-                    return item;
-            }
-        }
-
-        return null;
-    }
-
-    void render()
-    {
-        auto menuBar = igBeginMainMenuBar();
-        scope(exit){if(menuBar)igEndMainMenuBar();}
-        
-        if(menuBar)
-        {
-            foreach(c; sceneNode.children)
-            {
-                auto subitem = c.entity.getComponent!UEEditorMenuItem;
-                if(subitem)
-                    subitem.render();
-            }
-        }
-    }
-}
 
 ///
 final class UEEditorGUI : UEComponent 
@@ -148,15 +19,18 @@ final class UEEditorGUI : UEComponent
     mixin(UERegisterObject!());
 
     UEEditorMenuBar menuBar;
+    UEEditorAssetView assetView;
     UEEditorConsole console;
 
     override void onCreate() {
         super.onCreate;
 
+        assetView = entity.addComponent!UEEditorAssetView;
         menuBar = entity.addComponent!UEEditorMenuBar;
         console = entity.addComponent!UEEditorConsole;
     }
-    
+
+    //TODO: #127
     void render() {
         
         {
@@ -181,7 +55,6 @@ final class UEEditorGUI : UEComponent
         if(EditorRootComponent.visible)
         {
             menuBar.render();
-            renderControlPanel();
             if(showHirarchie)
             {
                 renderScene();
@@ -189,6 +62,8 @@ final class UEEditorGUI : UEComponent
             }
             if(showDebug)
                 renderDebug();
+
+            assetView.render();
 
             if(console.enabled)
                 console.render();
@@ -459,35 +334,5 @@ final class UEEditorGUI : UEComponent
                 }
             }
         }
-    }
-    
-    ///
-    private static void renderControlPanel()
-    {
-        static float w=100;
-        igSetNextWindowPos(ImVec2(ue.application.mainWindow.size.width-w,0),ImGuiSetCond_Always);
-        
-        igBegin("controls",null,
-            ImGuiWindowFlags_NoTitleBar|
-            ImGuiWindowFlags_AlwaysAutoResize|
-            ImGuiWindowFlags_NoResize|
-            ImGuiWindowFlags_NoMove);
-        
-        if(igButton("play"))
-            ue.scene.playing = true;
-        
-        if(ue.scene.playing)
-        {
-            if(igButton("stop"))
-                ue.scene.playing = false;
-        }
-        else
-        {
-            if(igButton("step"))
-                ue.scene.step;
-        }
-        
-        w = igGetWindowWidth();
-        igEnd();
     }
 }

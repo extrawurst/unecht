@@ -1,0 +1,11 @@
+{
+	"fileVersion": 1,
+	"versions": {
+		"derelict-imgui": "0.5.0",
+		"derelict-util": "2.0.0",
+		"libinputvisitor": "1.1.0",
+		"derelict-glfw3": "1.1.0",
+		"derelict-fi": "2.0.1",
+		"derelict-gl3": "1.0.13"
+	}
+}
