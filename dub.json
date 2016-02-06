@@ -1,7 +1,7 @@
 {
 	"name": "unecht",
 	"description": "Game Engine Framework for the D programming language.",
-	"copyright": "Copyright © 2015, Stephan Dilly",
+	"copyright": "Copyright © 2016, Stephan Dilly",
 	"authors": ["Stephan Dilly"],
 	"license": "MIT",
 	"targetType": "library",
@@ -13,7 +13,7 @@
         "tharsis-prof": {"version":"~master", "path": "submodules/tharsis.prof/"},
         "derelict-ode": {"version": "~master", "path": "submodules/DerelictODE/"},
         "sdlang-d": {"version": "~master", "path": "submodules/SDLang-D/"},
-        "derelict-imgui": "==0.5.0",
+        "derelict-imgui": "~>0.9.1",
 		"derelict-glfw3": "~>1.1.0",
 		"derelict-gl3": "~>1.0.13",
 		"derelict-fi": "~>2.0.1",

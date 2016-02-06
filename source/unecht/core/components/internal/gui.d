@@ -267,18 +267,16 @@ private:
     static int          g_AttribLocationTex = 0, g_AttribLocationProjMtx = 0;
     static int          g_AttribLocationPosition = 0, g_AttribLocationUV = 0, g_AttribLocationColor = 0;
     static size_t       g_VboMaxSize = 20000;
-    static uint         g_VboHandle, g_VaoHandle;
+    static uint         g_VboHandle, g_VaoHandle, g_ElementsHandle;
     static bool         g_capturesMouse;
 
     static extern(C) nothrow 
-    void renderDrawLists(ImDrawList** cmd_lists, int count)
+    void renderDrawLists(ImDrawData* data)
     {
-        if (count == 0)
-            return;
-        
-        import std.stdio;
-        
         // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled
+        GLint last_program, last_texture;
+        glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
         glEnable(GL_BLEND);
         glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -302,44 +300,20 @@ private:
         glUniform1i(g_AttribLocationTex, 0);
         glUniformMatrix4fv(g_AttribLocationProjMtx, 1, GL_FALSE, &ortho_projection[0][0]);
         
-        // Grow our buffer according to what we need
-        size_t total_vtx_count = 0;
-        for (int n = 0; n < count; n++)
-        {
-            total_vtx_count += ImDrawList_GetVertexBufferSize(cmd_lists[n]);
-        }
-        //try writefln("cnt: %s",total_vtx_count); catch{}
-        
-        glBindBuffer(GL_ARRAY_BUFFER, g_VboHandle);
-        size_t neededBufferSize = total_vtx_count * ImDrawVert.sizeof;
-        if (neededBufferSize > g_VboMaxSize)
-        {
-            g_VboMaxSize = neededBufferSize + 5000;  // Grow buffer
-            glBufferData(GL_ARRAY_BUFFER, g_VboMaxSize, null, GL_STREAM_DRAW);
-        }
-        
-        // Copy and convert all vertices into a single contiguous buffer
-        ubyte* buffer_data = cast(ubyte*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-        if (!buffer_data)
-            return;
-        
-        for (int n = 0; n < count; n++)
-        {
-            ImDrawList* cmd_list = cmd_lists[n];
-            auto vListSize = ImDrawList_GetVertexBufferSize(cmd_list) * ImDrawVert.sizeof;
-            import std.c.string:memcpy;
-            memcpy(buffer_data, ImDrawList_GetVertexPtr(cmd_list,0), vListSize);
-            buffer_data += vListSize;
-        }
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(g_VaoHandle);
+        glBindBuffer(GL_ARRAY_BUFFER, g_VboHandle);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_ElementsHandle);
         
-        int cmd_offset = 0;
-        for (int n = 0; n < count; n++)
+        foreach (n; 0..data.CmdListsCount)
         {
-            ImDrawList* cmd_list = cmd_lists[n];
-            int vtx_offset = cmd_offset;
+            ImDrawList* cmd_list = data.CmdLists[n];
+            ImDrawIdx* idx_buffer_offset;
+            
+            auto countVertices = ImDrawList_GetVertexBufferSize(cmd_list);
+            auto countIndices = ImDrawList_GetIndexBufferSize(cmd_list);
+            
+            glBufferData(GL_ARRAY_BUFFER, countVertices * ImDrawVert.sizeof, cast(GLvoid*)ImDrawList_GetVertexPtr(cmd_list,0), GL_STREAM_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, countIndices * ImDrawIdx.sizeof, cast(GLvoid*)ImDrawList_GetIndexPtr(cmd_list,0), GL_STREAM_DRAW);
             
             auto cmdCnt = ImDrawList_GetCmdSize(cmd_list);
             
@@ -347,56 +321,57 @@ private:
             {
                 auto pcmd = ImDrawList_GetCmdPtr(cmd_list, i);
                 
-                if (pcmd.user_callback)
+                if (pcmd.UserCallback)
                 {
-                    pcmd.user_callback(cmd_list, pcmd);
+                    pcmd.UserCallback(cmd_list, pcmd);
                 }
                 else
                 {
-                    glBindTexture(GL_TEXTURE_2D, cast(GLuint)pcmd.texture_id);
-                    glScissor(cast(int)pcmd.clip_rect.x, cast(int)(height - pcmd.clip_rect.w), cast(int)(pcmd.clip_rect.z - pcmd.clip_rect.x), cast(int)(pcmd.clip_rect.w - pcmd.clip_rect.y));
-                    glDrawArrays(GL_TRIANGLES, vtx_offset, pcmd.vtx_count);
+                    glBindTexture(GL_TEXTURE_2D, cast(GLuint)pcmd.TextureId);
+                    glScissor(cast(int)pcmd.ClipRect.x, cast(int)(height - pcmd.ClipRect.w), cast(int)(pcmd.ClipRect.z - pcmd.ClipRect.x), cast(int)(pcmd.ClipRect.w - pcmd.ClipRect.y));
+                    glDrawElements(GL_TRIANGLES, pcmd.ElemCount, GL_UNSIGNED_SHORT, idx_buffer_offset);
                 }
-                vtx_offset += pcmd.vtx_count;
+                
+                idx_buffer_offset += pcmd.ElemCount;
             }
-            
-            cmd_offset = vtx_offset;
         }
         
         // Restore modified state
         glBindVertexArray(0);
-        glUseProgram(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glUseProgram(last_program);
         glDisable(GL_SCISSOR_TEST);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, last_texture);
     }
 
     static void createDeviceObjects()
     {
         const GLchar *vertex_shader =
             "#version 330\n"
-                "uniform mat4 ProjMtx;\n"
-                "in vec2 Position;\n"
-                "in vec2 UV;\n"
-                "in vec4 Color;\n"
-                "out vec2 Frag_UV;\n"
-                "out vec4 Frag_Color;\n"
-                "void main()\n"
-                "{\n"
-                "   Frag_UV = UV;\n"
-                "   Frag_Color = Color;\n"
-                "   gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
-                "}\n";
+            "uniform mat4 ProjMtx;\n"
+            "in vec2 Position;\n"
+            "in vec2 UV;\n"
+            "in vec4 Color;\n"
+            "out vec2 Frag_UV;\n"
+            "out vec4 Frag_Color;\n"
+            "void main()\n"
+            "{\n"
+            "   Frag_UV = UV;\n"
+            "   Frag_Color = Color;\n"
+            "   gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
+            "}\n";
         
         const GLchar* fragment_shader =
             "#version 330\n"
-                "uniform sampler2D Texture;\n"
-                "in vec2 Frag_UV;\n"
-                "in vec4 Frag_Color;\n"
-                "out vec4 Out_Color;\n"
-                "void main()\n"
-                "{\n"
-                "   Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
-                "}\n";
+            "uniform sampler2D Texture;\n"
+            "in vec2 Frag_UV;\n"
+            "in vec4 Frag_Color;\n"
+            "out vec4 Out_Color;\n"
+            "void main()\n"
+            "{\n"
+            "   Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
+            "}\n";
         
         g_ShaderHandle = glCreateProgram();
         g_VertHandle = glCreateShader(GL_VERTEX_SHADER);
@@ -416,8 +391,7 @@ private:
         g_AttribLocationColor = glGetAttribLocation(g_ShaderHandle, "Color");
         
         glGenBuffers(1, &g_VboHandle);
-        glBindBuffer(GL_ARRAY_BUFFER, g_VboHandle);
-        glBufferData(GL_ARRAY_BUFFER, g_VboMaxSize, null, GL_DYNAMIC_DRAW);
+        glGenBuffers(1, &g_ElementsHandle);
         
         glGenVertexArrays(1, &g_VaoHandle);
         glBindVertexArray(g_VaoHandle);
