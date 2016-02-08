@@ -12,7 +12,7 @@
 		"gl3n": {"version":"~master", "path": "submodules/gl3n/"},
         "tharsis-prof": {"version":"~master", "path": "submodules/tharsis.prof/"},
         "derelict-ode": {"version": "~master", "path": "submodules/DerelictODE/"},
-        "libsdl-d": {"version": "~master", "path": "submodules/libsdl-d/"},
+        "sdlang-d": "~>0.9.4",
         "derelict-imgui": "~>0.9.1",
 		"derelict-glfw3": "~>1.1.0",
 		"derelict-gl3": "~>1.0.13",

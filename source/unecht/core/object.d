@@ -10,7 +10,7 @@ import unecht.meta.uda;
 ///
 static struct UECustomSerializeUUID
 {
-    import lang.sdl;
+    import sdlang;
 
     private static void serialize(ref UUID v, ref UESerializer serializer, Tag parent)
     {

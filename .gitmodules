@@ -13,6 +13,3 @@
 [submodule "submodules/DerelictENet"]
 	path = submodules/DerelictENet
 	url = https://github.com/Extrawurst/DerelictENet
-[submodule "submodules/libsdl-d"]
-	path = submodules/libsdl-d
-	url = https://github.com/Extrawurst/libsdl-d

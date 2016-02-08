@@ -3,7 +3,7 @@
 import unecht.core.components.sceneNode;
 import unecht.core.serialization.serializer;
 
-import lang.sdl;
+import sdlang;
 
 ///
 struct UESceneSerializer

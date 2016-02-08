@@ -5,7 +5,7 @@ version(unittest):
 import unecht;
 import unecht.core.serialization.serializer;
 import unecht.core.hideFlags;
-import lang.sdl;
+import sdlang;
 
 struct CustomTestSerializer
 {
