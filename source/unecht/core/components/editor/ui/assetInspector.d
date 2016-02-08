@@ -22,18 +22,20 @@ final class UEEditorAssetInspector : UEComponent
     static void reset() { asset = UEAsset.init; }
 
     //TODO: #127
-    void render()
+    void render(float left, float top)
     {
         auto object = asset.obj;
 
         if(!object)
             return;
-        
+
+        igSetNextWindowPos(ImVec2(left,top), ImGuiSetCond_Always);
+
         bool closed;
         igBegin("asset inspector",&closed,
             //ImGuiWindowFlags_AlwaysAutoResize|
-            ImGuiWindowFlags_NoCollapse
-            //ImGuiWindowFlags_NoMove|
+            ImGuiWindowFlags_NoCollapse|
+            ImGuiWindowFlags_NoMove
             //ImGuiWindowFlags_NoResize
             );
         

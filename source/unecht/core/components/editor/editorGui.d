@@ -63,7 +63,7 @@ final class UEEditorGUI : UEComponent
             if(showDebug)
                 renderDebug();
 
-            assetView.render();
+            assetView.render(sceneWindowHeight);
 
             if(console.enabled)
                 console.render();
@@ -85,6 +85,7 @@ final class UEEditorGUI : UEComponent
     package static bool showDebug = false;
 
     private static float sceneWindowWidth;
+    private static float sceneWindowHeight;
     ///
     private static void renderScene()
     {
@@ -100,6 +101,7 @@ final class UEEditorGUI : UEComponent
         }
         
         sceneWindowWidth = igGetWindowWidth();
+        sceneWindowHeight = igGetWindowHeight();
     }
 
     ///

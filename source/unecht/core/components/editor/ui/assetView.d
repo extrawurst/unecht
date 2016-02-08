@@ -31,7 +31,7 @@ final class UEEditorAssetView : UEComponent
     }
 
     //TODO: #127
-    void render()
+    void render(float top)
     {
         if(!visible)
         {
@@ -39,9 +39,10 @@ final class UEEditorAssetView : UEComponent
             return;
         }
 
-        inspector.render();
+        top += igGetItemsLineHeightWithSpacing()+1;
 
-        igBegin("assets", &visible);
+        igSetNextWindowPos(ImVec2(0,top), ImGuiSetCond_Always);
+        igBegin("assets", &visible, ImGuiWindowFlags_NoCollapse|ImGuiWindowFlags_NoMove);
         scope(exit) igEnd();
 
         foreach(a; UEAssetDatabase.assets)
@@ -51,5 +52,7 @@ final class UEEditorAssetView : UEComponent
                 inspector.asset = a;
             }
         }
+
+        inspector.render(igGetWindowWidth()+1, top);
     }
 }
