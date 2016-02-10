@@ -101,7 +101,7 @@ template UEObjectCreateEditor()
 {
     enum UEObjectCreateEditor = q{
 
-        import unecht.core.componentManager:IComponentEditor;
+        version(UEIncludeEditor)import unecht.core.componentManager:IComponentEditor;
 
         version(UEIncludeEditor)
         override IComponentEditor createEditor()

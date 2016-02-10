@@ -5,8 +5,8 @@ import std.uuid;
 public import unecht.core.hideFlags;
 import unecht.core.serialization.serializer;
 import unecht.core.serialization.mixins;
-import unecht.core.componentManager:IComponentEditor;
 import unecht.meta.uda;
+version(UEIncludeEditor)import unecht.core.componentManager:IComponentEditor;
 
 ///
 static struct UECustomSerializeUUID
