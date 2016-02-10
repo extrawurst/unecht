@@ -8,6 +8,7 @@ struct UEAsset
 {
     UEObject obj;
     string path;
+    string metaPath;
 }
 
 ///
@@ -97,13 +98,24 @@ static struct UEAssetDatabase
 
         tex.loadFromFile(assetFile);
 
-        addAsset(tex, path);
+        addAsset(tex, path, metaFilePath);
+    }
+
+    static void updateAssetMetafile(UEObject obj)
+    {
+        foreach(asset; assets)
+        {
+            if(asset.obj is obj)
+            {
+                serializeMetaFile(obj, asset.metaPath);
+            }
+        }
     }
 
     ///
-    static void addAsset(UEObject obj, string path)
+    static void addAsset(UEObject obj, string path, string metaPath)
     {
-        assets ~= UEAsset(obj, path);
+        assets ~= UEAsset(obj, path, metaPath);
     }
 
     ///
