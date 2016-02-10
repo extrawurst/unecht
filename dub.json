@@ -9,9 +9,9 @@
 	"mainSourceFile": "source/unecht/appmain.d",
 	"dependencies": 
 	{
-		"gl3n": {"version":"~master", "path": "submodules/gl3n/"},
         "tharsis-prof": {"version":"~master", "path": "submodules/tharsis.prof/"},
         "derelict-ode": {"version": "~master", "path": "submodules/DerelictODE/"},
+        "gl3n": "~>1.3.1",
         "sdlang-d": "~>0.9.4",
         "derelict-imgui": "~>0.9.1",
 		"derelict-glfw3": "~>1.1.0",

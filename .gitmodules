@@ -1,6 +1,3 @@
-[submodule "submodules/gl3n"]
-	path = submodules/gl3n
-	url = https://github.com/Extrawurst/gl3n.git
 [submodule "submodules/DerelictODE"]
 	path = submodules/DerelictODE
 	url = https://github.com/Extrawurst/DerelictODE.git
