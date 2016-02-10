@@ -28,7 +28,7 @@ struct EditorInspector
 ///
 interface IComponentEditor
 {	
-	void render(UEObject _component);
+	bool render(UEObject _component);
 }
 
 ///

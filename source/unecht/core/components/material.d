@@ -41,7 +41,7 @@ import unecht.core.object;
 @EditorInspector("UEMaterial")
 static class UEMaterialInspector : IComponentEditor
 {
-    override void render(UEObject _component)
+    override bool render(UEObject _component)
     {
         import derelict.imgui.imgui;
         import unecht.core.components.internal.gui;
@@ -60,6 +60,9 @@ static class UEMaterialInspector : IComponentEditor
             igImage(cast(void*)thisT._tex.tex,ImVec2(TEX_SIZE,TEX_SIZE));
         else
             UEGui.Text("<none>");
+
+        //TODO: impl
+        return false;
     }
    
     mixin UERegisterInspector!UEMaterialInspector;

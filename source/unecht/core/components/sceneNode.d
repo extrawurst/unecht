@@ -11,7 +11,7 @@ version(UEIncludeEditor)
 @EditorInspector("UESceneNode")
 static class UESceneNodeInspector : IComponentEditor
 {
-    override void render(UEObject _component)
+    override bool render(UEObject _component)
     {
         auto thisT = cast(UESceneNode)_component;
         
@@ -29,6 +29,9 @@ static class UESceneNodeInspector : IComponentEditor
 
         UEGui.Text(format("to: %s",thisT.forward));
         UEGui.Text(format("up: %s",thisT.up));
+
+        //TODO: impl
+        return false;
     }
     
     mixin UERegisterInspector!UESceneNodeInspector;

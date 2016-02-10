@@ -6,107 +6,153 @@ struct UEInspectorTooltip
     string txt;
 }
 
-version(UEIncludeEditor)
-{
+version(UEIncludeEditor){
+
     alias aliasHelper(alias T) = T;
     alias aliasHelper(T) = T;
 
     import unecht.meta.uda;
     import unecht.core.object;
+    import unecht.core.entity;
+    import unecht.core.component;
     import unecht.core.components.internal.gui;
     import unecht.core.componentManager:IComponentEditor;
 
     import derelict.imgui.imgui;
+
+    private static bool renderBaseClasses(T)(T _v)
+    {
+        import std.traits:BaseClassesTuple;
+
+        static if(BaseClassesTuple!T.length > 1)
+        {
+            return renderMembers!(BaseClassesTuple!T[0])(_v);
+        }
+    }
+
+    private static bool renderMembers(T)(T _v)
+    {
+        import std.traits:FieldNameTuple;
+
+        bool changesInMembers;
+        foreach(idx, name; FieldNameTuple!T) 
+        {
+            const(char)* tooltip;
+
+            static if(hasUDA!(_v.tupleof[idx],UEInspectorTooltip))
+            {
+                tooltip = getUDA!(_v.tupleof[idx],UEInspectorTooltip).txt;
+            }
+
+            if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx]))
+                changesInMembers = true;
+        }
+
+        return changesInMembers;
+    }
+
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T : P*,P))
+    {
+        UEGui.Text("no editor for pointers: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
+        return false;
+    }
+
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T == struct) || (is(T == class) && !is(T:UEComponent) &&!is(T:UEEntity)))
+    {
+        UEGui.Text("no editor for: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
+        return false;
+    }
+
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T == class) && is(T:UEComponent))
+    {
+        UEGui.Text(_fieldname ~ ": \"" ~ _v.entity.name ~ "\"");
+        return false;
+    }
+
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T == class) && is(T:UEEntity))
+    {
+        UEGui.Text(_fieldname ~ ": \"" ~ _v.name ~ "\"");
+        return false;
+    }
+
+    private static bool renderEditor(T:E[],E)(string _fieldname, const(char)* _tooltip, ref T _v)
+    {
+        UEGui.Text("no editor for array: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
+        return false;
+    }
+
+    private static bool renderEditor(T:E[K],E,K)(string _fieldname, const(char)* _tooltip, ref T _v)
+    {
+        UEGui.Text("no editor for assoc.array: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
+        return false;
+    }
+
+    private static bool renderEditor(T:bool)(string _fieldname, const(char)* _tooltip, ref T _v)
+    {
+        auto changes = UEGui.checkbox(_fieldname, _v);
+
+        if (_tooltip !is null && igIsItemHovered())
+            igSetTooltip(_tooltip);
+
+        return changes;
+    }
+
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T == float))
+    {
+        auto changes = UEGui.DragFloat(_fieldname, _v);
+        
+        if (_tooltip !is null && igIsItemHovered())
+            igSetTooltip(_tooltip);
+
+        return changes;
+    }
+
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T:int) && !is(T == enum))
+    {
+        int i = _v;
+        auto changes = UEGui.DragInt(_fieldname, i);
+        _v = i;
+     
+        if (_tooltip !is null && igIsItemHovered())
+            igSetTooltip(_tooltip);
+
+        return changes;
+    }
+
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T == enum))
+    {
+        auto changes = UEGui.EnumCombo(_fieldname, _v);
+
+        if (_tooltip !is null && igIsItemHovered())
+            igSetTooltip(_tooltip);
+
+        return changes;
+    }
+
+    private static bool renderObjectEditor(T)(T _v)
+    {
+        auto changesInBase = renderBaseClasses!T(_v);
+        auto changesInMembers = renderMembers!T(_v);
+
+        return changesInBase || changesInMembers;
+    }
         
     static class UEDefaultInspector(T) : IComponentEditor
     {
-        /+private static void renderOject(UEObject _component)
+        override bool render(UEObject _component)
         {
-            UEGui.Text("default for: " ~ T.stringof);
-        }+/
-
-        override void render(UEObject _component)
-        {
-            //renderOject(_component);
+            //pragma(msg, "\nEDITOR: "~T.stringof);
 
             auto thisT = cast(T)_component;
-            
-            import derelict.imgui.imgui;
-            import unecht.core.components.internal.gui;
-            import std.string:format;
 
-            //pragma(msg, "-------------------");
-            //pragma(msg, T.stringof);
-            //pragma(msg, typeof(T.tupleof));
-            
-            foreach(memberName; __traits(allMembers, T))
-            {
-                //pragma(msg, ">"~memberName);
-                
-                static if(__traits(compiles, mixin("T."~memberName)))
-                {
-                    enum isMemberVariable = is(typeof(() {
-                                __traits(getMember, thisT, memberName) = __traits(getMember, thisT, memberName).init;
-                            }));
-                    
-                    enum isMethod = is(typeof(() {
-                                __traits(getMember, thisT, memberName)();
-                            }));
-                    
-                    enum isNonStatic = !is(typeof(mixin("&T."~memberName)));
-
-                    static if(isNonStatic && !isMethod && isMemberVariable)
-                    {
-                        alias member = aliasHelper!(__traits(getMember, T, memberName));
-                        
-                        static if(is(typeof(member) : bool))
-                        {
-                            //pragma(msg, " -->bool");
-                            
-                            UEGui.checkbox(member.stringof, mixin("thisT."~memberName));
-                            
-                            static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
-                            {
-                                enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                if (igIsItemHovered())
-                                    igSetTooltip(txt);
-                            }
-                        }
-                        else static if(is(typeof(member) : int) && !is(typeof(member) == enum))
-                        {
-                            //pragma(msg, " -->int");
-                            
-                            UEGui.DragInt(member.stringof, mixin("thisT."~memberName));
-                            
-                            static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
-                            {
-                                enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                if (igIsItemHovered())
-                                    igSetTooltip(txt);
-                            }
-                        }
-                        else static if(is(typeof(member) == enum))
-                        {
-                            //pragma(msg, " -->enum");
-
-                            UEGui.EnumCombo(memberName, __traits(getMember, thisT, memberName));
-                        }
-                        else static if(is(typeof(member) : float))
-                        {
-                            //pragma(msg, " -->float");
-                            
-                            UEGui.DragFloat(member.stringof, mixin("thisT."~memberName));
-                            
-                            static if(hasUDA!(mixin("T."~memberName),UEInspectorTooltip))
-                            {
-                                enum txt = getUDA!(member,UEInspectorTooltip).txt;
-                                if (igIsItemHovered())
-                                    igSetTooltip(txt);
-                            }
-                        }
-                    }
-                }
-            }
+            return renderObjectEditor(thisT);    
         }
     }
 }

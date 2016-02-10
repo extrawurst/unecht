@@ -24,7 +24,7 @@ version(UEIncludeEditor)
     @EditorInspector("UEPhysicsMaterial")
     static class UEPhysicsMaterialInspector : IComponentEditor
     {
-        override void render(UEObject _component)
+        override bool render(UEObject _component)
         {
             import derelict.imgui.imgui;
             import unecht.core.components.internal.gui;
@@ -34,6 +34,9 @@ version(UEIncludeEditor)
             
             UEGui.DragFloat("friction",thisT.materialInfo.friction,0,dInfinity);
             UEGui.DragFloat("bouncyness",thisT.materialInfo.bouncyness,0,1);
+
+            //TODO: impl
+            return false;
         }
         
         mixin UERegisterInspector!UEPhysicsMaterialInspector;

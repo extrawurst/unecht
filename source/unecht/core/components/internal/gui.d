@@ -144,14 +144,14 @@ public:
         return igDragFloat3(toStringz(label), v.vector);
     }
     
-    static void DragFloat(string label, ref float v, float min=0.0f, float max=0.0f)
+    static bool DragFloat(string label, ref float v, float min=0.0f, float max=0.0f)
     {
-        igDragFloat(toStringz(label),&v,1,min,max);
+        return igDragFloat(toStringz(label),&v,1,min,max);
     }
 
-    static void DragInt(string label, ref int v, int min=0, int max=0)
+    static bool DragInt(string label, ref int v, int min=0, int max=0)
     {
-        igDragInt(toStringz(label),&v,1,min,max);
+        return igDragInt(toStringz(label),&v,1,min,max);
     }
 
     static bool InputText(int MaxLength=64)(string label, ref string v)

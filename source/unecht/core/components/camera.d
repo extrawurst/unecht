@@ -16,7 +16,7 @@ version(UEIncludeEditor)
 @EditorInspector("UECamera")
 static class UECameraInspector : IComponentEditor
 {
-    override void render(UEObject _component)
+    override bool render(UEObject _component)
     {
         auto thisT = cast(UECamera)_component;
         
@@ -34,6 +34,9 @@ static class UECameraInspector : IComponentEditor
         {
             UEGui.DragFloat("orthoSize",thisT.orthoSize,0.01f);
         }
+
+        //TODO: impl
+        return false;
     }
 
     mixin UERegisterInspector!UECameraInspector;
