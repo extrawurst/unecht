@@ -5,13 +5,16 @@ version(UEIncludeEditor):
 import unecht.core.object;
 import unecht.core.components.editor.menus:EditorMenuItem;
 
+//TODO: get rid using new editor creation
 ///
 mixin template UERegisterInspector(T)
 {
     shared static this()
     {
         import unecht.meta.uda:getUDA;
+        
         enum componentName = getUDA!(T,EditorInspector).componentName;
+
         UEComponentsManager.editors[componentName] = new T();
     }
 }
@@ -50,9 +53,10 @@ private bool hasBaseClass(in TypeInfo_Class v, in TypeInfo_Class base) pure noth
 shared static this()
 {
     import unecht.core.component;
-    auto tid = typeid(UEComponent);
-   
     import std.stdio;
+
+    auto tid = typeid(UEObject);
+
     foreach(m; ModuleInfo)
     {
         //writefln("scan mod: %s",m.name);
@@ -61,13 +65,24 @@ shared static this()
         {
             if(hasBaseClass(cla, tid))
             {
-                //writefln("component: %s",cla.name);
-                UEComponentsManager.componentNames ~= cla.name;
+                //writefln("obj: %s",cla.name);
 
-                scope comp = cast(UEComponent)cla.create();
-                if(comp)
+                scope obj = cast(UEObject)cla.create();
+                if(obj)
                 {
-                    comp.getMenuItems(UEComponentsManager.menuItems);
+                    auto editor = obj.createEditor();
+                    if(editor)
+                        UEComponentsManager.editors[obj.typename] = editor;
+                }
+
+                if(hasBaseClass(cla, typeid(UEComponent)))
+                {
+                    scope comp = cast(UEComponent)cla.create();
+                    if(comp)
+                    {
+                        UEComponentsManager.componentNames ~= cla.name;
+                        comp.getMenuItems(UEComponentsManager.menuItems);
+                    }
                 }
             }
         }       

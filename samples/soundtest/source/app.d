@@ -52,7 +52,7 @@ final class SoundSource : UEComponent
 
     void play()
     {
-        auto res = FMOD_System_PlaySound(SoundSystem.fmod,snd,null,false,&channel);
+        auto res = FMOD_System_PlaySound(SoundSystem.fmod, snd, null, false, &channel);
 
         assert(res==FMOD_RESULT.FMOD_OK);
 

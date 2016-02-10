@@ -5,6 +5,7 @@ import std.uuid;
 public import unecht.core.hideFlags;
 import unecht.core.serialization.serializer;
 import unecht.core.serialization.mixins;
+import unecht.core.componentManager:IComponentEditor;
 import unecht.meta.uda;
 
 ///
@@ -49,7 +50,10 @@ abstract class UEObject
     ///
     public @property bool hideInHirarchie() const { return _hideFlags.isSet(HideFlags.hideInHirarchie); }
 
+    ///
     version(UEIncludeEditor)public abstract @property string typename();
+    ///
+    version(UEIncludeEditor)public abstract IComponentEditor createEditor();
 
     ///
     public void serialize(ref UESerializer serializer) 

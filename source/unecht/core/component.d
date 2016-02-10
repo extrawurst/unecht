@@ -97,11 +97,36 @@ template UEObjectSerialization()
 }
 
 ///
+template UEObjectCreateEditor()
+{
+    enum UEObjectCreateEditor = q{
+
+        import unecht.core.componentManager:IComponentEditor;
+
+        version(UEIncludeEditor)
+        override IComponentEditor createEditor()
+        {
+            import unecht.core.defaultInspector;
+            
+            alias T = typeof(this);
+
+            static UEDefaultInspector!T editor;
+
+            if(editor is null)
+                editor = new UEDefaultInspector!T();
+
+            return editor;
+        }
+    };
+}
+
+///
 template UERegisterObject()
 {
     enum UERegisterObject = 
         UEObjectSerialization!() 
         ~ UEObjectCreateMenuItem!() 
+        ~ UEObjectCreateEditor!() 
         ~ q{version(UEIncludeEditor)override @property string typename() { return typeof(this).stringof; }};
 }
 

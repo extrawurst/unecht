@@ -58,7 +58,6 @@ class UETexture : UEObject
 }
 
 ///
-@UEDefaultInspector!UETexture2D
 final class UETexture2D : UETexture
 {
     import derelict.freeimage.freeimage;

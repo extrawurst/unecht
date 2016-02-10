@@ -56,5 +56,10 @@ final class UEEditorAssetInspector : UEComponent
             //TODO: support upating meta file when object was altered
             renderer.render(asset.obj);
         }
+        else
+        {
+            import unecht.core.logger;
+            log.errorf("asset editor not found: %s",asset.obj.typename);
+        }
     }
 }

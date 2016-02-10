@@ -3,7 +3,6 @@ module app;
 import unecht;
 
 ///
-@UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
 {
     mixin(UERegisterObject!());

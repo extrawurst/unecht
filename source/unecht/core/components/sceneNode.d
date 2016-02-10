@@ -8,32 +8,30 @@ import unecht.core.componentManager;
 
 //TODO: create mixin
 version(UEIncludeEditor)
+@EditorInspector("UESceneNode")
+static class UESceneNodeInspector : IComponentEditor
 {
-    @EditorInspector("UESceneNode")
-    static class UESceneNodeInspector : IComponentEditor
+    override void render(UEObject _component)
     {
-        override void render(UEObject _component)
-        {
-            auto thisT = cast(UESceneNode)_component;
-            
-            import derelict.imgui.imgui;
-            import unecht.core.components.internal.gui;
-            import std.format;
-
-            UEGui.InputVec("pos",thisT._position);
-
-            auto angles = thisT.angles;
-            if(UEGui.InputVec("angles", angles))
-                thisT.angles = angles;
-
-            UEGui.InputVec("scale",thisT._scaling);
-
-            UEGui.Text(format("to: %s",thisT.forward));
-            UEGui.Text(format("up: %s",thisT.up));
-        }
+        auto thisT = cast(UESceneNode)_component;
         
-        mixin UERegisterInspector!UESceneNodeInspector;
+        import derelict.imgui.imgui;
+        import unecht.core.components.internal.gui;
+        import std.format;
+
+        UEGui.InputVec("pos",thisT._position);
+
+        auto angles = thisT.angles;
+        if(UEGui.InputVec("angles", angles))
+            thisT.angles = angles;
+
+        UEGui.InputVec("scale",thisT._scaling);
+
+        UEGui.Text(format("to: %s",thisT.forward));
+        UEGui.Text(format("up: %s",thisT.up));
     }
+    
+    mixin UERegisterInspector!UESceneNodeInspector;
 }
 
 ///

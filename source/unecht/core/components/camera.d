@@ -41,6 +41,7 @@ static class UECameraInspector : IComponentEditor
 
 //TODO: add properties and make matrix updates implicit
 /// 
+//@CustomInspector!UECameraInspector //TODO: impl
 final class UECamera : UEComponent
 {
 	mixin(UERegisterObject!());
