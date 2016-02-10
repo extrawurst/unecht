@@ -5,7 +5,7 @@ sudo: false
 d:
   #- dmd #-2.070.0 broken due to gl3n right now
   - dmd-2.069.2
-  - dmd-2.068.2
+  #- dmd-2.068.2 broken due to dmd internal assert (crash)
   - dmd-2.067.1
   #- dmd-2.066.1
   #- dmd-2.065.0
