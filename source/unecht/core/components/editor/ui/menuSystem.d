@@ -165,5 +165,12 @@ final class UEEditorMenuBar : UEComponent
             if(igButton("step"))
                 ue.scene.step;
         }
+
+        igSameLine();
+
+        if(!ue.scene.playing)
+            UEGui.DisabledButton("stop");
+        else if(igButton("stop")) //TODO: implement
+            ue.scene.playing = false;
     }
 }

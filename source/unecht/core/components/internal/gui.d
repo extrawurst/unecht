@@ -192,6 +192,15 @@ public:
         return igButton(toStringz(txt));
     }
 
+    static bool DisabledButton(string txt)
+    {
+        igPushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 0.6f));
+        scope(exit)igPopStyleColor(1);
+        
+        Button(txt);
+        return false;
+    }
+
     static bool Selectable(string txt, bool selected)
     {
         return igSelectable(toStringz(txt), selected);
