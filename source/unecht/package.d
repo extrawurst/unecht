@@ -6,6 +6,7 @@ public import unecht.core.entity;
 public import unecht.core.scenegraph;
 //TODO: why do we have to import this here to include texture default inspector in static ctors...?!
 public import unecht.core.assets.texture;
+public import unecht.core.assetDatabase;
 public import unecht.core.component;
 public import unecht.core.components.physics;
 public import unecht.core.components.shapes;

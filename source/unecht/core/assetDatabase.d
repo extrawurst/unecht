@@ -77,6 +77,18 @@ static struct UEAssetDatabase
     }
 
     ///
+    static UEObject getAsset(string path)
+    {
+        foreach(asset; assets)
+        {
+            if(asset.path == path)
+                return asset.obj;
+        }
+
+        return null;
+    }
+
+    ///
     static void loadTextureAsset(string path)
     {
         import std.file:exists;

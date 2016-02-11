@@ -47,9 +47,6 @@ final class UEEditorAssetInspector : UEComponent
             return;
         }
 
-        import std.string:format;
-        UEGui.Text(format("%s (%s)",asset.path,asset.obj.typename));
-
         import unecht.core.componentManager;
         if(auto renderer = asset.obj.typename in UEComponentsManager.editors)
         {

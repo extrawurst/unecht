@@ -87,6 +87,8 @@ final class TestLogic : UEComponent
         auto material = newE.addComponent!UEMaterial;
         material.setProgram(UEMaterial.vs_tex,UEMaterial.fs_tex, "tex");
 
+        material.texture = cast(UETexture2D)UEAssetDatabase.getAsset("rgb.png");
+
         auto shape = newE.addComponent!UEShapeBox;
     }
 }

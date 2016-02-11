@@ -5,12 +5,13 @@ import unecht.core.object;
 import unecht.core.serialization.serializer;
 import unecht.core.defaultInspector;
 
+import derelict.opengl3.gl3;
+
 ///
 enum UETextureFiltering
 {
     point,
     linear,
-    trilinear
 }
 
 ///
@@ -21,16 +22,9 @@ enum UETextureRepeat
 }
 
 ///
-class UETexture : UEObject
+abstract class UETexture : UEObject
 {
     mixin(UERegisterObject!());
-
-    ///
-    private this(int width, int height)
-    {
-        _width = width;
-        _height = height;
-    }
 
     ///
     @property int width() const { return _width; }
@@ -45,9 +39,34 @@ class UETexture : UEObject
     @property void filter(UETextureFiltering v) { _filtering = v; }
     ///
     @property void repeat(UETextureRepeat v) { _repeat = v; }
+    ///
+    @property void* driverHandle() const { return cast(void*)_glTex; }
 
-//TODO: make privte again once defaultInspector can edit private fields
-//protected:
+    void bind()
+    {
+        glBindTexture(GL_TEXTURE_2D, _glTex);
+
+        auto glFiltering = GL_NEAREST;
+        if(_filtering == UETextureFiltering.linear)
+            glFiltering = GL_LINEAR;
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFiltering);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFiltering);
+
+        auto glClamp = GL_CLAMP_TO_EDGE;
+        if(_repeat == UETextureRepeat.repeat)
+            glClamp = GL_REPEAT;        
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+
+    void unbind()
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+protected:
     @Serialize
     UETextureFiltering _filtering;
     @Serialize
@@ -55,6 +74,8 @@ class UETexture : UEObject
 
     int _width;
     int _height;
+
+    GLuint _glTex;
 }
 
 ///
@@ -63,12 +84,6 @@ final class UETexture2D : UETexture
     import derelict.freeimage.freeimage;
 
     mixin(UERegisterObject!());
-
-    ///
-    this()
-    {
-        super(1,1);
-    }
 
     ///
     void loadFromFile(string path)
@@ -88,20 +103,16 @@ final class UETexture2D : UETexture
         scope(exit) FreeImage_Unload(pImage);
         _width = FreeImage_GetWidth(_image);
         _height = FreeImage_GetHeight(_image);
-
-        import unecht.core.logger;
-        log.infof("tex created: %sx%s",_width,_height);
-        /+
-        glGenTextures(1, &tex);
         
-        glBindTexture(GL_TEXTURE_2D, tex);
+        glGenTextures(1, &_glTex);
+        
+        glBindTexture(GL_TEXTURE_2D, _glTex);
         
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _width, _height,
             0, GL_BGRA, GL_UNSIGNED_BYTE, cast(void*)FreeImage_GetBits(pImage));
-            +/
     }
 }
-
+/+
 ///
 final class UETextureCubemap : UETexture
 {
@@ -116,3 +127,4 @@ private:
     @Serialize
     UETexture2D[6] faces;
 }
++/

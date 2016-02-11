@@ -5,6 +5,7 @@ import derelict.opengl3.gl3;
 import gl3n.linalg;
 
 import unecht.core.component;
+import unecht.core.assets.texture;
 
 import unecht.gl.shader;
 import unecht.gl.program;
@@ -56,8 +57,8 @@ static class UEMaterialInspector : IComponentEditor
         UEGui.EnumCombo("cull",thisT.cullMode);
         UEGui.Text("shader: "~thisT._shaderName);
         UEGui.Text("texture:");
-        if(thisT._tex)
-            igImage(cast(void*)thisT._tex.tex,ImVec2(TEX_SIZE,TEX_SIZE));
+        if(thisT.texture)
+            igImage(thisT.texture.driverHandle,ImVec2(TEX_SIZE,TEX_SIZE));
         else
             UEGui.Text("<none>");
 
@@ -86,8 +87,6 @@ final class UEMaterial : UEComponent
     
     static const string vs_flatcolor = cast(string)import("vs_flatcolor.glsl");
     static const string fs_flatcolor = cast(string)import("fs_flatcolor.glsl");
-    
-    static const string dummyTex = cast(string)import("rgb.png");
 
     ///
     enum CullMode
@@ -103,9 +102,9 @@ final class UEMaterial : UEComponent
     @Serialize bool depthTest = true;
     ///
     @Serialize CullMode cullMode = CullMode.cullNone;
-
     ///
-    @property void texture(GLTexture _texture) { setTexture(_texture); }
+    @Serialize UETexture2D texture;
+
     ///
     @property GLMaterialUniforms uniforms() { return GLMaterialUniforms(_program); }
     ///
@@ -116,10 +115,6 @@ final class UEMaterial : UEComponent
         super.onCreate;
 
         _program = new GLProgram();
-        
-        _tex = new GLTexture();
-        _tex.create(dummyTex);
-        _tex.pointFiltering = true;
 
         if(_vshader.length == 0 || _fshader.length == 0 || _shaderName.length == 0)
             setProgram(vs_flat,fs_flat, "flat");
@@ -132,10 +127,10 @@ final class UEMaterial : UEComponent
         super.onDestroy;
         
         if(_program) _program.destroy();
-        if(_tex) _tex.destroy();
+        if(texture) texture.destroy();
 
         _program   = null;
-        _tex       = null;
+        texture    = null;
     }
 
     ///
@@ -182,8 +177,11 @@ final class UEMaterial : UEComponent
             glDisable(GL_CULL_FACE);
         }
         
-        glActiveTexture(GL_TEXTURE0);
-        _tex.bind();
+        if(texture)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            texture.bind();
+        }
         
         _program.bind();
     }
@@ -193,8 +191,11 @@ final class UEMaterial : UEComponent
     {
         _program.unbind();
         
-        glActiveTexture(GL_TEXTURE0);
-        _tex.unbind();
+        if(texture)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            texture.unbind();
+        }
 
         if(cullMode != CullMode.cullNone)
             glDisable(GL_CULL_FACE);
@@ -202,24 +203,13 @@ final class UEMaterial : UEComponent
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 
+    ///
     void validate()
     {
         _program.validate();
     }
     
-protected:
-    
-    ///
-    void setTexture(GLTexture _texture)
-    {
-        if(_tex)
-            _tex.destroy();
-        
-        _tex = _texture;
-    }
-    
 private:
-    GLTexture _tex;
     GLProgram _program;
 
     @Serialize
