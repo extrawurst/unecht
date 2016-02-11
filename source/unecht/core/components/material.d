@@ -127,7 +127,6 @@ final class UEMaterial : UEComponent
         super.onDestroy;
         
         if(_program) _program.destroy();
-        if(texture) texture.destroy();
 
         _program   = null;
         texture    = null;

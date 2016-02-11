@@ -1,5 +1,7 @@
 ﻿module unecht.core.serialization.sceneSerialization;
 
+import std.uuid;
+
 import unecht.core.components.sceneNode;
 import unecht.core.serialization.serializer;
 
@@ -16,7 +18,7 @@ struct UESceneSerializer
     private Tag sceneNodesTag;
 
     ///
-    public void serialize(UESceneNode root)
+    public void serialize(UESceneNode root, UUID[] externals=null)
     {
         if(!sceneNodesTag)
         {
@@ -24,6 +26,9 @@ struct UESceneSerializer
             sceneNodesTag.name = "nodes";
         }
 
+        if(externals)
+            baseSerializer.externals = externals;
+        
         baseSerializer.blacklist ~= root.instanceId;
 
         foreach(rootChild; root.children)
@@ -59,7 +64,7 @@ struct UESceneSerializer
 ///
 struct UESceneDeserializer
 {
-    private UEDeserializer base;
+    UEDeserializer base;
 
     ///
     alias base this;

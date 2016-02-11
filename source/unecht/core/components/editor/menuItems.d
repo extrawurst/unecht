@@ -57,6 +57,12 @@ final class UEEditorMenus : UEComponent
                 UEEditorMenus.newScene();
                 Fiber.yield();
                 UESceneDeserializer d = UESceneDeserializer(UEEditorMenus.loadFromFile("assets/dummy.scene"));
+
+                foreach(asset; UEAssetDatabase.assets)
+                {
+                    d.addLoadedObj(asset.obj);
+                }
+
                 d.deserialize(ue.scene.root);
             });
     }
@@ -71,7 +77,7 @@ final class UEEditorMenus : UEComponent
 
                 UESceneSerializer s;
                
-                s.serialize(ue.scene.root);
+                s.serialize(ue.scene.root, UEAssetDatabase.getAllIds());
 
                 saveToFile("assets/dummy.scene", s.toString());
             });

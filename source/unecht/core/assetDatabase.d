@@ -1,5 +1,7 @@
 ﻿module unecht.core.assetDatabase;
 
+import std.uuid;
+
 import unecht.core.object;
 import unecht.core.serialization.serializer;
 
@@ -50,6 +52,16 @@ static struct UEAssetDatabase
                 parseAssetFile(relPath);
             }
         }
+    }
+
+    static UUID[] getAllIds()
+    {
+        UUID[] res;
+        res.length = assets.length;
+        foreach(i,asset; assets)
+            res[i] = asset.obj.instanceId;
+
+        return res;
     }
 
     ///

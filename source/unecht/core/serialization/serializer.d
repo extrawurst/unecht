@@ -82,6 +82,8 @@ struct UESerializer
 
     ///
     public UUID[] blacklist;
+    ///
+    public UUID[] externals;
 
     mixin generateSerializeFunc!serializeMemberWithName;
 
@@ -152,6 +154,12 @@ struct UESerializer
         return countUntil(blacklist, id) != -1;
     }
 
+    private bool isExternal(in UUID id) const
+    {
+        import std.algorithm:countUntil;
+        return countUntil(externals, id) != -1;
+    }
+
     private Tag getInstanceTag(string id)
     {
         foreach(o; content.all.tags)
@@ -177,7 +185,7 @@ struct UESerializer
 
             string instanceId = val.instanceId.toString();
 
-            if(!getInstanceTag(instanceId))
+            if(!isExternal(val.instanceId) && !getInstanceTag(instanceId))
                 val.serialize(this);
                 
             parent.add(Value(instanceId));
@@ -263,6 +271,11 @@ struct UEDeserializer
 
         content = root.all.tags["content"][0];
         assert(content !is null);
+    }
+
+    public void addLoadedObj(UEObject obj)
+    {
+        objectsLoaded ~= LoadedObject(obj, obj.instanceId.toString());
     }
 
     /// renew each id of every loaded object
