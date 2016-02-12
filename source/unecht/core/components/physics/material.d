@@ -5,6 +5,7 @@ import derelict.util.system;
 
 import unecht.core.component;
 import unecht.core.object;
+import unecht.core.defaultInspector;
 
 import gl3n.linalg;
 
@@ -12,7 +13,9 @@ import gl3n.linalg;
 ///
 struct UEPhysicsMaterialInfo
 {
+    @UEInspectorRange!float(0.0f,1.0f)
     dReal bouncyness = 0;
+    @UEInspectorRange!float(0.0f,float.infinity)
     dReal friction = dInfinity;
 
     @nogc @property bool isBouncy() const nothrow { return bouncyness > 0.01f; }

@@ -6,6 +6,12 @@ struct UEInspectorTooltip
     string txt;
 }
 
+/// UDA
+struct UEInspectorRange(T)
+{
+    T min;
+    T max;
+}
 version(UEIncludeEditor){
 
     alias aliasHelper(alias T) = T;
@@ -44,8 +50,30 @@ version(UEIncludeEditor){
                 tooltip = getUDA!(_v.tupleof[idx],UEInspectorTooltip).txt;
             }
 
-            if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx]))
-                changesInMembers = true;
+            enum hasIntRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!int);
+            enum hasFloatRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!float);
+
+            static if(hasIntRange || hasFloatRange)
+            {
+                static if(hasIntRange)
+                {
+                    enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!int).min;
+                    enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!int).max;
+                }
+                else
+                {
+                    enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!float).min;
+                    enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!float).max;   
+                }
+
+                if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx], min, max))
+                    changesInMembers = true;
+            }
+            else
+            {
+                if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx]))
+                    changesInMembers = true;
+            }
         }
 
         return changesInMembers;
@@ -101,10 +129,11 @@ version(UEIncludeEditor){
         return changes;
     }
 
-    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+    /// float
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v, float _min=float.min_normal, float _max=float.max)
         if(is(T == float))
     {
-        auto changes = UEGui.DragFloat(_fieldname, _v);
+        auto changes = UEGui.DragFloat(_fieldname, _v, _min, _max);
         
         if (_tooltip !is null && igIsItemHovered())
             igSetTooltip(_tooltip);
@@ -112,11 +141,12 @@ version(UEIncludeEditor){
         return changes;
     }
 
-    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+    /// int
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v, int _min=int.min, int _max=int.max)
         if(is(T:int) && !is(T == enum))
     {
         int i = _v;
-        auto changes = UEGui.DragInt(_fieldname, i);
+        auto changes = UEGui.DragInt(_fieldname, i, _min, _max);
         _v = i;
      
         if (_tooltip !is null && igIsItemHovered())
@@ -125,6 +155,7 @@ version(UEIncludeEditor){
         return changes;
     }
 
+    /// enum
     private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
         if(is(T == enum))
     {
@@ -136,6 +167,7 @@ version(UEIncludeEditor){
         return changes;
     }
 
+    ///
     private static bool renderObjectEditor(T)(T _v)
     {
         auto changesInBase = renderBaseClasses!T(_v);
@@ -143,9 +175,11 @@ version(UEIncludeEditor){
 
         return changesInBase || changesInMembers;
     }
-        
+       
+    /// 
     static class UEDefaultInspector(T) : IComponentEditor
     {
+        ///
         override bool render(UEObject _component)
         {
             //pragma(msg, "\nEDITOR: "~T.stringof);
