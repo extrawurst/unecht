@@ -36,7 +36,54 @@ version(UEIncludeEditor){
         }
     }
 
+    //TODO: unduplicate
+    ///
     private static bool renderMembers(T)(T _v)
+        if(is(T==class))
+    {
+        import std.traits:FieldNameTuple;
+
+        bool changesInMembers;
+        foreach(idx, name; FieldNameTuple!T) 
+        {
+            const(char)* tooltip;
+
+            static if(hasUDA!(_v.tupleof[idx],UEInspectorTooltip))
+            {
+                tooltip = getUDA!(_v.tupleof[idx],UEInspectorTooltip).txt;
+            }
+
+            enum hasIntRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!int);
+            enum hasFloatRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!float);
+
+            static if(hasIntRange || hasFloatRange)
+            {
+                static if(hasIntRange)
+                {
+                    enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!int).min;
+                    enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!int).max;
+                }
+                else
+                {
+                    enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!float).min;
+                    enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!float).max;   
+                }
+
+                if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx], min, max))
+                    changesInMembers = true;
+            }
+            else
+            {
+                if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx]))
+                    changesInMembers = true;
+            }
+        }
+
+        return changesInMembers;
+    }
+
+    private static bool renderMembers(T)(ref T _v)
+        if(is(T==struct))
     {
         import std.traits:FieldNameTuple;
 
@@ -87,19 +134,41 @@ version(UEIncludeEditor){
     }
 
     private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
-        if(is(T == struct) || (is(T == class) && !is(T:UEComponent) &&!is(T:UEEntity)))
+        if(is(T == class) && !is(T:UEComponent) && !is(T:UEEntity))
     {
         UEGui.Text("no editor for: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
         return false;
     }
 
+    /// struct
     private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
+        if(is(T == struct))
+    {
+        igPushIdPtr(cast(void*)&_v);
+        auto open = UEGui.TreeNode(_fieldname);
+
+        bool res;
+
+        if(open)
+            res = renderMembers(_v);
+
+        if(open)
+            igTreePop();
+
+        igPopId();
+
+        return res;
+    }
+
+    /// component
+    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, T _v)
         if(is(T == class) && is(T:UEComponent))
     {
         UEGui.Text(_fieldname ~ ": \"" ~ _v.entity.name ~ "\"");
         return false;
     }
 
+    /// entity
     private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
         if(is(T == class) && is(T:UEEntity))
     {
@@ -107,18 +176,22 @@ version(UEIncludeEditor){
         return false;
     }
 
+    //TODO: array editor
+    /// array
     private static bool renderEditor(T:E[],E)(string _fieldname, const(char)* _tooltip, ref T _v)
     {
         UEGui.Text("no editor for array: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
         return false;
     }
 
+    /// assoc array
     private static bool renderEditor(T:E[K],E,K)(string _fieldname, const(char)* _tooltip, ref T _v)
     {
         UEGui.Text("no editor for assoc.array: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
         return false;
     }
 
+    /// bool
     private static bool renderEditor(T:bool)(string _fieldname, const(char)* _tooltip, ref T _v)
     {
         auto changes = UEGui.checkbox(_fieldname, _v);
