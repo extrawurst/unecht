@@ -12,10 +12,8 @@ struct UEInspectorRange(T)
     T min;
     T max;
 }
-version(UEIncludeEditor){
 
-    alias aliasHelper(alias T) = T;
-    alias aliasHelper(T) = T;
+version(UEIncludeEditor){
 
     import unecht.meta.uda;
     import unecht.core.object;
@@ -133,13 +131,6 @@ version(UEIncludeEditor){
         return false;
     }
 
-    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
-        if(is(T == class) && !is(T:UEComponent) && !is(T:UEEntity))
-    {
-        UEGui.Text("no editor for: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
-        return false;
-    }
-
     /// struct
     private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
         if(is(T == struct))
@@ -160,19 +151,36 @@ version(UEIncludeEditor){
         return res;
     }
 
-    /// component
-    private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, T _v)
-        if(is(T == class) && is(T:UEComponent))
-    {
-        UEGui.Text(_fieldname ~ ": \"" ~ _v.entity.name ~ "\"");
-        return false;
-    }
-
-    /// entity
+    /// class
     private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
-        if(is(T == class) && is(T:UEEntity))
+        if(is(T == class))
     {
-        UEGui.Text(_fieldname ~ ": \"" ~ _v.name ~ "\"");
+        import unecht.core.assets.texture;
+
+        static if(is(T:UEComponent))
+        {
+            UEGui.Text(_fieldname ~ ": \"" ~ _v.entity.name ~ "\"");
+        }
+        else static if(is(T:UEEntity))
+        {
+            UEGui.Text(_fieldname ~ ": \"" ~ _v.name ~ "\"");
+        }
+        else static if(is(T:UETexture))
+        {
+            import unecht.core.components.editor.ui.referenceEditor;
+
+            UEGui.Text(_fieldname ~ ":");
+            igSameLine();
+
+            if(UEGui.Button("+"))
+                UEReferenceEditor.open(cast(UEObject*)&_v);
+
+            enum TEX_SIZE = 100;
+            if(_v !is null && _v.isValid)
+                igImage(_v.driverHandle, ImVec2(TEX_SIZE,TEX_SIZE));
+            else
+                UEGui.Text("<null>");
+        }
         return false;
     }
 

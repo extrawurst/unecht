@@ -35,41 +35,6 @@ struct GLMaterialUniforms
     }
 }
 
-version(UEIncludeEditor)
-{
-import unecht.core.componentManager;
-import unecht.core.object;
-@EditorInspector("UEMaterial")
-static class UEMaterialInspector : IComponentEditor
-{
-    override bool render(UEObject _component)
-    {
-        import derelict.imgui.imgui;
-        import unecht.core.components.internal.gui;
-        import std.format;
-
-        auto thisT = cast(UEMaterial)_component;
-
-        static immutable TEX_SIZE = 100;
-
-        igCheckbox("polygonFill",&thisT.polygonFill);
-        igCheckbox("depthTest",&thisT.depthTest);
-        UEGui.EnumCombo("cull",thisT.cullMode);
-        UEGui.Text("shader: "~thisT._shaderName);
-        UEGui.Text("texture:");
-        if(thisT.texture)
-            igImage(thisT.texture.driverHandle,ImVec2(TEX_SIZE,TEX_SIZE));
-        else
-            UEGui.Text("<none>");
-
-        //TODO: impl
-        return false;
-    }
-   
-    mixin UERegisterInspector!UEMaterialInspector;
-}
-}
-
 /// 
 final class UEMaterial : UEComponent
 {

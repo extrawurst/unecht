@@ -40,6 +40,8 @@ abstract class UETexture : UEObject
     ///
     @property void repeat(UETextureRepeat v) { _repeat = v; }
     ///
+    @property bool isValid() const { return _glTex != 0; }
+    ///
     @property void* driverHandle() const { return cast(void*)_glTex; }
 
     void bind()

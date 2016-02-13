@@ -10,6 +10,7 @@ import unecht.core.components.sceneNode;
 import unecht.core.components.editor.ui.assetView;
 import unecht.core.components.editor.ui.menuSystem;
 import unecht.core.components.editor.ui.console;
+import unecht.core.components.editor.ui.referenceEditor;
 
 import derelict.imgui.imgui;
 
@@ -21,6 +22,7 @@ final class UEEditorGUI : UEComponent
     UEEditorMenuBar menuBar;
     UEEditorAssetView assetView;
     UEEditorConsole console;
+    UEReferenceEditor referenceEditor;
 
     override void onCreate() {
         super.onCreate;
@@ -28,6 +30,7 @@ final class UEEditorGUI : UEComponent
         assetView = entity.addComponent!UEEditorAssetView;
         menuBar = entity.addComponent!UEEditorMenuBar;
         console = entity.addComponent!UEEditorConsole;
+        referenceEditor = entity.addComponent!UEReferenceEditor;
     }
 
     //TODO: #127
@@ -67,6 +70,8 @@ final class UEEditorGUI : UEComponent
 
             if(console.enabled)
                 console.render();
+
+            referenceEditor.render();
         }
     }
 
