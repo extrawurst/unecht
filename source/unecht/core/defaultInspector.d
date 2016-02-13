@@ -25,6 +25,7 @@ version(UEIncludeEditor){
 
     import derelict.imgui.imgui;
 
+    ///
     private static bool renderBaseClasses(T)(T _v)
     {
         import std.traits:BaseClassesTuple;
@@ -35,106 +36,69 @@ version(UEIncludeEditor){
         }
     }
 
-    //TODO: unduplicate
+    ///
+    enum renderMembersMethodMixinString = q{
+        import std.traits:FieldNameTuple;
+
+        enum wholeSerialize = hasUDA!(T,Serialize);
+
+        bool changesInMembers;
+        foreach(idx, name; FieldNameTuple!T) 
+        {
+            static if(wholeSerialize || hasUDA!(_v.tupleof[idx],Serialize))
+            {
+                const(char)* tooltip;
+
+                static if(hasUDA!(_v.tupleof[idx],UEInspectorTooltip))
+                {
+                    tooltip = getUDA!(_v.tupleof[idx],UEInspectorTooltip).txt;
+                }
+
+                enum hasIntRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!int);
+                enum hasFloatRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!float);
+
+                static if(hasIntRange || hasFloatRange)
+                {
+                    static if(hasIntRange)
+                    {
+                        enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!int).min;
+                        enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!int).max;
+                    }
+                    else
+                    {
+                        enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!float).min;
+                        enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!float).max;   
+                    }
+
+                    if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx], min, max))
+                        changesInMembers = true;
+                }
+                else
+                {
+                    if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx]))
+                        changesInMembers = true;
+                }
+            }
+        }
+
+        return changesInMembers;
+    };
+
     ///
     private static bool renderMembers(T)(T _v)
         if(is(T==class))
     {
-        import std.traits:FieldNameTuple;
-
-        enum wholeSerialize = hasUDA!(T,Serialize);
-
-        bool changesInMembers;
-        foreach(idx, name; FieldNameTuple!T) 
-        {
-            static if(wholeSerialize || hasUDA!(_v.tupleof[idx],Serialize))
-            {
-                const(char)* tooltip;
-
-                static if(hasUDA!(_v.tupleof[idx],UEInspectorTooltip))
-                {
-                    tooltip = getUDA!(_v.tupleof[idx],UEInspectorTooltip).txt;
-                }
-
-                enum hasIntRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!int);
-                enum hasFloatRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!float);
-
-                static if(hasIntRange || hasFloatRange)
-                {
-                    static if(hasIntRange)
-                    {
-                        enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!int).min;
-                        enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!int).max;
-                    }
-                    else
-                    {
-                        enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!float).min;
-                        enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!float).max;   
-                    }
-
-                    if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx], min, max))
-                        changesInMembers = true;
-                }
-                else
-                {
-                    if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx]))
-                        changesInMembers = true;
-                }
-            }
-        }
-
-        return changesInMembers;
+        mixin(renderMembersMethodMixinString);
     }
 
+    ///
     private static bool renderMembers(T)(ref T _v)
         if(is(T==struct))
     {
-        import std.traits:FieldNameTuple;
-
-        enum wholeSerialize = hasUDA!(T,Serialize);
-
-        bool changesInMembers;
-        foreach(idx, name; FieldNameTuple!T) 
-        {
-            static if(wholeSerialize || hasUDA!(_v.tupleof[idx],Serialize))
-            {
-                const(char)* tooltip;
-
-                static if(hasUDA!(_v.tupleof[idx],UEInspectorTooltip))
-                {
-                    tooltip = getUDA!(_v.tupleof[idx],UEInspectorTooltip).txt;
-                }
-
-                enum hasIntRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!int);
-                enum hasFloatRange = hasUDA!(_v.tupleof[idx],UEInspectorRange!float);
-
-                static if(hasIntRange || hasFloatRange)
-                {
-                    static if(hasIntRange)
-                    {
-                        enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!int).min;
-                        enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!int).max;
-                    }
-                    else
-                    {
-                        enum min = getUDA!(_v.tupleof[idx],UEInspectorRange!float).min;
-                        enum max = getUDA!(_v.tupleof[idx],UEInspectorRange!float).max;   
-                    }
-
-                    if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx], min, max))
-                        changesInMembers = true;
-                }
-                else
-                {
-                    if(renderEditor!(typeof(_v.tupleof[idx]))(name, tooltip, _v.tupleof[idx]))
-                        changesInMembers = true;
-                }
-            }
-        }
-
-        return changesInMembers;
+        mixin(renderMembersMethodMixinString);
     }
 
+    /// pointers
     private static bool renderEditor(T)(string _fieldname, const(char)* _tooltip, ref T _v)
         if(is(T : P*,P))
     {
