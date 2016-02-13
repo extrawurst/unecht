@@ -69,7 +69,7 @@ final class UEEditorMenus : UEComponent
 
                 foreach(asset; UEAssetDatabase.assets)
                 {
-                    d.addLoadedObj(asset.obj);
+                    d.addExternalObj(asset.obj);
                 }
 
                 d.deserialize(ue.scene.root);
@@ -150,7 +150,7 @@ final class UEEditorMenus : UEComponent
         UEDeserializer d = UEDeserializer(s.toString);
         foreach(asset; UEAssetDatabase.assets)
         {
-            d.addLoadedObj(asset.obj);
+            d.addExternalObj(asset.obj);
         }
 
         auto node = d.deserializeFirst!UESceneNode;

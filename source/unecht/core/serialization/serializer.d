@@ -259,6 +259,7 @@ struct UEDeserializer
 
     private Tag content;
     package Tag root;
+    public UEObject[] externalObjects;
     public LoadedObject[] objectsLoaded;
 
     mixin generateSerializeFunc!deserializeFromMemberName;
@@ -273,9 +274,9 @@ struct UEDeserializer
         assert(content !is null);
     }
 
-    public void addLoadedObj(UEObject obj)
+    public void addExternalObj(UEObject obj)
     {
-        objectsLoaded ~= LoadedObject(obj, obj.instanceId.toString());
+        externalObjects ~= obj;
     }
 
     /// renew each id of every loaded object
@@ -419,6 +420,20 @@ struct UEDeserializer
             if(o.uid == uid)
             {
                 return o.o;
+            }
+        }
+
+        return findExternalRef(uid);
+    }
+
+    ///
+    package UEObject findExternalRef(string uid)
+    {
+        foreach(o; externalObjects)
+        {
+            if(o.instanceId.toString() == uid)
+            {
+                return o;
             }
         }
 
