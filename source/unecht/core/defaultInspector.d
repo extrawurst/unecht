@@ -20,6 +20,7 @@ version(UEIncludeEditor){
     import unecht.core.entity;
     import unecht.core.component;
     import unecht.core.components.internal.gui;
+    import unecht.core.components.editor.ui.dragDropEditor;
     import unecht.core.componentManager:IComponentEditor;
 
     import derelict.imgui.imgui;
@@ -168,19 +169,26 @@ version(UEIncludeEditor){
         else static if(is(T:UETexture))
         {
             import unecht.core.components.editor.ui.referenceEditor;
+            import unecht.core.assetDatabase;
 
-            UEGui.Text(_fieldname ~ ":");
-            igSameLine();
+            auto assetName = UEAssetDatabase.getAssetName(_v);
+            if(assetName.length == 0)
+                assetName = "<null>";
 
-            if(UEGui.Button("+"))
+            if(UEGui.Button(_fieldname ~ ": " ~ assetName))
                 UEReferenceEditor.open(cast(UEObject*)&_v);
 
-            enum TEX_SIZE = 100;
+            enum TEX_SIZE = 120;
             if(_v !is null && _v.isValid)
                 igImage(_v.driverHandle, ImVec2(TEX_SIZE,TEX_SIZE));
-            else
-                UEGui.Text("<null>");
+
+            UEDragDropEditor.canDrop(typeid(UETexture));
+
+            if(auto dragSource = UEDragDropEditor.isDropped())
+                _v = cast(T)dragSource;
         }
+
+        //TODO: implement
         return false;
     }
 

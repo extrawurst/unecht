@@ -38,6 +38,12 @@ final class UEReferenceEditor : UEComponent
         {
             scope(exit){igEndPopup();}
 
+            if(UEGui.Selectable("<null>",false))
+            {
+                *object = null;
+                object = null;
+            }
+
             foreach(asset; UEAssetDatabase.assets)
             {
                 //import std.string;

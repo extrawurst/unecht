@@ -11,6 +11,7 @@ import unecht.core.components.editor.ui.assetView;
 import unecht.core.components.editor.ui.menuSystem;
 import unecht.core.components.editor.ui.console;
 import unecht.core.components.editor.ui.referenceEditor;
+import unecht.core.components.editor.ui.dragDropEditor;
 
 import derelict.imgui.imgui;
 
@@ -23,6 +24,7 @@ final class UEEditorGUI : UEComponent
     UEEditorAssetView assetView;
     UEEditorConsole console;
     UEReferenceEditor referenceEditor;
+    UEDragDropEditor dragDropEditor;
 
     override void onCreate() {
         super.onCreate;
@@ -31,6 +33,7 @@ final class UEEditorGUI : UEComponent
         menuBar = entity.addComponent!UEEditorMenuBar;
         console = entity.addComponent!UEEditorConsole;
         referenceEditor = entity.addComponent!UEReferenceEditor;
+        dragDropEditor = entity.addComponent!UEDragDropEditor;
     }
 
     //TODO: #127
@@ -72,6 +75,8 @@ final class UEEditorGUI : UEComponent
                 console.render();
 
             referenceEditor.render();
+
+            dragDropEditor.render();
         }
     }
 

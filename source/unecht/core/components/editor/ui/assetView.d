@@ -8,6 +8,7 @@ import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
 import unecht.core.components.editor.ui.assetInspector;
+import unecht.core.components.editor.ui.dragDropEditor;
 import unecht.core.assetDatabase;
 
 import derelict.imgui.imgui;
@@ -51,6 +52,8 @@ final class UEEditorAssetView : UEComponent
             {
                 inspector.asset = a;
             }
+
+            UEDragDropEditor.mayStartDrag(a.obj);
         }
 
         inspector.render(igGetWindowWidth()+1, top);
