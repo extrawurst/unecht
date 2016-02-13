@@ -231,7 +231,7 @@ final class UEEditorGUI : UEComponent
             if(!openNode)
                 igIndent();
             
-            renderInspectorSameline(c);
+            renderInspectorSameline(c,!isSceneNode);
             
             import unecht.core.componentManager;
             if(auto renderer = c.typename in UEComponentsManager.editors)
@@ -246,7 +246,7 @@ final class UEEditorGUI : UEComponent
         }
         else
         {
-            renderInspectorSameline(c);
+            renderInspectorSameline(c, !isSceneNode);
         }
         
         if(isSceneNode)
@@ -256,7 +256,7 @@ final class UEEditorGUI : UEComponent
     }
     
 	static UEComponent componentEdit;
-    private static void renderInspectorSameline(UEComponent c)
+    private static void renderInspectorSameline(UEComponent c, bool allowEdit)
     {
         auto subtext = " ";
         if(c.enabled)
@@ -266,17 +266,20 @@ final class UEEditorGUI : UEComponent
         igGetWindowContentRegionMax(&size);
         const wndWidth = cast(int)size.x;
 
-		igCalcTextSize(&size,"#");
+        igCalcTextSize(&size,"#");
         const charWidth = 2 + cast(int)size.x*2;
 
-        igSameLine(wndWidth-charWidth*2);
-        if(UEGui.SmallButton("#"))
+        if(allowEdit)
         {
-			componentEdit = c;
-            igOpenPopup("compedit");
-        }
+            igSameLine(wndWidth-charWidth*2);
+            if(UEGui.SmallButton("#"))
+            {
+    			componentEdit = c;
+                igOpenPopup("compedit");
+            }
 
-		renderComponentEdit();
+    		renderComponentEdit();
+        }
 
         igSameLine(wndWidth - charWidth);
         if(UEGui.SmallButton(subtext))
