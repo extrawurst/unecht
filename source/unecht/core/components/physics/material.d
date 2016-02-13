@@ -11,6 +11,7 @@ import gl3n.linalg;
 
 //TODO: support POD types in default inspectors automatically
 ///
+@Serialize
 struct UEPhysicsMaterialInfo
 {
     @UEInspectorRange!float(0.0f,1.0f)
