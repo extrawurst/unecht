@@ -30,6 +30,15 @@ final class UEEditorMenus : UEComponent
     {
         return EditorRootComponent.currentEntity !is null;
     }
+
+    ///
+    @MenuItem("assets/refresh")
+    private static void assetsRefresh()
+    {
+        import unecht.core.assetDatabase;
+
+        UEAssetDatabase.refresh();
+    }
     
     ///
     @MenuItem("main/new scene")

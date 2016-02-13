@@ -68,6 +68,7 @@ final class UEEditorMenuBar : UEComponent
         
         addMenuItem("main", sceneNode);
         addMenuItem("edit", sceneNode);
+        addMenuItem("assets", sceneNode);
         addMenuItem("entity", sceneNode);
         
         import unecht.core.componentManager;
