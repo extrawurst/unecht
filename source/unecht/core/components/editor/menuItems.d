@@ -144,9 +144,15 @@ final class UEEditorMenus : UEComponent
         assert(EditorRootComponent.currentEntity);
         
         UESerializer s;
+        s.externals = UEAssetDatabase.getAllIds();
         EditorRootComponent.currentEntity.sceneNode.serialize(s);
 
         UEDeserializer d = UEDeserializer(s.toString);
+        foreach(asset; UEAssetDatabase.assets)
+        {
+            d.addLoadedObj(asset.obj);
+        }
+
         auto node = d.deserializeFirst!UESceneNode;
         d.createNewIds();
 
