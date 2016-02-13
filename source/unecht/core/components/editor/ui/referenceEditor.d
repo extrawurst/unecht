@@ -57,6 +57,12 @@ final class UEReferenceEditor : UEComponent
                     //filterString.length=0;
                 }
             }
+
+            if(igButton("close"))
+            {
+                igCloseCurrentPopup();
+                object = null;
+            }
         }
     }
 }
