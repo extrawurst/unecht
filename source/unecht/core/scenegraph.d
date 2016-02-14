@@ -126,25 +126,10 @@ public:
     {
         if(_destroyedEntites.length > 0)
         {
-            //dump();
-
             foreach(toDestroy; _destroyedEntites)
                 UEEntity.destroyImmediate(toDestroy);
             
             _destroyedEntites.length = 0;
-
-            //dump();
-        }
-    }
-
-    public void dump()
-    {
-        import unecht.core.logger;
-        log.infof("\ndump root: %s",_root.children.length);
-        
-        foreach(child; _root.children)
-        {
-            log.infof(" - %s (%s)", child.entity.name, child.sceneNode.entity.instanceId);
         }
     }
 
