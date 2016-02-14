@@ -34,7 +34,8 @@ final class UEReferenceEditor : UEComponent
 
         igOpenPopup("ref");
 
-        if(igBeginPopupModal("ref"))
+        bool opened=true;
+        if(igBeginPopupModal("ref",&opened))
         {
             scope(exit){igEndPopup();}
 
@@ -57,12 +58,12 @@ final class UEReferenceEditor : UEComponent
                     //filterString.length=0;
                 }
             }
+        }
 
-            if(igButton("close"))
-            {
-                igCloseCurrentPopup();
-                object = null;
-            }
+        if(!opened)
+        {
+            object = null;
+            igCloseCurrentPopup();
         }
     }
 }
