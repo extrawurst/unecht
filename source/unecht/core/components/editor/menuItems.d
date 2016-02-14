@@ -83,12 +83,21 @@ final class UEEditorMenus : UEComponent
         UEFibers.startFiber({
                 import unecht.core.hideFlags;
                 import unecht.core.serialization.sceneSerialization;
+                import unecht.core.components.editor.ui.fileDialog;
 
                 UESceneSerializer s;
                
                 s.serialize(ue.scene.root, UEAssetDatabase.getAllIds());
 
-                saveToFile("assets/dummy.scene", s.toString());
+                UEFileDialog.open("*.scene", "scene");
+
+                while(UEFileDialog.isOpen)
+                    Fiber.yield;
+
+                if(!UEFileDialog.wasOk)
+                    return;
+
+                saveToFile(UEFileDialog.path, s.toString());
             });
     }
 
