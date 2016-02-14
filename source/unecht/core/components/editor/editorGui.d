@@ -122,14 +122,20 @@ final class UEEditorGUI : UEComponent
     ///
     private static void renderSceneNode(UESceneNode _node)
     {
-        if(_node.hideInHirarchie)
+        if(_node.hideInHirarchie && !showHiddenNodes)
             return;
         
         const canExpand = _node.children.length>0;
         
         if(canExpand)
         {
+            if(_node.hideInHirarchie)
+                igPushStyleColor(ImGuiCol_Text, ImVec4(0.9f,0.9f,0.9f,0.5f));
+
             const expanded = UEGui.TreeNode(cast(void*)(_node.entity), _node.entity.name);
+
+            if(_node.hideInHirarchie)
+                igPopStyleColor();
             
             if(igIsItemActive())
             {
@@ -151,6 +157,9 @@ final class UEEditorGUI : UEComponent
         }
         else
         {
+            if(_node.hideInHirarchie)
+                igPushStyleColor(ImGuiCol_Text, ImVec4(0.9f,0.9f,0.9f,0.5f));
+
             igBullet();
             igPushIdPtr(cast(void*)(_node.entity));
             auto isSelected = EditorRootComponent.currentEntity is _node.entity;
@@ -162,6 +171,9 @@ final class UEEditorGUI : UEComponent
                     EditorRootComponent.selectEntity(_node.entity);
             }
             igPopId();
+
+            if(_node.hideInHirarchie)
+                igPopStyleColor();
 
             if(igIsItemHovered() && igIsMouseDoubleClicked(0))
                 EditorRootComponent.lookAtNode(_node);
@@ -258,6 +270,13 @@ final class UEEditorGUI : UEComponent
             igSeparator();
         else
             igPopId();
+    }
+
+    static bool showHiddenNodes=false;
+    @MenuItem("view/show hidden nodes")
+    static private void toggleShowHiddenNodes()
+    {
+        showHiddenNodes = !showHiddenNodes;
     }
     
 	static UEComponent componentEdit;
