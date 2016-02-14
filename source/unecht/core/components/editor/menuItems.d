@@ -44,15 +44,17 @@ final class UEEditorMenus : UEComponent
     @MenuItem("main/new scene")
     private static void newScene()
     {
-        import unecht.core.hideFlags;
+        UEFibers.startFiber({
+            import unecht.core.hideFlags;
 
-        EditorRootComponent.selectEntity(null);
+            EditorRootComponent.selectEntity(null);
 
-        foreach(rootChild; ue.scene.root.children)
-        {
-            if(!rootChild.hideFlags.isSet(HideFlags.hideInHirarchie))
-                UEEntity.destroy(rootChild.entity);
-        }
+            foreach(rootChild; ue.scene.root.children)
+            {
+                if(!rootChild.hideFlags.isSet(HideFlags.hideInHirarchie))
+                    UEEntity.destroy(rootChild.entity);
+            }
+        });
     }
 
     ///
@@ -61,11 +63,25 @@ final class UEEditorMenus : UEComponent
     {
         import unecht.core.hideFlags;
         import unecht.core.serialization.sceneSerialization;
+        import unecht.core.components.editor.ui.fileDialog;
 
         UEFibers.startFiber({
+
+                UEFileDialog.open("*.scene", ".scene");
+
+                while(UEFileDialog.isOpen)
+                    Fiber.yield;
+
+                if(!UEFileDialog.wasOk)
+                    return;
+
                 UEEditorMenus.newScene();
                 Fiber.yield();
-                UESceneDeserializer d = UESceneDeserializer(UEEditorMenus.loadFromFile("assets/dummy.scene"));
+
+                import std.string;
+                assert(ue.scene.root.children.length == 3, format("rootchildren: %s",ue.scene.root.children.length));
+
+                UESceneDeserializer d = UESceneDeserializer(UEEditorMenus.loadFromFile(UEFileDialog.path));
 
                 foreach(asset; UEAssetDatabase.assets)
                 {

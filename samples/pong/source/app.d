@@ -9,33 +9,48 @@ import field;
 import derelict.imgui.imgui;
 
 ///
-@UEDefaultInspector!TestControls
 final class TestControls : UEComponent
 {
     mixin(UERegisterObject!());
 
-    static UEEntity balls;
-    static int ballCount;
-
+    @Serialize
+    UEEntity balls;
+    @Serialize
+    UEEntity paddles;
+    @Serialize
     Field field;
 
-    float lastBallCreated;
+    float lastBallCreated=0;
 
     int scoreLeft;
     int scoreRight;
 
+    @property ulong ballCount() const {return balls.sceneNode.children.length;}
+
     override void onCreate() {
         super.onCreate;
 
-        field = entity.addComponent!Field;
-
         registerEvent(UEEventType.key, &OnKeyEvent);
 
-        balls = UEEntity.create("balls");
+        if(field is null)
+            field = entity.addComponent!Field;
 
-        spawnBall();
-        spawnPaddle(false);
-        spawnPaddle(true);
+        if(balls is null)
+            balls = UEEntity.create("balls");
+
+        assert(balls);
+        assert(balls.sceneNode);
+
+        if(balls.sceneNode.children.length == 0)
+            spawnBall();
+
+        if(paddles is null)
+        {
+            paddles = UEEntity.create("paddles");
+
+            spawnPaddle(false);
+            spawnPaddle(true);
+        }
     }
 
     override void onUpdate() {
@@ -72,7 +87,6 @@ final class TestControls : UEComponent
         ballLogic.controls = this;
 
         lastBallCreated = ue.tickTime;
-        ballCount++;
     }
 
     void onBallOut(UEEntity border)
@@ -83,11 +97,11 @@ final class TestControls : UEComponent
             scoreLeft++;
     }
 
-    static void spawnPaddle(bool rightSide)
+    void spawnPaddle(bool rightSide)
     {
         float side = rightSide?1:-1;
 
-        auto newE = UEEntity.create("paddle");
+        auto newE = UEEntity.create("paddle",paddles.sceneNode);
         import std.random:uniform;
         newE.sceneNode.position = vec3(-14.5*side,1,0);
         newE.sceneNode.scaling = vec3(0.5,1,2);

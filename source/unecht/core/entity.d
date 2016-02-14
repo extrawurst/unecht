@@ -28,6 +28,8 @@ final class UEEntity : UEObject
     	///
         UESceneNode sceneNode() nothrow { return _sceneNode; } 
         ///
+        const(UESceneNode) sceneNode() const nothrow { return _sceneNode; } 
+        ///
         bool destroyed() nothrow { return _destroyed; } 
     	///
         string name() const { return _name; } 
@@ -77,6 +79,12 @@ final class UEEntity : UEObject
         }
 
         return null;
+    }
+
+    ///
+    @nogc bool hasComponent(T : UEComponent)() nothrow
+    {
+        return getComponent!T !is null;
     }
 
 	///

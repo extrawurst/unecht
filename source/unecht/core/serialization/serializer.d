@@ -389,7 +389,7 @@ struct UEDeserializer
         const uid = parent.values[0].get!string;
         assert(uid.length > 0);
 
-        auto r = findLoadedRef(uid);
+        auto r = findRef(uid);
         if(r)
         {
             val = cast(T)r;
@@ -404,10 +404,17 @@ struct UEDeserializer
             storeLoadedRef(val,uid);
 
             val.deserialize(this, uid);
-
-            static if(is(T : UEComponent))
-                val.onCreate();
         }
+    }
+
+    ///
+    package UEObject findRef(string uid)
+    {
+        auto loaded = findLoadedRef(uid);
+        if(loaded)
+            return loaded;
+
+        return findExternalRef(uid);
     }
 
     ///
@@ -423,7 +430,7 @@ struct UEDeserializer
             }
         }
 
-        return findExternalRef(uid);
+        return null;
     }
 
     ///
@@ -445,7 +452,7 @@ struct UEDeserializer
     {
         assert(v !is null);
 
-        assert(!findLoadedRef(uid));
+        assert(!findRef(uid));
 
         objectsLoaded ~= LoadedObject(v,uid);
     }

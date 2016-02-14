@@ -9,27 +9,40 @@ final class BallLogic : UEComponent
 {
     mixin(UERegisterObject!());
 
+    @Serialize
     TestControls controls;
+
+    @Serialize
+    private UEPhysicsBody _physicsBody;
+
+    private bool activated=false;
 
     override void onCreate() {
         super.onCreate;
         
-        auto shape = entity.addComponent!UEShapeSphere;
-        _physicsBody = entity.addComponent!UEPhysicsBody;
-        _physicsBody.setDamping(0);
-        entity.addComponent!UEPhysicsColliderSphere;
-        
-        auto sharedMaterial = entity.addComponent!UEMaterial;
-        sharedMaterial.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded,"shaded");
-        sharedMaterial.uniforms.setColor(vec4(1,0,0,1));
+        if(!entity.hasComponent!UEShapeSphere)
+        {
+            _physicsBody = entity.addComponent!UEPhysicsBody;
+            _physicsBody.setDamping(0);
+            entity.addComponent!UEPhysicsColliderSphere;
+            
+            auto sharedMaterial = entity.addComponent!UEMaterial;
+            sharedMaterial.setProgram(UEMaterial.vs_shaded,UEMaterial.fs_shaded,"shaded");
+            sharedMaterial.uniforms.setColor(vec4(1,0,0,1));
 
-        shape.renderer.material = sharedMaterial;
-        
-        auto material = entity.addComponent!UEPhysicsMaterial;
-        material.materialInfo.bouncyness = 1.0f;
-        material.materialInfo.friction = 0;
-        
-        reset();
+            auto shape = entity.addComponent!UEShapeSphere;
+            shape.renderer.material = sharedMaterial;
+            
+            auto material = entity.addComponent!UEPhysicsMaterial;
+            material.materialInfo.bouncyness = 1.0f;
+            material.materialInfo.friction = 0;
+        }
+    }
+
+    override void onUpdate()
+    {
+        if(!activated)
+            reset();
     }
     
     override void onCollision(UEComponent _collider) {
@@ -45,8 +58,6 @@ final class BallLogic : UEComponent
         import std.random;
         sceneNode.position = vec3(0,sceneNode.position.y,0);
         _physicsBody.setVelocity(vec3(uniform(-5,5),0,uniform(-5,5)));
+        activated = true;
     }
-    
-private:
-    UEPhysicsBody _physicsBody;
 }

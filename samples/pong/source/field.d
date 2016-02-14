@@ -11,16 +11,26 @@ final class Field : UEComponent
     static immutable z = 10;
     static immutable h = 2;
 
+    @Serialize
+    private UEEntity borderUp;
+    @Serialize
+    private UEEntity borderBotton;
+    @Serialize
     private UEEntity borderLeft;
+    @Serialize
+    private UEEntity borderRight;
     
     override void onCreate() {
         super.onCreate;
         
-
-        createBorder(false, vec3(0,h/2,-z), vec3(x,h,1));
-        createBorder(false, vec3(0,h/2,z), vec3(x,h,1));
-        createBorder(true, vec3(-x-1.1f,h/2,0), vec3(1,h,z));
-        borderLeft = createBorder(true, vec3(x+1.1f,h/2,0), vec3(1,h,z));
+        if(borderUp is null)
+            borderUp = createBorder(false, vec3(0,h/2,-z), vec3(x,h,1));
+        if(borderBotton is null)
+            borderBotton = createBorder(false, vec3(0,h/2,z), vec3(x,h,1));
+        if(borderRight is null)
+            borderRight = createBorder(true, vec3(-x-1.1f,h/2,0), vec3(1,h,z));
+        if(borderLeft is null)
+            borderLeft = createBorder(true, vec3(x+1.1f,h/2,0), vec3(1,h,z));
     }
     
     UEEntity createBorder(bool _outside, vec3 _pos, vec3 _size)

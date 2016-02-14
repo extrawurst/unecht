@@ -85,6 +85,8 @@ struct UESceneDeserializer
     {
         assert(root);
 
+        import unecht.core.logger;
+
         foreach(Tag node; sceneNodesTag.all.tags)
         {
             auto id = node.values[0].get!string;
@@ -99,16 +101,44 @@ struct UESceneDeserializer
                 assert(scenenode.parent is null);
                 scenenode.parent = root;
 
-                //import std.stdio;
-                //writefln("new node added: %s (%s,%s)",scenenode.entity.name,scenenode.parent.children.length,scenenode.children.length);
-                //writefln("->: %s parent: %s",scenenode.instanceId,scenenode.parent.instanceId);
+                /+log.logf("new node added: '%s' (%s,%s)", 
+                    scenenode.entity.name, 
+                    scenenode.parent.children.length, 
+                    scenenode.children.length);
+                log.logf("->: %s parent: %s", scenenode.instanceId, scenenode.parent.instanceId);+/
             }
             else
             {
+                //log.logf("node already created: '%s' (%s)", scenenode.entity.name, scenenode.instanceId);
+
                 assert(scenenode.parent is root || scenenode.parent is null);
                 if(scenenode.parent is null)
                     scenenode.parent = root;
             }
+        }
+
+        void recursiveCreate(UESceneNode _node)
+        {
+            foreach(child; _node.children)
+            {
+                recursiveCreate(child);
+            }
+
+            foreach(comp; _node.entity.components)
+            {
+                comp.onCreate();
+            }
+        }
+        
+        foreach(Tag node; sceneNodesTag.all.tags)
+        {
+            auto id = node.values[0].get!string;
+
+            auto scenenode = cast(UESceneNode)base.findLoadedRef(id);
+
+            assert(scenenode);
+
+            recursiveCreate(scenenode);
         }
 
         foreach(i,lo; base.objectsLoaded)
