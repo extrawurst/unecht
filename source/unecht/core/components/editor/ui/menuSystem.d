@@ -151,6 +151,7 @@ final class UEEditorMenuBar : UEComponent
     {
         import unecht;
 
+        //ImGui::ImageButton(tex_id, ImVec2(32,32), ImVec2(0,0), ImVec2(32.0f/tex_w,32/tex_h), frame_padding, ImColor(0,0,0,255))
         if(igButton("play"))
             ue.scene.playing = true;
 
