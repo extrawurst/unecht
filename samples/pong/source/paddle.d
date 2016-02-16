@@ -6,10 +6,12 @@ import unecht;
 final class PaddleLogic : UEComponent
 {
     mixin(UERegisterObject!());
-    
-    auto keyUp = UEKey.u;
-    auto keyDown = UEKey.j;
 
+    @Serialize    
+    auto keyUp = UEKey.u;
+    @Serialize
+    auto keyDown = UEKey.j;
+    @Serialize
     auto joystickId = 0;
     
     static immutable BORDER = 7.2f;
