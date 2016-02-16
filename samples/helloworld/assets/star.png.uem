@@ -1,0 +1,14 @@
+content {
+	obj id="f40ef949-0844-476f-a335-e36037b2e584" {
+		UETexture {
+			_filtering 1
+			_repeat 0
+		}
+		UEObject {
+			_instanceId "f40ef949-0844-476f-a335-e36037b2e584"
+			_hideFlags {
+				mValue 0
+			}
+		}
+	}
+}
