@@ -26,3 +26,4 @@ Game Engine Framework written in #dlang
 * openassimp library ([link](http://assimp.sourceforge.net/)) (just in a sample for now)
 * fmod library ([link](http://www.fmod.org/download/#StudioAPI)) (just in a sample for now)
 * enet library ([link](http://enet.bespin.org/)) (just in a sample for now)
+* SDLang as a serialization format (https://sdlang.org/)
