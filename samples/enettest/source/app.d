@@ -9,11 +9,11 @@ import derelict.imgui.imgui;
 alias OnDataCallback = void delegate(ubyte*,size_t);
 
 ///
-@UEDefaultInspector!TestLogic
 final class TestLogic : UEComponent
 {
     mixin(UERegisterObject!());
 
+	@Serialize
     bool isServer=false;
 
     private ENetHost* server=null;
