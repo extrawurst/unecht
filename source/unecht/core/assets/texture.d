@@ -88,13 +88,37 @@ final class UETexture2D : UETexture
     mixin(UERegisterObject!());
 
     ///
-    void loadFromFile(string path)
+    public void loadFromFile(string path)
     {
         import std.string:toStringz;
+        import std.file:exists;
+
         auto fn = toStringz(path);
+
+        assert(exists(path));
         
         FIBITMAP* bitmap = FreeImage_Load(FreeImage_GetFileType(fn, 0), fn);
         scope(exit) FreeImage_Unload(bitmap);
+
+        createRaw(bitmap);
+    }
+
+    ///
+    public void loadFromMemFile(ubyte[] mem)
+    {
+        auto memHandle = FreeImage_OpenMemory(mem.ptr, mem.length);
+        assert(memHandle);
+        scope(exit) FreeImage_CloseMemory(memHandle);
+
+        auto format = FreeImage_GetFileTypeFromMemory(memHandle, cast(int)mem.length);
+        import unecht.core.logger;
+        import std.conv;
+        log.logf("loadFromMemFile: %s",to!string(format));
+
+        FIBITMAP* bitmap = FreeImage_LoadFromMemory(format, memHandle);
+        assert(bitmap);
+        scope(exit) FreeImage_Unload(bitmap);
+
         createRaw(bitmap);
     }
 
@@ -103,8 +127,12 @@ final class UETexture2D : UETexture
         //TODO: check if bits are not 32 first
         FIBITMAP* pImage = FreeImage_ConvertTo32Bits(_image);
         scope(exit) FreeImage_Unload(pImage);
+        
         _width = FreeImage_GetWidth(_image);
         _height = FreeImage_GetHeight(_image);
+
+        assert(pImage !is null);
+        assert(FreeImage_GetBPP(pImage) == 32);
         
         glGenTextures(1, &_glTex);
         

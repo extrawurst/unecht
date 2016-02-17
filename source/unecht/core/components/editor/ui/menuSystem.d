@@ -54,6 +54,8 @@ final class UEEditorMenuItem : UEComponent
     }
 }
 
+import unecht.core.assets.texture;
+
 ///
 final class UEEditorMenuBar : UEComponent 
 {
@@ -62,9 +64,17 @@ final class UEEditorMenuBar : UEComponent
     static ImVec2 _size;
 
     static @property float height() { return _size.y; }
+
+    private static ubyte[] texImg = cast(ubyte[])import("rgb.png");
+
+    private UETexture2D tex;
     
     override void onCreate() {
         super.onCreate;
+
+        tex = new UETexture2D();
+        //tex.loadFromMemFile(texImg);
+        tex.loadFromFile("assets/arrow.png");
         
         addMenuItem("main", sceneNode);
         addMenuItem("edit", sceneNode);
@@ -130,6 +140,9 @@ final class UEEditorMenuBar : UEComponent
     //TODO: #127
     void render()
     {
+        assert(tex.isValid);
+        igImage(tex.driverHandle, ImVec2(40,40));
+
         auto menuBar = igBeginMainMenuBar();
         igGetWindowSize(&_size);
         scope(exit){if(menuBar)igEndMainMenuBar();}
@@ -151,7 +164,12 @@ final class UEEditorMenuBar : UEComponent
     {
         import unecht;
 
-        //ImGui::ImageButton(tex_id, ImVec2(32,32), ImVec2(0,0), ImVec2(32.0f/tex_w,32/tex_h), frame_padding, ImColor(0,0,0,255))
+        //TODO:
+        
+        igImageButton(tex.driverHandle, ImVec2(20,20));
+
+        igSameLine();
+
         if(igButton("play"))
             ue.scene.playing = true;
 
