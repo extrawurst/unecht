@@ -54,6 +54,8 @@ final class UEEditorMenuItem : UEComponent
     }
 }
 
+import unecht.core.assets.texture;
+
 ///
 final class UEEditorMenuBar : UEComponent 
 {
@@ -62,10 +64,17 @@ final class UEEditorMenuBar : UEComponent
     static ImVec2 _size;
 
     static @property float height() { return _size.y; }
+
+    private static ubyte[] texImg = cast(ubyte[])import("playButtons.png");
+
+    private UETexture2D tex;
     
     override void onCreate() {
         super.onCreate;
         
+        tex = new UETexture2D();
+        tex.loadFromMemFile(texImg);
+
         addMenuItem("main", sceneNode);
         addMenuItem("edit", sceneNode);
         addMenuItem("assets", sceneNode);
@@ -151,15 +160,16 @@ final class UEEditorMenuBar : UEComponent
     {
         import unecht;
 
-        //ImGui::ImageButton(tex_id, ImVec2(32,32), ImVec2(0,0), ImVec2(32.0f/tex_w,32/tex_h), frame_padding, ImColor(0,0,0,255))
-        if(igButton("play"))
+        auto buttonHeight = 22;
+
+        if(igImageButton(tex.driverHandle, ImVec2(buttonHeight,buttonHeight), ImVec2(0,0), ImVec2(0.5f,1)))
             ue.scene.playing = true;
 
         igSameLine();
         
         if(ue.scene.playing)
         {
-            if(igButton("pause"))
+            if(igImageButton(tex.driverHandle, ImVec2(buttonHeight,buttonHeight), ImVec2(0.5f,0), ImVec2(1,1)))
                 ue.scene.playing = false;
         }
         else
@@ -172,7 +182,8 @@ final class UEEditorMenuBar : UEComponent
 
         if(!ue.scene.playing)
             UEGui.DisabledButton("stop");
-        else if(igButton("stop")) //TODO: implement
+        //TODO: implement
+        else if(UEGui.Button("stop"))
             ue.scene.playing = false;
     }
 }

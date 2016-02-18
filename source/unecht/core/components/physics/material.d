@@ -7,8 +7,6 @@ import unecht.core.component;
 import unecht.core.object;
 import unecht.core.defaultInspector;
 
-import gl3n.linalg;
-
 //TODO: support POD types in default inspectors automatically
 ///
 @Serialize
