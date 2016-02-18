@@ -160,30 +160,21 @@ final class UEEditorMenuBar : UEComponent
     {
         import unecht;
 
-        auto buttonHeight = 22;
+        static buttonSize = ImVec2(22,22);
+        static texSize = ImVec2(48,16);
+        static tileSize = ImVec2(16,16);
 
-        if(igImageButton(tex.driverHandle, ImVec2(buttonHeight,buttonHeight), ImVec2(0,0), ImVec2(0.5f,1)))
+        if(UEGui.ImageAtlasButton(tex.driverHandle, buttonSize, tileSize, texSize, ImVec2(0,0), !ue.scene.playing))
             ue.scene.playing = true;
 
         igSameLine();
-        
-        if(ue.scene.playing)
-        {
-            if(igImageButton(tex.driverHandle, ImVec2(buttonHeight,buttonHeight), ImVec2(0.5f,0), ImVec2(1,1)))
-                ue.scene.playing = false;
-        }
-        else
-        {
-            if(igButton("step"))
-                ue.scene.step;
-        }
+
+        if(UEGui.ImageAtlasButton(tex.driverHandle, buttonSize, tileSize, texSize, ImVec2(1,0), !ue.scene.playing))
+            ue.scene.step();
 
         igSameLine();
 
-        if(!ue.scene.playing)
-            UEGui.DisabledButton("stop");
-        //TODO: implement
-        else if(UEGui.Button("stop"))
+        if(UEGui.ImageAtlasButton(tex.driverHandle, buttonSize, tileSize, texSize, ImVec2(2,0), ue.scene.playing))
             ue.scene.playing = false;
     }
 }

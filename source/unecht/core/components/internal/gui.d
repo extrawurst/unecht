@@ -201,6 +201,25 @@ public:
         return false;
     }
 
+    static bool ImageAtlasButton(void* texId, ImVec2 buttonSize, ImVec2 tileSize, ImVec2 texSize, ImVec2 tileIdx, bool enabled)
+    {
+        if(!enabled)
+            igPushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 0.6f));
+
+        scope(exit){if(!enabled)igPopStyleColor(1);}
+        
+        ImVec2 uvTileSize = ImVec2(1.0f/(texSize.x/tileSize.x),1.0f/(texSize.y/tileSize.y));
+        ImVec2 uv0 = ImVec2(uvTileSize.x * tileIdx.x,uvTileSize.y * tileIdx.y);
+        ImVec2 uv1 = ImVec2(uv0.x + uvTileSize.x,uv0.y + uvTileSize.y);
+
+        igPushIdInt(cast(int)texId + cast(int)(tileIdx.x*10.0f));
+        scope(exit)igPopId();
+
+        auto res = igImageButton(texId, buttonSize, uv0, uv1);
+
+        return enabled && res;
+    }
+
     static bool Selectable(string txt, bool selected)
     {
         return igSelectable(toStringz(txt), selected);
