@@ -65,7 +65,7 @@ final class UEEditorMenuBar : UEComponent
 
     static @property float height() { return _size.y; }
 
-    private static ubyte[] texImg = cast(ubyte[])import("playButtons.png");
+    private static ubyte[] texImg = cast(ubyte[])import("playbuttons.png");
 
     private UETexture2D tex;
     
