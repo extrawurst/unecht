@@ -26,17 +26,17 @@ final class PaddleLogic : UEComponent
         {
             auto shape = entity.addComponent!UEShapeBox;
             entity.addComponent!UEPhysicsColliderBox;
-
-            auto sharedMaterial = entity.getComponent!UEMaterial;
-            sharedMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat,"flat");
-            sharedMaterial.uniforms.setColor(vec4(0,1,0,1));
-         
-            import unecht.core.components.renderer;
-            entity.getComponent!(UERenderer).material = sharedMaterial;
             
             auto material = entity.addComponent!UEPhysicsMaterial;
             material.materialInfo.bouncyness = 1.0f;
             material.materialInfo.friction = 0;
+
+            auto sharedMaterial = entity.getComponent!UEMaterial;
+            sharedMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat,"flat");
+            sharedMaterial.uniforms.setColor(vec4(0,1,0,1));
+
+            import unecht.core.components.renderer;
+            entity.getComponent!(UERenderer).material = sharedMaterial;
         }
     }
     
