@@ -10,8 +10,8 @@ import derelict.opengl3.gl3;
 ///
 enum UETextureFiltering
 {
-    point,
     linear,
+    point,
 }
 
 ///
@@ -48,12 +48,7 @@ abstract class UETexture : UEObject
     {
         glBindTexture(GL_TEXTURE_2D, _glTex);
 
-        auto glFiltering = GL_NEAREST;
-        if(_filtering == UETextureFiltering.linear)
-            glFiltering = GL_LINEAR;
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFiltering);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFiltering);
+        setFilter();
 
         auto glClamp = GL_CLAMP_TO_EDGE;
         if(_repeat == UETextureRepeat.repeat)
@@ -66,6 +61,16 @@ abstract class UETexture : UEObject
     void unbind()
     {
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    protected void setFilter()
+    {
+        auto glFiltering = GL_NEAREST;
+        if(_filtering == UETextureFiltering.linear)
+            glFiltering = GL_LINEAR;
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFiltering);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFiltering);
     }
 
 protected:
@@ -93,9 +98,9 @@ final class UETexture2D : UETexture
         import std.string:toStringz;
         import std.file:exists;
 
-        auto fn = toStringz(path);
-
         assert(exists(path));
+
+        auto fn = toStringz(path);
         
         FIBITMAP* bitmap = FreeImage_Load(FreeImage_GetFileType(fn, 0), fn);
         scope(exit) FreeImage_Unload(bitmap);
@@ -127,16 +132,18 @@ final class UETexture2D : UETexture
         //TODO: check if bits are not 32 first
         FIBITMAP* pImage = FreeImage_ConvertTo32Bits(_image);
         scope(exit) FreeImage_Unload(pImage);
-        
+
         _width = FreeImage_GetWidth(_image);
         _height = FreeImage_GetHeight(_image);
 
         assert(pImage !is null);
         assert(FreeImage_GetBPP(pImage) == 32);
-        
+
         glGenTextures(1, &_glTex);
-        
+
         glBindTexture(GL_TEXTURE_2D, _glTex);
+
+        setFilter();
         
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _width, _height,
             0, GL_BGRA, GL_UNSIGNED_BYTE, cast(void*)FreeImage_GetBits(pImage));
