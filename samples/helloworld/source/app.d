@@ -11,6 +11,7 @@ final class TestLogic : UEComponent
     private UEEntity ballRoot;
 
     @UEInspectorTooltip("try me")
+    @Serialize
     bool editable;
 
     override void onCreate() {
