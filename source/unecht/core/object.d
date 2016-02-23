@@ -99,7 +99,6 @@ private:
         serializer.deserializeObjectMember!(T,M)(this, uid, m, member, customFunc);
     }
 
-
     @Serialize
     {
         @CustomSerializer("UECustomSerializeUUID")

@@ -33,13 +33,16 @@ struct UEApplication
 	UEEntity rootEntity;
     private GLFWJoysticks joysticks;
 
+    private double lastMousePosX = 0;
+    private double lastMousePosY = 0;
+
     version(UEProfiling)
     {
         DespikerSender sender;
     }
 
 	/// contains the game loop is run in main function
-	int run()
+	public int run()
 	{
         version(EnableSteam)
         {
@@ -221,7 +224,7 @@ package:
 		ev.eventType = UEEventType.key;
 		ev.keyEvent.key = cast(UEKey)key;
 		ev.keyEvent.action = UEEvent.KeyEvent.Action.Down;
-
+        
 		if(action == GLFW_RELEASE)
 			ev.keyEvent.action = UEEvent.KeyEvent.Action.Up;
 		else if(action == GLFW_REPEAT)
@@ -236,8 +239,8 @@ package:
 	{
         UEEvent ev;
         ev.eventType = UEEventType.mousePos;
-        ev.mousePosEvent.x = x;
-        ev.mousePosEvent.y = y;
+        ev.mousePosEvent.x = lastMousePosX = x;
+        ev.mousePosEvent.y = lastMousePosY = y;
 
         populateCurrentKeyMods(ev.mousePosEvent.mods);
 
@@ -251,7 +254,11 @@ package:
         ev.mouseButtonEvent.button = button;
         ev.mouseButtonEvent.action = (action == GLFW_PRESS) ? UEEvent.MouseButtonEvent.Action.down : UEEvent.MouseButtonEvent.Action.up;
 
-        ev.mouseButtonEvent.mods.setFromBitMaskGLFW(mods);
+        //TODO: click detection here instaed of in mouseControls.d
+        ev.mouseButtonEvent.pos.x = lastMousePosX;
+        ev.mouseButtonEvent.pos.y = lastMousePosY;
+
+        ev.mouseButtonEvent.pos.mods.setFromBitMaskGLFW(mods);
 
         events.trigger(ev);
 	}

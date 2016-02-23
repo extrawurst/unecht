@@ -111,15 +111,18 @@ struct UEEvent
         enum Action 
         {
             down,
-            up
+            up,
+            click
         }
 
         int button;
         Action action;
-		EventModKeys mods;
+        MousePosEvent pos;
 
         ///
         @property bool isDown() const {return action==Action.down;}
+        ///
+        @property bool isClick() const {return action==Action.click;}
     }
     MouseButtonEvent mouseButtonEvent;
 

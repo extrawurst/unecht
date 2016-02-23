@@ -181,6 +181,8 @@ final class EditorRootComponent : UEComponent {
     private static UEEditorGUI _editorGUI;
 
     ///
+    static @property UECamera camera() { return _editorCam; }
+    ///
     static @property UEEntity currentEntity() { return _currentEntity; }
     ///
     static @property bool visible() { return _editorVisible; }

@@ -25,6 +25,8 @@ version(UEIncludeEditor){
 
     import derelict.imgui.imgui;
 
+    import gl3n.linalg;
+
     ///
     private static bool renderBaseClasses(T)(T _v)
     {
@@ -40,7 +42,7 @@ version(UEIncludeEditor){
     enum renderMembersMethodMixinString = q{
         import std.traits:FieldNameTuple;
 
-        enum wholeSerialize = hasUDA!(T,Serialize);
+        enum wholeSerialize = hasUDA!(T,Serialize) || forceSerialize;
 
         bool changesInMembers;
         foreach(idx, name; FieldNameTuple!T) 
@@ -88,6 +90,7 @@ version(UEIncludeEditor){
     private static bool renderMembers(T)(T _v)
         if(is(T==class))
     {
+        enum forceSerialize = false;
         mixin(renderMembersMethodMixinString);
     }
 
@@ -95,6 +98,7 @@ version(UEIncludeEditor){
     private static bool renderMembers(T)(ref T _v)
         if(is(T==struct))
     {
+        enum forceSerialize = true;
         mixin(renderMembersMethodMixinString);
     }
 
@@ -172,6 +176,12 @@ version(UEIncludeEditor){
     {
         UEGui.Text("no editor for array: " ~ T.stringof ~ " ('" ~ _fieldname ~ "')");
         return false;
+    }
+
+    /// vec3
+    private static bool renderEditor(T:vec3)(string _fieldname, const(char)* _tooltip, ref T _v)
+    {
+        return UEGui.InputVec(_fieldname, _v);
     }
 
     /// assoc array

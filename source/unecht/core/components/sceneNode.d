@@ -29,6 +29,7 @@ static class UESceneNodeInspector : IComponentEditor
 
         UEGui.Text(format("to: %s",thisT.forward));
         UEGui.Text(format("up: %s",thisT.up));
+        UEGui.Text(format("layer: %s",thisT.entity.layer));
 
         //TODO: impl
         return false;

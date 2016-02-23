@@ -8,10 +8,16 @@ import unecht.gl.shader;
 import unecht.gl.program;
 import unecht.gl.texture;
 
+import gl3n.linalg;
+import gl3n.aabb;
+
 /// 
 final class UEMesh : UEComponent
 {
 	mixin(UERegisterObject!());
+
+    @Serialize
+    AABB aabb;
 
 	GLVertexArrayObject vertexArrayObject;
 	GLVertexBufferObject vertexBuffer;
@@ -35,5 +41,12 @@ final class UEMesh : UEComponent
         colorBuffer         = null;
         indexBuffer         = null;
         normalBuffer        = null;
+    }
+
+    public void setVertexData(vec3[] data)
+    {
+        aabb = AABB.from_points(data);
+
+        vertexBuffer = new GLVertexBufferObject(data);
     }
 }
