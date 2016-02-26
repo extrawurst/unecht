@@ -1,6 +1,6 @@
 ﻿module unecht.core.components.editor.mousePicking;
 
-//version(UEIncludeEditor):
+version(UEIncludeEditor):
 
 import unecht;
 import unecht.core.components.renderer;
