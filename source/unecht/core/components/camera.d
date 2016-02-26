@@ -72,7 +72,6 @@ final class UECamera : UEComponent
     ray screenToRay(vec2 screenPos)
     {
         import unecht;
-        import unecht.core.logger;
 
         UESize viewportSize = UESize(
             cast(int)(viewport.size.x * ue.application.mainWindow.windowSize.width),

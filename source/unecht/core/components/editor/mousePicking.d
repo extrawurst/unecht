@@ -17,9 +17,6 @@ struct MousePicking
     ///
     public static void onPick(ray _r)
     {
-        import unecht.core.logger;
-        log.logf("pick: %s",_r.direction);
-
         auto renderers = ue.scene.gatherAllComponents!UERenderer;
 
         UEEntity target;
@@ -29,16 +26,13 @@ struct MousePicking
         {
             if(r.enabled && r.sceneNode.enabled && r.sceneNode.parent.enabled && r.entity.layer != UELayer.editor)
             {
-                auto pos = r.entity.sceneNode.position;
+                auto pos = r.sceneNode.position;
                 auto box = AABB(r.mesh.aabb.min + pos, r.mesh.aabb.max + pos);
 
                 float distance;
                 if(_r.intersects(box,distance))
                 {
-                    import unecht.core.logger;
-                    log.logf("hit: %s (%s)", r.entity.name, distance);
-
-                    if(!target || (target && minDistance > distance))
+                    if(!target || minDistance > distance)
                     {
                         target = r.entity;
                         minDistance = distance;
@@ -49,8 +43,8 @@ struct MousePicking
 
         if(target)
         {
-            import unecht.core.logger;
-            log.logf("picked: %s (%s)", target.name, minDistance);
+            import unecht.core.components._editor;
+            EditorRootComponent.selectEntity(target);
         }
     }
 }

@@ -33,7 +33,6 @@ final class UEEditorMouseControls : UEComponent
     private bool moveMode;
     private vec2 lastMousePos;
     private MouseClickState mouseClickState;
-    private UEEntity camPos,mousePos;
     
     override void onCreate() {
         super.onCreate;
@@ -41,12 +40,6 @@ final class UEEditorMouseControls : UEComponent
         registerEvent(UEEventType.mouseButton, &onMouseEvent);
         registerEvent(UEEventType.mousePos, &onMouseEvent);
         registerEvent(UEEventType.mouseScroll, &onMouseEvent);
-
-        camPos = UEEntity.create("camPos");
-        camPos.addComponent!UEEditorGismo;
-
-        mousePos = UEEntity.create("mousePos");
-        mousePos.addComponent!UEEditorGismo;
     }
     
     private void onMouseEvent(UEEvent _ev)
@@ -141,10 +134,7 @@ final class UEEditorMouseControls : UEComponent
         import unecht.core.components._editor;
 
         auto ray = EditorRootComponent.camera.screenToRay(pos);
-
-        camPos.sceneNode.position = ray.origin;
-        mousePos.sceneNode.position = ray.origin+ray.direction;
-
+     
         MousePicking.onPick(ray);
     }
 }

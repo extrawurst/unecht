@@ -10,56 +10,55 @@ struct Ray(T)
     VecType  origin = VecType(0,0,0);
     VecType  direction = VecType(0,0,0);
 
-    ///
-    public @nogc bool intersects(AABBT!T aabb, ref float min)
+    /// note: fails for axis aligned rays (see: https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/)
+    public @nogc bool intersects(AABBT!T aabb, ref T distance) const
     {
+        import std.algorithm:min,max;
         import std.math:abs;
 
-        min = 0.0f; // set to -FLT_MAX to get first hit on line
-        float tmax = float.infinity;// set to max distance ray can travel (for segment)
-
-        auto p = origin.vector;
-        auto d = direction.vector;
-        alias a = aabb;
-
-        // For all three slabs
-        for (int i = 0; i < 3; i++) {
-            if (abs(d[i]) < float.epsilon) {
-                // Ray is parallel to slab. No hit if origin not within slab
-                if (p[i] < a.min.vector[i] || p[i] > a.max.vector[i]) return false;
-            } else {
-                // Compute intersection t value of ray with near and far plane of slab
-                float ood = 1.0f / d[i];
-                float t1 = (a.min.vector[i] - p[i]) * ood;
-                float t2 = (a.max.vector[i] - p[i]) * ood;
-                // Make t1 be intersection with near plane, t2 with far plane
-                if (t1 > t2) swap(t1, t2);
-                // Compute the intersection of slab intersection intervals
-                if (t1 > min) min = t1;
-                if (t2 > tmax) tmax = t2;
-                // Exit with no collision as soon as slab intersection becomes empty
-                if (min > tmax) return false;
-            }
+        T tmin = -T.infinity;
+        T tmax = T.infinity;
+        
+        if (direction.x != 0) 
+        {
+            auto t1 = (aabb.min.x - origin.x)/direction.x;
+            auto t2 = (aabb.max.x - origin.x)/direction.x;
+            
+            tmin = max(tmin, min(t1, t2));
+            tmax = min(tmax, max(t1, t2));
+        }
+        
+        if (direction.y != 0) 
+        {
+            auto t1 = (aabb.min.y - origin.y)/direction.y;
+            auto t2 = (aabb.max.y - origin.y)/direction.y;
+            
+            tmin = max(tmin, min(t1, t2));
+            tmax = min(tmax, max(t1, t2));
         }
 
-        return true;
+        if (direction.z != 0) 
+        {
+            auto t1 = (aabb.min.z - origin.z)/direction.z;
+            auto t2 = (aabb.max.z - origin.z)/direction.z;
+            
+            tmin = max(tmin, min(t1, t2));
+            tmax = min(tmax, max(t1, t2));
+        }
+
+        distance = tmin;
+        return tmax >= tmin && tmax >= 0;
     }
 
     unittest
     {
-        ray r = ray(vec3(0,0,0), vec3(1,0,0));
+        ray r = ray(vec3(0,0,0), vec3(1,0.0001,0.0001));
         float distance;
 
         assert(r.intersects(AABB(vec3(-1,-1,-1), vec3(-0.5f,-0.5f,-0.5f)), distance) == false);
+        assert(r.intersects(AABB(vec3(10,10,10), vec3(100,100,100)), distance) == false);
         assert(r.intersects(AABB(vec3(0.5f,-1,-1), vec3(1,1,1)), distance) == true);
         assert(r.intersects(AABB(vec3(1000.5f,-10,-1), vec3(1,1,1)), distance) == true);
-    }
-
-    private static void swap(T)(ref T a, ref T b)
-    {
-        auto tmp = a;
-        a = b;
-        b = tmp;
     }
 }
 
