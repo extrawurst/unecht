@@ -1,7 +1,5 @@
 ﻿module unecht.core.components.renderer;
 
-import gl3n.linalg;
-
 import unecht.core.component;
 import unecht.core.components.camera;
 import unecht.core.components.material;
@@ -9,6 +7,8 @@ import unecht.core.components.misc;
 import unecht.core.defaultInspector;
 
 import unecht.gl.program;
+
+import gl3n.linalg;
 
 /// 
 @UEDefaultInspector!UERenderer

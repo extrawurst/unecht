@@ -13,7 +13,6 @@ import unecht.gl.texture;
 import gl3n.linalg;
 
 ///
-@UEDefaultInspector!UEShapeBox
 final class UEShapeBox : UEComponent {
     
     mixin(UERegisterObject!());
@@ -27,10 +26,6 @@ final class UEShapeBox : UEComponent {
 
     override void onCreate() {
         super.onCreate;
-
-        //import std.stdio;
-        //writefln("%s.onCreate !->",typeof(this).stringof);
-        //scope(exit) writefln("%s.onCreate <-!",typeof(this).stringof);
 
         if(!renderer)
         {
@@ -74,8 +69,8 @@ final class UEShapeBox : UEComponent {
         auto dnLB = vec3(-1,-1,1);
         auto dnRB = vec3(1,-1,1);
         auto dnRF = vec3(1,-1,-1);
-        
-        mesh.vertexBuffer = new GLVertexBufferObject([
+
+        mesh.setVertexData([
                 //top
                 upLF,upLB,upRB,upRF,
                 //front
@@ -146,7 +141,6 @@ final class UEShapeBox : UEComponent {
 }
 
 ///
-@UEDefaultInspector!UEShapeSphere
 final class UEShapeSphere : UEComponent {
     
     mixin(UERegisterObject!());

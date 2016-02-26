@@ -49,7 +49,7 @@ final class UEEditorgridComponent : UEComponent {
             }
         }
 
-		mesh.vertexBuffer = new GLVertexBufferObject(vertices.data);
+		mesh.setVertexData(vertices.data);
 
         auto indices = appender!(uint[])();
         indices.reserve(cnt*cnt*4);

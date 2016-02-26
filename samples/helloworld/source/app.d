@@ -78,7 +78,7 @@ final class TestLogic : UEComponent
 
         {
             import std.random:uniform;
-            newE.sceneNode.position = vec3(uniform(0.0f,2),15,uniform(0.0f,2));
+            newE.sceneNode.position = vec3(uniform(0.0f,2),12,uniform(0.0f,2)+25);
         }
 
         newE.addComponent!UEPhysicsBody;

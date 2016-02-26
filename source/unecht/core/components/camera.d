@@ -8,6 +8,7 @@ import unecht.core.componentManager;
 import unecht.core.entity;
 
 import unecht.core.types;
+import unecht.core.math.ray;
 
 import gl3n.linalg;
 
@@ -68,11 +69,39 @@ final class UECamera : UEComponent
         UERect viewport;
     }
 
+    ray screenToRay(vec2 screenPos)
+    {
+        import unecht;
+
+        UESize viewportSize = UESize(
+            cast(int)(viewport.size.x * ue.application.mainWindow.windowSize.width),
+            cast(int)(viewport.size.y * ue.application.mainWindow.windowSize.height));
+
+        float x = (2.0f * screenPos.x) / viewportSize.width - 1.0f;
+        float y = (2.0f * screenPos.y) / viewportSize.height - 1.0f;
+
+        auto mouseClip = vec4 (x, -y, 1, 1);
+
+        auto matUnproj = matProjection.inverse();
+
+        auto mouseWorld = matUnproj * mouseClip;
+
+        mouseWorld /= (mouseWorld.w);
+
+        auto dir = mouseWorld.xyz;
+
+        dir.normalize();
+
+        dir = dir.xyz * matLook.get_rotation();
+
+        return ray(entity.sceneNode.position, dir);
+    }
+
 	void updateLook()
 	{
         auto lookat = entity.sceneNode.position + entity.sceneNode.forward;
 
-        matLook = mat4.look_at(entity.sceneNode.position,lookat,entity.sceneNode.up);
+        matLook = mat4.look_at(entity.sceneNode.position, lookat, entity.sceneNode.up);
 	}
 
 	void updateProjection()
@@ -94,8 +123,6 @@ final class UECamera : UEComponent
 	{
         import unecht;
         import derelict.opengl3.gl3;
-
-		auto renderers = ue.scene.gatherAllComponents!UERenderer;
 		
 		updateProjection();
 		updateLook();
@@ -114,6 +141,8 @@ final class UECamera : UEComponent
 			cast(int)(viewport.size.x * ue.application.mainWindow.size.width),
 			cast(int)(viewport.size.y * ue.application.mainWindow.size.height));
 		glViewport(viewport.pos.left,viewport.pos.top,viewportSize.width,viewportSize.height);
+
+        auto renderers = ue.scene.gatherAllComponents!UERenderer;
 		
 		foreach(r; renderers)
 		{
