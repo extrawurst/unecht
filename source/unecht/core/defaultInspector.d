@@ -184,6 +184,12 @@ version(UEIncludeEditor){
         return UEGui.InputVec(_fieldname, _v);
     }
 
+    /// vec3
+    private static bool renderEditor(T:vec2)(string _fieldname, const(char)* _tooltip, ref T _v)
+    {
+        return UEGui.InputVec(_fieldname, _v);
+    }
+
     /// assoc array
     private static bool renderEditor(T:E[K],E,K)(string _fieldname, const(char)* _tooltip, ref T _v)
     {

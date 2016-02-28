@@ -139,6 +139,11 @@ public:
         return res;
     }
 
+    static bool InputVec(string label, ref vec2 v)
+    {
+        return igDragFloat2(toStringz(label), v.vector);
+    }
+
     static bool InputVec(string label, ref vec3 v)
     {
         return igDragFloat3(toStringz(label), v.vector);
