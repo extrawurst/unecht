@@ -238,7 +238,7 @@ final class UEShapeSphere : UEComponent {
             idx[t++] = (height-3)*width + i;
         }
 
-        _mesh.vertexBuffer = new GLVertexBufferObject(dat);
+        _mesh.setVertexData(dat);
         _mesh.indexBuffer = new GLVertexBufferObject(idx);
         _mesh.normalBuffer = new GLVertexBufferObject(norm);
     }
