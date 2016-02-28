@@ -41,10 +41,7 @@ struct MousePicking
             }
         }
 
-        if(target)
-        {
-            import unecht.core.components._editor;
-            EditorRootComponent.selectEntity(target);
-        }
+        import unecht.core.components._editor;
+        EditorRootComponent.selectEntity(target);
     }
 }
