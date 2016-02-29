@@ -83,10 +83,25 @@ final class UEEditorMouseControls : UEComponent
         {
             auto curPos = vec2(_ev.mousePosEvent.x,_ev.mousePosEvent.y);
             auto delta = curPos - lastMousePos;
-            
+
             if(mouseDown)
             {
-                onDrag(delta,0,_ev.mousePosEvent.mods.isModShift);
+                static bool ignoreNext = false;
+
+                const isInsideOfWindow = ue.application.mainWindow.isCursorPosInside(curPos.x,curPos.y);
+
+                if(isInsideOfWindow)
+                {
+                    if(!ignoreNext)
+                        onDrag(delta,0,_ev.mousePosEvent.mods.isModShift);
+
+                    ignoreNext = false;
+                }
+                else
+                {
+                    ue.application.mainWindow.wrapAroundCursorPos(curPos.x, curPos.y);
+                    ignoreNext = true;
+                }
             }
             
             lastMousePos = curPos;

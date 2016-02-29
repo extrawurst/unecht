@@ -16,15 +16,13 @@ struct UEWindow
 	UESize size;
 	/// actual window size
 	UESize windowSize;
-	///
-	UEPos pos;
 
 package:
 	
     ///
     public @property bool isRetina() const { return size.width > windowSize.width && size.height > windowSize.height; }
 	///
-	@property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
+	public @property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
     ///
     public @property GLFWwindow* window() { return glfwWindow; }
 
@@ -72,6 +70,33 @@ package:
 		
 		return true;
 	}
+
+    ///
+    public bool isCursorPosInside(float x, float y) pure const 
+    { 
+        static immutable border = 1;
+
+        return x > border && 
+            y > border && 
+            x < windowSize.width - border && 
+            y < windowSize.height - border; 
+    }
+
+    ///
+    public void wrapAroundCursorPos(float x, float y)
+    {
+        static immutable border = 3;
+
+        auto newx = cast(int)x % (windowSize.width - border);
+        auto newy = cast(int)y % (windowSize.height - border);
+
+        if(x < border)
+            newx = windowSize.width - border + cast(int)x;
+        if(y < border)
+            newy = windowSize.height - border + cast(int)y;
+
+        glfwSetCursorPos(glfwWindow, newx, newy);
+    }
 
 	///
 	void showCursor(bool _show)
