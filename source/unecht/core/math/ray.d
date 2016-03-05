@@ -11,7 +11,7 @@ struct Ray(T)
     VecType  direction = VecType(0,0,0);
 
     /// note: fails for axis aligned rays (see: https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/)
-    public @nogc bool intersects(AABBT!T aabb, ref T distance) const
+    public @nogc pure nothrow bool intersects(AABBT!T aabb, ref T distance) const
     {
         import std.algorithm:min,max;
         import std.math:abs;
@@ -59,6 +59,14 @@ struct Ray(T)
         assert(r.intersects(AABB(vec3(10,10,10), vec3(100,100,100)), distance) == false);
         assert(r.intersects(AABB(vec3(0.5f,-1,-1), vec3(1,1,1)), distance) == true);
         assert(r.intersects(AABB(vec3(1000.5f,-10,-1), vec3(1,1,1)), distance) == true);
+    }
+
+    unittest
+    {
+        //note: exactly aligned rays do not work
+        ray r = ray(vec3(0,0,0), vec3(1,0,0));
+        float distance;
+        assert(r.intersects(AABB(vec3(10,10,10), vec3(100,100,100)), distance) == true);
     }
 }
 
