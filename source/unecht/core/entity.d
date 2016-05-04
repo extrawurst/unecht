@@ -49,7 +49,7 @@ final class UEEntity : UEObject
         import std.string:format;
         foreach(component; _components)
         {
-            enum mix = .format("component.%s(_arg);",_method);
+            enum mix = std.string.format("component.%s(_arg);",_method);
             //pragma(msg, mix);
             mixin(mix);
         }
@@ -61,7 +61,7 @@ final class UEEntity : UEObject
         import std.string:format;
         foreach(component; _components)
         {
-            enum mix = .format("component.%s();",_method);
+            enum mix = std.string.format("component.%s();",_method);
             //pragma(msg, mix);
             mixin(mix);
         }
