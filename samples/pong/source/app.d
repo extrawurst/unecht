@@ -64,7 +64,7 @@ final class TestControls : UEComponent
         igSetNextWindowPos(ImVec2((ue.application.mainWindow.size.width-labelWidth)/2));
         igSetNextWindowSize(ImVec2(labelWidth,-1),ImGuiSetCond_Once);
         igBegin("",null,ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize);
-        UEGui.Text(.format("%s - %s",scoreLeft,scoreRight));
+        UEGui.Text(std.string.format("%s - %s",scoreLeft,scoreRight));
         igEnd();
         igPopStyleColor();
     }
