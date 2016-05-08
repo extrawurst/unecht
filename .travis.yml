@@ -8,10 +8,10 @@ d:
   - dmd-2.069.2
   #- dmd-2.068.2 broken due to dmd internal assert (crash)
   - dmd-2.067.1
-  - ldc-1.0.0-alpha1
+  - ldc-1.0.0-beta1
   - ldc #-0.17.0
   - ldc-0.16.1
-  #- gdc #-4.9.3
+  - gdc #-5.2.0
 
 script:
   - dub test --compiler=$DC || exit 1
