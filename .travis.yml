@@ -12,7 +12,7 @@ d:
   #- ldc-1.0.0-beta1
   - ldc #-0.17.0
   - ldc-0.16.1
-  - gdc #-5.2.0
+  - gdc-5.2.0
 
 script:
   - dub test --compiler=$DC || exit 1
