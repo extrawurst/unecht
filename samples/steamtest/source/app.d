@@ -89,6 +89,8 @@ final class TestLogic : UEComponent
         material.setProgram(UEMaterial.vs_tex,UEMaterial.fs_tex, "tex");
 
         auto shape = newE.addComponent!UEShapeBox;
+
+        ue.application.steam.openOverlay();
     }
 }
 

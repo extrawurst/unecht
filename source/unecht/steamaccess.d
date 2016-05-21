@@ -64,11 +64,11 @@ final class SteamAccess
         log.infof("[Steam] up and running: '%s'",userName);
     }
 
-    void openOverlay(string overlay = "Friends")
+    void openOverlay(/+string overlay = "Friends"+/)
     {
         if(!initialized) return;
 
-        SteamAPI_ISteamFriends_ActivateGameOverlay(friends, "Friends" );
+        SteamAPI_ISteamFriends_ActivateGameOverlay(friends, null);
     }
 
     void triggerScreenshot()

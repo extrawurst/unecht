@@ -1,7 +1,7 @@
 {
 	"name": "steamtest",
 	"description": "",
-	"copyright": "Copyright © 2015, Stephan Dilly",
+	"copyright": "Copyright © 2016, Stephan Dilly",
 	"authors": ["Stephan Dilly"],
 	"dependencies": {
 		"unecht" : {"version": "~master", "path": "../../"},
