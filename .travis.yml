@@ -4,7 +4,8 @@ sudo: false
 
 d:
   # https://semitwist.com/travis-d-compilers
-  - dmd #-2.071.0
+  - dmd #-2.072.2
+  - dmd-2.071.2
   - dmd-2.070.2
   - dmd-2.069.2
   #- dmd-2.068.2 broken due to dmd internal assert (crash)
