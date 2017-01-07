@@ -245,9 +245,17 @@ private:
 
 	bool initGLFW()
 	{
+        import unecht.core.logger:log;
+        import std.conv:to;
+
 		glfwSetErrorCallback(&error_callback);
 
-		return glfwInit()!=0;
+        auto res = glfwInit()!=0;
+
+        log.infof("glfw ct: %s.%s.%s",GLFW_VERSION_MAJOR,GLFW_VERSION_MINOR,GLFW_VERSION_REVISION);
+        log.infof("glfw rt: %s",to!string(glfwGetVersionString()));
+
+		return res;
 	}
 
 	void startEngine()
