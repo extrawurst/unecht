@@ -3,11 +3,12 @@
 ///
 struct StaticRingBuffer(size_t size,T)
 {
+    ///
     enum StaticSize = size;
 
     alias ThisType = StaticRingBuffer!(StaticSize,T);
 
-    T[size] data;
+    private T[size] data;
     private size_t spaceUsed;
 
     ///
@@ -37,8 +38,10 @@ struct StaticRingBuffer(size_t size,T)
         return data[idx];
     }
 
+    ///
     @property size_t length() const { return spaceUsed; }
 
+    ///
     @property T* ptr() { return data.ptr; }
 }
 
