@@ -1,14 +1,19 @@
 {
 	"fileVersion": 1,
 	"versions": {
-		"libinputvisitor": "1.2.0",
-		"derelict-imgui": "0.9.1",
-		"derelict-fi": "2.0.2",
+		"derelict-fi": "2.0.3",
+		"derelict-gl3": "1.0.21",
 		"derelict-glfw3": "1.1.1",
-		"derelict-util": "2.0.4",
+		"derelict-imgui": "0.9.1",
+		"derelict-ode": {"path":"submodules/DerelictODE/"},
+		"derelict-steamworks": "0.0.5",
+		"derelict-util": "2.0.6",
 		"gl3n": "1.3.1",
-		"derelict-gl3": "1.0.18",
-		"derelict-steamworks": "0.0.4",
-		"sdlang-d": "0.9.4"
+		"libinputvisitor": "1.2.2",
+		"sdlang-d": "0.10.1",
+		"taggedalgebraic": "0.10.5",
+		"tharsis-prof": {"path":"submodules/tharsis.prof/"},
+		"tinyendian": {"path":"submodules/tinyendian"},
+		"unit-threaded": "0.6.36"
 	}
 }

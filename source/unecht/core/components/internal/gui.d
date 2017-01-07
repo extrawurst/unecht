@@ -3,7 +3,6 @@
 import std.string:toStringz;
 
 import unecht.core.component;
-import unecht.core.components.camera;
 import unecht.core.components.sceneNode;
 import unecht.core.events;
 
@@ -21,8 +20,8 @@ public:
     mixin(UERegisterObject!());
     
     override void onCreate() {
-        import unecht;
-        import unecht.core.hideFlags;
+        import unecht.ue:ue;
+        import unecht.core.hideFlags:HideFlags;
 
         sceneNode.hideFlags.set(HideFlags.hideInHirarchie);
 
@@ -30,7 +29,7 @@ public:
         registerEvent(UEEventType.key, &OnKeyInput);
         registerEvent(UEEventType.mouseScroll, &OnScrollInput);
 
-        g_window = ue.application.mainWindow.window;
+        g_window = cast(GLFWwindow*)ue.application.mainWindow.windowPtr;
 
         ImGuiIO* io = igGetIO();
 

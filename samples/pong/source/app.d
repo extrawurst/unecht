@@ -61,7 +61,7 @@ final class TestControls : UEComponent
 
         igPushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
         auto labelWidth = 100;
-        igSetNextWindowPos(ImVec2((ue.application.mainWindow.size.width-labelWidth)/2));
+        igSetNextWindowPos(ImVec2((ue.application.framebufferSize.width-labelWidth)/2));
         igSetNextWindowSize(ImVec2(labelWidth,-1),ImGuiSetCond_Once);
         igBegin("",null,ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize);
         UEGui.Text(std.string.format("%s - %s",scoreLeft,scoreRight));

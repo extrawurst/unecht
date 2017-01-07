@@ -1,4 +1,4 @@
-module unecht.glfw.application;
+module unecht.glfw.glfwapplication;
 
 import std.stdio;
 
@@ -7,28 +7,32 @@ import derelict.opengl3.gl3;
 import derelict.imgui.imgui;
 import derelict.freeimage.freeimage;
 
-import unecht.glfw.window;
+import unecht.glfw.glfwwindow;
 import unecht.glfw.joysticks;
 import unecht.core.types;
 
 public import unecht.glfw.types;
 
-import unecht;
-import unecht.core.components.camera;
-import unecht.core.components.misc;
-import unecht.core.components.internal.gui;
-import unecht.core.stdex;
+import unecht.ue,
+    unecht.core.application,
+    unecht.core.window,
+    unecht.core.entity,
+    unecht.core.components.camera,
+    unecht.core.components.misc,
+    unecht.core.components.internal.gui,
+    unecht.core.events,
+    unecht.core.stdex;
 
 version(EnableSteam) import unecht.steamaccess;
 version(UEProfiling) import unecht.core.profiler;
 
 ///
-struct UEApplication
+final class GlfwApplication : UEApplication
 {
     version(EnableSteam)
     SteamAccess steam;
 
-	UEWindow mainWindow;
+	private GlfwWindow _mainWindow;
 	UEEventsSystem events;
 	UEEntity rootEntity;
     private GLFWJoysticks joysticks;
@@ -40,6 +44,9 @@ struct UEApplication
     {
         DespikerSender sender;
     }
+
+    ///
+    public UEWindow mainWindow() nothrow { return _mainWindow; }
 
 	/// contains the game loop is run in main function
 	public int run()
@@ -65,10 +72,12 @@ struct UEApplication
 
 		scope(exit) glfwTerminate();
 
-		if(!mainWindow.create(ue.windowSettings.size,ue.windowSettings.title))
+        _mainWindow = new GlfwWindow();
+
+		if(!_mainWindow.create(ue.windowSettings.size,ue.windowSettings.title))
 			return -1;
 
-		scope(exit) mainWindow.destroy();
+		scope(exit) _mainWindow.destroy();
 			
 		DerelictGL3.reload();
 
@@ -80,11 +89,11 @@ struct UEApplication
 
         version(none)
         {
-            import core.memory;
+            import core.memory:GC;
             GC.disable();
         }
 
-		while (!mainWindow.shouldClose)
+		while (!_mainWindow.shouldClose)
 		{
             import std.datetime:StopWatch,TickDuration,AutoStart;
             auto sw = StopWatch(AutoStart.yes);
@@ -115,6 +124,7 @@ struct UEApplication
                     version(UEProfiling)
                         auto profZone = Zone(profiler, "fibers run");
                     
+                    import unecht.core.fibers:UEFibers;
                     UEFibers.runFibers();
                 }
 
@@ -159,7 +169,7 @@ struct UEApplication
                     version(UEProfiling)
                     auto profZone = Zone(profiler, "vertical sync");
 
-                    mainWindow.swapBuffers();
+                    _mainWindow.swapBuffers();
                 }
 
                 {
@@ -194,7 +204,7 @@ struct UEApplication
 	/// initiate application closing
 	void terminate()
 	{
-		mainWindow.close();
+		_mainWindow.close();
 	}
 
     ///
@@ -217,7 +227,25 @@ struct UEApplication
         }
     }
 
-package:
+    ///
+    void openSteamOverlay()
+    {
+        version(EnableSteam)
+        steam.openOverlay();
+    }
+
+    ///
+    UESize windowSize()
+    {
+        return _mainWindow.windowSize;
+    }
+    ///
+    UESize framebufferSize()
+    {
+        return _mainWindow.size;
+    }
+
+public: 
 	void glfwOnKey(int key, int scancode, int action, int mods)
 	{
 		UEEvent ev;
@@ -295,7 +323,7 @@ package:
         //import unecht.core.logger;
         //log.infof("glfwOnWndSize: %s -> %s",ue.application.mainWindow.windowSize, ev.windowSizeEvent.size);
 
-		ue.application.mainWindow.windowSize = ev.windowSizeEvent.size;
+        _mainWindow.onResize(ev.windowSizeEvent.size);
 
 		events.trigger(ev);
 	}
@@ -309,7 +337,7 @@ package:
         //import unecht.core.logger;
         //log.infof("glfwOnFramebufferSize: %s -> %s",ue.application.mainWindow.size, ev.framebufferSizeEvent.size);
 
-        ue.application.mainWindow.size = ev.framebufferSizeEvent.size;
+        _mainWindow.onFramebufferResize(ev.framebufferSizeEvent.size);
 
 		events.trigger(ev);
 	}
@@ -334,6 +362,9 @@ private:
 
 	void startEngine()
 	{
+        import unecht.core.scenegraph:UEScenegraph;
+        import unecht.core.assetDatabase:UEAssetDatabase;
+
 		events = new UEEventsSystem();
 		
 		ue.events = events;
@@ -342,7 +373,6 @@ private:
 
         joysticks.init(events);
 
-        import unecht.core.assetDatabase;
         UEAssetDatabase.refresh();
 
         insertGuiObj();
@@ -391,19 +421,19 @@ private:
     ///
     void populateCurrentKeyMods(ref EventModKeys mods)
     {
-        mods.set(glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
-            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
-            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS,
-            glfwGetKey(mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS);
+        mods.set(glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
+            glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
+            glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS,
+            glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS);
     }
 }
 
 private nothrow extern(C) void error_callback(int error, const(char)* description)
 {
 	try {
-        import unecht.core.logger;
+        import unecht.core.logger:log;
         import std.conv:to;
         log.errorf("glfw err: %s '%s'", error, to!string(description));
 	}
-	catch{}
+    catch(Throwable){}
 }

@@ -2,8 +2,6 @@
 
 version(UEIncludeEditor):
 
-import unecht;
-
 import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
@@ -13,6 +11,8 @@ import unecht.core.components.editor.ui.console;
 import unecht.core.components.editor.ui.referenceEditor;
 import unecht.core.components.editor.ui.dragDropEditor;
 import unecht.core.components.editor.ui.fileDialog;
+
+import unecht.core.components.internal.gui:UEGui;
 
 import derelict.imgui.imgui;
 
@@ -40,11 +40,13 @@ final class UEEditorGUI : UEComponent
     }
 
     //TODO: #127
-    void render() {
-        
+    void render() 
+    {
+        import unecht.ue:ue;
+
         {
             const height = igGetItemsLineHeightWithSpacing();
-            igSetNextWindowPos(ImVec2(0,ue.application.mainWindow.size.height-height),ImGuiSetCond_Always);
+            igSetNextWindowPos(ImVec2(0,ue.application.framebufferSize.height-height),ImGuiSetCond_Always);
             
             igPushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
             igBegin("editor",null,
@@ -58,6 +60,7 @@ final class UEEditorGUI : UEComponent
                 igPopStyleColor();
             }
             
+            import std.format:format;
             UEGui.Text(format("EditorMode (%s with F1) [%0.1f fps]",EditorRootComponent.visible?"hide":"show",igGetIO().Framerate));
         }
         
@@ -104,6 +107,8 @@ final class UEEditorGUI : UEComponent
     ///
     private static void renderScene()
     {
+        import unecht.ue:ue;
+
 		const top = igGetItemsLineHeightWithSpacing();
         igSetNextWindowPos(ImVec2(0,top), ImGuiSetCond_Always);
         

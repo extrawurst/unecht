@@ -4,7 +4,10 @@ import derelict.util.system;
 
 import unecht.core.components.sceneNode;
 import unecht.core.object;
-import unecht;
+import unecht.core.serialization.serializer;
+import unecht.core.stdex;
+import unecht.ue;
+import unecht.core.events;
 
 ///
 enum UELayer : uint
@@ -13,15 +16,17 @@ enum UELayer : uint
     editor,
 }
 
+///
 static immutable uint UECameraDefaultLayers = 0xffffffff ^ (1<<UELayer.editor);
 
-import unecht.core.stdex;
 static assert(false == testBit(UECameraDefaultLayers,UELayer.editor));
 static assert(true == testBit(UECameraDefaultLayers,UELayer.all));
 
 /// 
 final class UEEntity : UEObject
 {
+    import unecht.core.component:UERegisterObject,UEComponent;
+    import unecht.core.serialization.mixins:generateObjectSerializeFunc;
     mixin(UERegisterObject!());
 
     @nogc @property{
@@ -49,8 +54,7 @@ final class UEEntity : UEObject
         import std.string:format;
         foreach(component; _components)
         {
-            enum mix = std.string.format("component.%s(_arg);",_method);
-            //pragma(msg, mix);
+            enum mix = format("component.%s(_arg);",_method);
             mixin(mix);
         }
     }
@@ -61,8 +65,8 @@ final class UEEntity : UEObject
         import std.string:format;
         foreach(component; _components)
         {
-            enum mix = std.string.format("component.%s();",_method);
-            //pragma(msg, mix);
+            enum mix = format("component.%s();",_method);
+            
             mixin(mix);
         }
     }
@@ -113,11 +117,12 @@ final class UEEntity : UEObject
 	void removeComponent(UEComponent c)
 	{
 		import std.algorithm:countUntil,remove;
+
 		auto idx = _components.countUntil(c);
 		if(idx > -1)
 		{
 			c.onDestroy();
-            ue.application.events.removeComponent(c);
+            ue.events.removeComponent(c);
 			.destroy(c);
 
 			_components = _components.remove(idx);
@@ -150,6 +155,9 @@ final class UEEntity : UEObject
         assert(entity);
         entity.doDestroy();
     }
+
+    /// can go once ue is removed and we have DI
+    @property UEEvents events(){ return ue.events; }
 
 private:
 

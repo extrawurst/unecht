@@ -2,7 +2,7 @@
 
 version(UEIncludeEditor):
 
-import unecht;
+import unecht.ue;
 import unecht.core.events;
 import unecht.core.entity;
 import unecht.core.component;

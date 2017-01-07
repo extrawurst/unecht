@@ -1,30 +1,35 @@
-module unecht.glfw.window;
+module unecht.glfw.glfwwindow;
 
 import std.stdio;
 
 import derelict.glfw3.glfw3;
 
-import unecht.glfw.window;
+import unecht.ue;
 import unecht.core.types;
-
-import unecht;
+import unecht.core.window;
 
 ///
-struct UEWindow
+class GlfwWindow : UEWindow
 {
 	/// framebuffer size
 	UESize size;
 	/// actual window size
-	UESize windowSize;
+	UESize _windowSize;
 
 package:
 	
     ///
-    public @property bool isRetina() const { return size.width > windowSize.width && size.height > windowSize.height; }
+    public @property bool isRetina() const { return size.width > _windowSize.width && size.height > _windowSize.height; }
 	///
 	public @property bool shouldClose() { return glfwWindowShouldClose(glfwWindow)!=0; }
     ///
     public @property GLFWwindow* window() { return glfwWindow; }
+	///
+	public @property void* windowPtr() { return glfwWindow; }
+	///
+    public @property UESize windowSize() const { return _windowSize; }
+    ///
+    public @property UESize framebufferSize() const { return size; }
 
 	///
 	bool create(UESize _size, string _title)
@@ -53,7 +58,7 @@ package:
         size = UESize(w,h);
 
         glfwGetWindowSize(glfwWindow, &w, &h);
-        windowSize = UESize(w,h);
+        _windowSize = UESize(w,h);
 
         //TODO: support for fixed updates befor disabling vsync
 		//glfwSwapInterval(0);
@@ -78,8 +83,8 @@ package:
 
         return x > border && 
             y > border && 
-            x < windowSize.width - border && 
-            y < windowSize.height - border; 
+            x < _windowSize.width - border && 
+            y < _windowSize.height - border; 
     }
 
     ///
@@ -87,13 +92,13 @@ package:
     {
         static immutable border = 3;
 
-        auto newx = cast(int)x % (windowSize.width - border);
-        auto newy = cast(int)y % (windowSize.height - border);
+        auto newx = cast(int)x % (_windowSize.width - border);
+        auto newy = cast(int)y % (_windowSize.height - border);
 
         if(x < border)
-            newx = windowSize.width - border + cast(int)x;
+            newx = _windowSize.width - border + cast(int)x;
         if(y < border)
-            newy = windowSize.height - border + cast(int)y;
+            newy = _windowSize.height - border + cast(int)y;
 
         glfwSetCursorPos(glfwWindow, newx, newy);
     }
@@ -120,6 +125,18 @@ package:
 	void swapBuffers()
 	{
 		glfwSwapBuffers(glfwWindow);
+	}
+
+	///
+	void onResize(UESize size)
+	{
+		_windowSize = size;
+	}
+
+	///
+	void onFramebufferResize(UESize size)
+	{
+		this.size = size;
 	}
 
 private:

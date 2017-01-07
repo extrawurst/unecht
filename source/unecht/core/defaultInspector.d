@@ -138,7 +138,10 @@ version(UEIncludeEditor){
 
         static if(is(T:UEComponent))
         {
-            UEGui.Text(_fieldname ~ ": \"" ~ _v.entity.name ~ "\"");
+            if(_v.entity)
+                UEGui.Text(_fieldname ~ ": \"" ~ _v.entity.name ~ "\"");
+            else
+                UEGui.Text(_fieldname ~ ": \"<null>\"");
         }
         else static if(is(T:UEEntity))
         {

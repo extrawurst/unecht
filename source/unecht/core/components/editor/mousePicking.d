@@ -2,7 +2,8 @@
 
 version(UEIncludeEditor):
 
-import unecht;
+import unecht.ue;
+import unecht.core.entity;
 import unecht.core.components.renderer;
 import unecht.core.math.ray;
 

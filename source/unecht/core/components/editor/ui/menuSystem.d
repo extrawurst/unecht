@@ -158,7 +158,8 @@ final class UEEditorMenuBar : UEComponent
 
     private void renderControlButtons()
     {
-        import unecht;
+        import unecht.ue:ue;
+        import unecht.core.components.internal.gui:UEGui;
 
         static buttonSize = ImVec2(22,22);
         static texSize = ImVec2(48,16);

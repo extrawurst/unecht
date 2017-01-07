@@ -2,10 +2,11 @@
 
 version(UEIncludeEditor):
 
-import unecht;
-
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
+import unecht.core.fibers;
+
+import core.thread:Fiber;
 
 ///
 abstract class UEEditorCommand
@@ -18,7 +19,7 @@ abstract class UEEditorCommand
 final class UECmdDelete : UEEditorCommand
 {
 private:
-    import std.uuid;
+    import std.uuid:UUID;
     
     string itemData;
     UUID parentId;
@@ -26,6 +27,9 @@ private:
     ///
     public override void execute()
     {
+        import unecht.core.entity:UEEntity;
+        import unecht.core.serialization.serializer:UESerializer;
+
         assert(EditorRootComponent.currentEntity);
         
         UESerializer s;
@@ -43,6 +47,9 @@ private:
     ///
     public override void undo()
     {
+        import unecht.ue:ue;
+        import unecht.core.serialization.serializer:UEDeserializer;
+
         UEDeserializer d = UEDeserializer(itemData);
         auto node = d.deserializeFirst!UESceneNode;
         

@@ -145,6 +145,7 @@ final class UEEditorComponent : UEComponent {
 		{
 			if(_ev.keyEvent.key == UEKey.p)
 			{
+                import unecht.ue:ue;
 				ue.scene.playing = !ue.scene.playing;
 			}
 

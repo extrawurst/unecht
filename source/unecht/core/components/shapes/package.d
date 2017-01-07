@@ -185,7 +185,8 @@ final class UEShapeSphere : UEComponent {
     ///
     private void createSphereMesh(UEMesh _mesh, int width, int height)
     {
-        import std.math:PI,sinf,cosf;
+        import std.math:PI;
+        import std.c.math:sinf,cosf;
         
         float theta, phi;
         int t, j, ntri, nvec;

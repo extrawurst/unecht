@@ -2,8 +2,9 @@
 
 version(UEIncludeEditor):
 
-import unecht;
-
+import unecht.ue;
+import unecht.core.fibers;
+import unecht.core.entity;
 import unecht.core.component;
 import unecht.core.components._editor;
 import unecht.core.components.sceneNode;
@@ -35,7 +36,7 @@ final class UEEditorMenus : UEComponent
     @MenuItem("assets/refresh")
     private static void assetsRefresh()
     {
-        import unecht.core.assetDatabase;
+        import unecht.core.assetDatabase:UEAssetDatabase;
 
         UEAssetDatabase.refresh();
     }
@@ -63,7 +64,9 @@ final class UEEditorMenus : UEComponent
     {
         import unecht.core.hideFlags;
         import unecht.core.serialization.sceneSerialization;
-        import unecht.core.components.editor.ui.fileDialog;
+        import unecht.core.components.editor.ui.fileDialog:UEFileDialog;
+        import unecht.core.assetDatabase:UEAssetDatabase;
+        import std.string:format;
 
         UEFibers.startFiber({
 
@@ -78,7 +81,6 @@ final class UEEditorMenus : UEComponent
                 UEEditorMenus.newScene();
                 Fiber.yield();
 
-                import std.string;
                 assert(ue.scene.root.children.length == 3, format("rootchildren: %s",ue.scene.root.children.length));
 
                 UESceneDeserializer d = UESceneDeserializer(UEEditorMenus.loadFromFile(UEFileDialog.path));
@@ -100,6 +102,7 @@ final class UEEditorMenus : UEComponent
                 import unecht.core.hideFlags;
                 import unecht.core.serialization.sceneSerialization;
                 import unecht.core.components.editor.ui.fileDialog;
+                import unecht.core.assetDatabase:UEAssetDatabase;
 
                 UESceneSerializer s;
                
@@ -166,6 +169,8 @@ final class UEEditorMenus : UEComponent
     @MenuItem("entity/clone entity", &entitySelected)
     private static void cloneEntity()
     {
+        import unecht.core.assetDatabase:UEAssetDatabase;
+        
         assert(EditorRootComponent.currentEntity);
         
         UESerializer s;

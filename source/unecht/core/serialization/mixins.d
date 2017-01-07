@@ -5,7 +5,7 @@ mixin template generateObjectSerializeFunc(alias Func, SerializerType, string se
 {
     void iterateAllSerializables(T)(T v, ref SerializerType serializer)
     {
-        import unecht.meta.uda;
+        import unecht.meta.uda:getUDA,hasUDA;
         
         foreach(m; __traits(derivedMembers, T))
         {

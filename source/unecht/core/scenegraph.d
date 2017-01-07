@@ -34,6 +34,9 @@ public:
 	///
 	void update()
 	{
+        import unecht.ue:ue;
+        import unecht.core.events:UEEvent;
+
 		updateNode(_root);
 
         executeDestruction();
@@ -49,7 +52,6 @@ public:
 		}
         else
         {
-            import unecht;
             UEEvent ev;
             ev.eventType = UEEventType.updateEditMode;
             ue.events.trigger(ev);

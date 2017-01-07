@@ -8,7 +8,6 @@ import unecht.core.events:UEEventType;
 import unecht.core.entity;
 import unecht.core.components.sceneNode;
 import unecht.core.object;
-import unecht;
 
 ///
 template UEObjectCreateMenuItem()
@@ -133,9 +132,12 @@ template UERegisterObject()
 /// binding component between an GameEntity and a SceneNode
 abstract class UEComponent : UEObject
 {
+    import unecht.core.events:UEEventCallback,UEEventReceiver;
+
     mixin(UERegisterObject!());
 
 	//void OnEnable() {}
+    ///
 	void onUpdate() {}
 	//void OnDisable() {}
 	
@@ -144,7 +146,7 @@ abstract class UEComponent : UEObject
     ///
     void onDestroy() {}
     ///
-    void onCollision(UEComponent _collider) {}
+    void onCollision(UEComponent /+_collider+/) {}
 	
     @nogc final nothrow {
     	///
@@ -160,13 +162,17 @@ abstract class UEComponent : UEObject
 	/// helper
 	final void registerEvent(UEEventType _type, UEEventCallback _callback)
 	{
-		ue.events.register(UEEventReceiver(this,_type,_callback));
+		_entity.events.register(UEEventReceiver(this,_type,_callback));
 	}
 
-    ///
-    version(UEIncludeEditor)void getMenuItems(ref EditorMenuItem[] items){}
+    version(UEIncludeEditor){
+        import unecht.core.components.editor.menus:EditorMenuItem;
+        ///
+        void getMenuItems(ref EditorMenuItem[] items){}
+    }
 
 package:
+    ///
 	final void setEntity(UEEntity _entity) { this._entity = _entity; }
 
 private:

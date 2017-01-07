@@ -90,7 +90,7 @@ final class TestLogic : UEComponent
 
         auto shape = newE.addComponent!UEShapeBox;
 
-        ue.application.steam.openOverlay();
+        ue.application.openSteamOverlay();
     }
 }
 

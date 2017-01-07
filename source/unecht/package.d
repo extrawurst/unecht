@@ -1,5 +1,7 @@
 module unecht;
 
+public import unecht.ue;
+public import unecht.core.application;
 public import unecht.core.types;
 public import unecht.core.events;
 public import unecht.core.entity;
@@ -19,8 +21,6 @@ public import unecht.core.components.editor.menus;
 public import unecht.meta.uda;
 }
 
-public import unecht.glfw.application;
-
 public import gl3n.linalg;
 
 public import std.typecons:scoped,Unique;
@@ -28,26 +28,9 @@ public import std.typecons:scoped,Unique;
 ///
 class UnechtException : Exception
 {
+	///
 	this(string _str)
 	{
 		super(_str);
 	}
 }
-
-///
-alias DebugTickFunc = void function (double);
-///
-alias ActionFunc = void function ();
-
-///
-struct Unecht
-{
-	UEWindowSettings windowSettings;
-	UEScenegraph scene;
-	UEApplication application;
-	UEEvents events;
-	ActionFunc hookStartup;
-	float tickTime = 0;
-}
-
-__gshared Unecht ue;

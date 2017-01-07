@@ -71,11 +71,11 @@ final class UECamera : UEComponent
 
     ray screenToRay(vec2 screenPos)
     {
-        import unecht;
+        import unecht.ue:ue;
 
         UESize viewportSize = UESize(
-            cast(int)(viewport.size.x * ue.application.mainWindow.windowSize.width),
-            cast(int)(viewport.size.y * ue.application.mainWindow.windowSize.height));
+            cast(int)(viewport.size.x * ue.application.windowSize.width),
+            cast(int)(viewport.size.y * ue.application.windowSize.height));
 
         float x = (2.0f * screenPos.x) / viewportSize.width - 1.0f;
         float y = (2.0f * screenPos.y) / viewportSize.height - 1.0f;
@@ -108,9 +108,9 @@ final class UECamera : UEComponent
 	{
         if(!isOrthographic)
 		{
-			import unecht;
-			auto w = ue.application.mainWindow.size.width;
-			auto h = ue.application.mainWindow.size.height;
+			import unecht.ue:ue;
+			auto w = ue.application.framebufferSize.width;
+			auto h = ue.application.framebufferSize.height;
 		    matProjection = mat4.perspective(w, h, fieldOfView, clipNear, clipFar);
 		}
         else
@@ -121,7 +121,7 @@ final class UECamera : UEComponent
 
 	void render()
 	{
-        import unecht;
+        import unecht.ue:ue;
         import derelict.opengl3.gl3;
 		
 		updateProjection();
@@ -138,8 +138,8 @@ final class UECamera : UEComponent
         }
 
 		UESize viewportSize = UESize(
-			cast(int)(viewport.size.x * ue.application.mainWindow.size.width),
-			cast(int)(viewport.size.y * ue.application.mainWindow.size.height));
+			cast(int)(viewport.size.x * ue.application.framebufferSize.width),
+			cast(int)(viewport.size.y * ue.application.framebufferSize.height));
 		glViewport(viewport.pos.left,viewport.pos.top,viewportSize.width,viewportSize.height);
 
         auto renderers = ue.scene.gatherAllComponents!UERenderer;
