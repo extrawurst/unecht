@@ -27,7 +27,7 @@ public:
     this()
     {
         _root = new UESceneNode();
-        import unecht.core.hideFlags;
+        import unecht.core.hideFlags:HideFlags;
         _root.hideFlags.set(HideFlags.dontSaveInScene);
     }
 
@@ -35,7 +35,7 @@ public:
 	void update()
 	{
         import unecht.ue:ue;
-        import unecht.core.events:UEEvent;
+        import unecht.core.events:UEEvent,UEEventType;
 
 		updateNode(_root);
 

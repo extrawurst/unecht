@@ -89,8 +89,9 @@ public:
     {
         import std.algorithm:countUntil;
 
+        // make nothrow
         try return countUntil(children, node) != -1;
-        catch{}
+        catch(Throwable){}
 
         return false;
     }
@@ -129,6 +130,8 @@ private:
     ///
     private void setAngles(in vec3 v)
     {
+        import std.math:PI;
+
         _angles = v;
         
         auto anglesInRad = v * (PI/180.0f);

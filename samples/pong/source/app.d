@@ -54,6 +54,8 @@ final class TestControls : UEComponent
     }
 
     override void onUpdate() {
+        import std.format:format;
+        
         super.onUpdate;
 
         if(ue.tickTime - lastBallCreated > ballCount*2)
@@ -64,7 +66,7 @@ final class TestControls : UEComponent
         igSetNextWindowPos(ImVec2((ue.application.framebufferSize.width-labelWidth)/2));
         igSetNextWindowSize(ImVec2(labelWidth,-1),ImGuiSetCond_Once);
         igBegin("",null,ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize);
-        UEGui.Text(std.string.format("%s - %s",scoreLeft,scoreRight));
+        UEGui.Text(format("%s - %s",scoreLeft,scoreRight));
         igEnd();
         igPopStyleColor();
     }

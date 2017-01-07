@@ -1,27 +1,33 @@
 module unecht;
 
-public import unecht.ue;
-public import unecht.core.application;
-public import unecht.core.types;
-public import unecht.core.events;
-public import unecht.core.entity;
-public import unecht.core.scenegraph;
-//TODO: why do we have to import this here to include texture default inspector in static ctors...?!
-public import unecht.core.assets.texture;
-public import unecht.core.assetDatabase;
-public import unecht.core.component;
-public import unecht.core.components.physics;
-public import unecht.core.components.shapes;
-public import unecht.core.components.material;
-public import unecht.core.components.internal.gui;
-public import unecht.core.defaultInspector;
-public import unecht.core.fibers;
+public import 
+	unecht.ue,
+	unecht.core.events,
+	unecht.core.application,
+	unecht.core.types,
+	unecht.core.events,
+	unecht.core.entity,
+	unecht.core.scenegraph,
+	//TODO: why do we have to import this here to include texture default inspector in static ctors...?!
+	unecht.core.assets.texture,
+	unecht.core.assetDatabase,
+	unecht.core.component,
+	unecht.core.components.physics,
+	unecht.core.components.shapes,
+	unecht.core.components.material,
+	unecht.core.components.internal.gui,
+	unecht.core.defaultInspector,
+	unecht.core.fibers;
+
 version(UEIncludeEditor){
-public import unecht.core.components.editor.menus;
-public import unecht.meta.uda;
+public import 
+	unecht.core.components.editor.menus,
+	unecht.meta.uda;
 }
 
-public import gl3n.linalg;
+public import 
+	gl3n.linalg,
+	gl3n.math;
 
 public import std.typecons:scoped,Unique;
 

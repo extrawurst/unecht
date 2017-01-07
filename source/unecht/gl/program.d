@@ -5,7 +5,6 @@ import gl3n.linalg;
 import derelict.opengl3.gl3;
 
 import unecht.meta.misc;
-
 import unecht.gl.shader;
 
 ///
@@ -69,7 +68,8 @@ final class GLProgram
     
     private GLint addUniform(string _name)
     {
-        import unecht.core.logger;
+        import unecht.core.logger:log;
+        import unecht.gl.vertexBufferObject:checkGLError;
         import std.string:toStringz;
         
         auto loc = glGetUniformLocation(program, toStringz(_name));

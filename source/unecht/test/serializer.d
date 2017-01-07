@@ -79,8 +79,11 @@ class Comp2: BaseComp
 
 unittest
 {
-    import std.stdio;
-    import unecht.core.components.sceneNode;
+    import unecht.core.components.sceneNode:UESceneNode;
+    import std.file:write;
+    import std.conv:to;
+    import std.format:format;
+    import std.math:isNaN,isInfinity;
     
     UESceneNode n = new UESceneNode;
     n.hideFlags.set(HideFlags.dontSaveInScene);
@@ -116,8 +119,7 @@ unittest
     c.serialize(s);
     
     auto serializeString = s.toString();
-    
-    import std.file:write;
+
     write("serializationTest.txt", serializeString);
     
     UEDeserializer d = UEDeserializer(serializeString);

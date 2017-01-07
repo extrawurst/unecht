@@ -148,48 +148,48 @@ private nothrow extern(C)
 	void character_callback(GLFWwindow* window, uint codepoint)
 	{
 		try ue.application.glfwOnChar(codepoint);
-		catch{}
+		catch(Throwable){}
 	}
 
 	void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		try ue.application.glfwOnMouseMove(xpos, ypos);
-		catch{}
+		catch(Throwable){}
 	}
 
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	{
 		try ue.application.glfwOnMouseButton(button, action, mods);
-		catch{}
+		catch(Throwable){}
 	}
 
     void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     {
         try ue.application.glfwOnMouseScroll(xoffset, yoffset);
-        catch{}
+        catch(Throwable){}
     }
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		try ue.application.glfwOnKey(key,scancode,action,mods);
-		catch{}
+		catch(Throwable){}
 	}
 
 	void wnd_size_callback(GLFWwindow* window, int width, int height) nothrow
 	{
 		try ue.application.glfwOnWndSize(width,height);
-		catch{}
+		catch(Throwable){}
 	}
 
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
 		try ue.application.glfwOnFramebufferSize(width,height);
-		catch{}
+		catch(Throwable){}
 	}
 
 	void window_focus_callback(GLFWwindow* window, int gainedFocus)
 	{
 		try ue.application.glfwOnWindowFocus(gainedFocus!=0);
-		catch{}
+		catch(Throwable){}
 	}
 }

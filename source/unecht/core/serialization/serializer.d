@@ -172,7 +172,8 @@ struct UESerializer
         return null;
     }
 
-    private void serializeMember(T)(T val, Tag parent)
+    ///
+    public void serializeMember(T)(T val, Tag parent)
         if(is(T : UEObject))
     {
         if(val !is null)
@@ -193,13 +194,15 @@ struct UESerializer
         }
     }
 
-    private static void serializeMember(T)(in ref T val, Tag parent)
+    ///
+    public static void serializeMember(T)(in ref T val, Tag parent)
         if(is(T == enum))
     {
         parent.add(Value(cast(int)val));
     }
 
-    private void serializeMember(T)(T val, Tag parent)
+    ///
+    public void serializeMember(T)(T val, Tag parent)
         if(__traits(isStaticArray, T))
     {
         foreach(v; val)
@@ -209,7 +212,8 @@ struct UESerializer
         }
     }
 
-    private void serializeMember(T)(T[] val, Tag parent)
+    ///
+    public void serializeMember(T)(T[] val, Tag parent)
         if( (isSerializerBaseType!T && !is(T : char)) ||
             (is(T:UEComponent) || is(T:UEEntity)))
     {
@@ -220,13 +224,15 @@ struct UESerializer
         }
     }
 
-    private void serializeMember(T)(T v, Tag parent)
+    ///
+    public void serializeMember(T)(T v, Tag parent)
         if(is(T == struct))
     {
         iterateAllSerializables!(T)(v, parent);
     }
 
-    private static void serializeMember(T)(T val, Tag parent)
+    ///
+    public static void serializeMember(T)(T val, Tag parent)
         if( isSerializerBaseType!T && !is(T == enum) && !__traits(isStaticArray,T))
     {
         static if(isExactSerializerBaseType!T)
@@ -274,6 +280,7 @@ struct UEDeserializer
         assert(content !is null);
     }
 
+    ///
     public void addExternalObj(UEObject obj)
     {
         externalObjects ~= obj;
@@ -378,7 +385,8 @@ struct UEDeserializer
         deserializeMember(v, memberTag);
     }
     
-    private void deserializeMember(T)(ref T val, Tag parent)
+    ///
+    public void deserializeMember(T)(ref T val, Tag parent)
         if(is(T : UEObject))
     {
         if(parent.values.length == 0)
@@ -457,13 +465,15 @@ struct UEDeserializer
         objectsLoaded ~= LoadedObject(v,uid);
     }
     
-    private static void deserializeMember(T)(ref T val, Tag parent)
+    ///
+    public static void deserializeMember(T)(ref T val, Tag parent)
         if(is(T == enum))
     {
         val = cast(T)parent.values[0].get!int;
     }
 
-    private void deserializeMember(T)(ref T val, Tag parent)
+    ///
+    public void deserializeMember(T)(ref T val, Tag parent)
         if(__traits(isStaticArray,T))
     {
         assert(parent.all.tags.length == T.length);
@@ -474,7 +484,8 @@ struct UEDeserializer
         }
     }
 
-    private void deserializeMember(T)(ref T[] val, Tag parent)
+    ///
+    public void deserializeMember(T)(ref T[] val, Tag parent)
         if((isSerializerBaseType!T && !is(T : char)) ||
             (is(T:UEComponent) || is(T:UEEntity) ))
     {
@@ -486,13 +497,15 @@ struct UEDeserializer
         }
     }
 
-    private void deserializeMember(T)(ref T v, Tag parent)
+    ///
+    public void deserializeMember(T)(ref T v, Tag parent)
         if(is(T == struct))
     {
         iterateAllSerializables(v, parent);
     }
 
-    private static void deserializeMember(T)(ref T val, Tag parent)
+    ///
+    public static void deserializeMember(T)(ref T val, Tag parent)
         if( isSerializerBaseType!T && !is(T == enum) && !__traits(isStaticArray,T))
     {
         if(parent.values.length > 0)

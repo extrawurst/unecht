@@ -1,0 +1,5 @@
+name "steamtest"
+authors "Stephan Dilly"
+copyright "Copyright © 2016, Stephan Dilly"
+dependency "unecht" path="../../"
+versions "UEIncludeEditor" "UEProfiling" "EnableSteam"

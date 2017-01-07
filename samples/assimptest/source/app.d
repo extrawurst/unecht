@@ -17,6 +17,8 @@ final class TestLogic : UEComponent
     mixin(UERegisterObject!());
 
     override void onCreate() {
+        import std.conv:to;
+        
         super.onCreate;
 
         registerEvent(UEEventType.key, &OnKeyEvent);

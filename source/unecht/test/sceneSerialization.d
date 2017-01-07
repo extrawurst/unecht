@@ -6,6 +6,8 @@ import unecht;
 import unecht.core.components.sceneNode;
 import unecht.core.serialization.sceneSerialization;
 
+import std.format;
+
 unittest
 {
     //import std.stdio;

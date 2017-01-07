@@ -87,8 +87,9 @@ final class SteamAccess
 
     private static nothrow extern(C) void warnCallback(int severity, const char * str)
     {
+        // make nothrow
         try log.warningf("[Steam] Warn: %s (%s)", str, severity);
-        catch{}
+        catch(Throwable){}
     }
 
 private:

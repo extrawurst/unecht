@@ -61,6 +61,7 @@ final class SoundSource : UEComponent
 
     private void loadMemory(string content)
     {
+        import std.format:format;
         FMOD_CREATESOUNDEXINFO info;
         info.cbsize = FMOD_CREATESOUNDEXINFO.sizeof;
         info.length = cast(uint)content.length;
@@ -79,6 +80,8 @@ final class SoundSystem : UEComponent
     public static FMOD_SYSTEM* fmod;
 
     override void onCreate() {
+        import std.conv:to;
+
         super.onCreate;
 
         DerelictFmod.load();

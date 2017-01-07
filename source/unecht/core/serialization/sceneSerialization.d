@@ -1,11 +1,12 @@
 ﻿module unecht.core.serialization.sceneSerialization;
 
-import std.uuid;
-
-import unecht.core.components.sceneNode;
-import unecht.core.serialization.serializer;
+import 
+    unecht.core.components.sceneNode,
+    unecht.core.serialization.serializer;
 
 import sdlang;
+
+import std.uuid;
 
 ///
 struct UESceneSerializer
@@ -169,6 +170,8 @@ struct UESceneDeserializer
         
         void val(UESceneNode n,UESceneNode root)
         {
+            import std.format:format;
+
             assert(n);
 
             if(n !is root)

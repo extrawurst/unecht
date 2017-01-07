@@ -1,8 +1,8 @@
 module unecht.core.events;
 
 import unecht.core.component;
-import unecht.glfw.types:UEKey;
 import unecht.core.types:UESize;
+public import unecht.glfw.types:UEKey;
 
 ///
 enum UEEventType

@@ -142,6 +142,7 @@ final class TestLogic : UEComponent
 
     private void onDataClient(ubyte* data, size_t length)
     {
+        import std.conv:to;
         chat = to!string(cast(char[])data[0..length]) ~ "\n" ~ chat;
     }
 
@@ -163,6 +164,8 @@ final class TestLogic : UEComponent
 
     private void renderEnetHostGUI(ENetHost* host, const(char)* name)
     {
+        import std.format:format;
+
         igBegin(name);
         scope(exit) igEnd();
         

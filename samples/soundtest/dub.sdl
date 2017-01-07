@@ -1,0 +1,7 @@
+name "soundtest"
+authors "Stephan Dilly"
+copyright "Copyright © 2015, Stephan Dilly"
+dependency "unecht" path="../../"
+dependency "derelict-fmod" version="~>0.2.0"
+versions "UEIncludeEditor" "UEProfiling"
+stringImportPaths "."
