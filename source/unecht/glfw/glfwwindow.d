@@ -7,14 +7,22 @@ import derelict.glfw3.glfw3;
 import unecht.ue;
 import unecht.core.types;
 import unecht.core.window;
+import unecht.core.events;
 
 ///
 class GlfwWindow : UEWindow
 {
+private:
 	/// framebuffer size
 	UESize size;
 	/// actual window size
 	UESize _windowSize;
+	///
+	UEEvents _events;
+	///
+	double _lastMousePosX = 0;
+	///
+    double _lastMousePosY = 0;
 
 package:
 	
@@ -32,9 +40,11 @@ package:
     public @property UESize framebufferSize() const { return size; }
 
 	///
-	bool create(UESize _size, string _title)
+	bool create(UESize _size, string _title, UEEvents _evs)
 	{
 		import std.string:toStringz;
+
+		_events = _evs;
 
         //TODO: support multisampling
         //glfwWindowHint(GLFW_SAMPLES, 4);
@@ -50,7 +60,8 @@ package:
 		
 		if (!glfwWindow)
 			return false;
-		
+
+		glfwSetWindowUserPointer(glfwWindow, cast(void*)this);
 		glfwMakeContextCurrent(glfwWindow);
 
         int w,h;
@@ -134,10 +145,120 @@ package:
 	}
 
 	///
-	void onFramebufferResize(UESize size)
+	private void glfwOnKey(int key, int scancode, int action, int mods) nothrow
 	{
-		this.size = size;
+		UEEvent ev;
+		ev.eventType = UEEventType.key;
+		ev.keyEvent.key = cast(UEKey)key;
+		ev.keyEvent.action = UEEvent.KeyEvent.Action.Down;
+        
+		if(action == GLFW_RELEASE)
+			ev.keyEvent.action = UEEvent.KeyEvent.Action.Up;
+		else if(action == GLFW_REPEAT)
+			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
+
+        ev.keyEvent.mods.setFromBitMaskGLFW(mods);
+
+   		_events.trigger(ev);
 	}
+
+	///
+	private void glfwOnChar(uint codepoint) nothrow
+	{
+		UEEvent ev;
+		ev.eventType = UEEventType.text;
+		ev.textEvent.character = cast(dchar)codepoint;
+
+        populateCurrentKeyMods(ev.textEvent.mods);
+
+		_events.trigger(ev);
+	}
+
+	///
+	private void glfwOnMouseMove(double x, double y) nothrow
+	{
+        UEEvent ev;
+        ev.eventType = UEEventType.mousePos;
+        ev.mousePosEvent.x = _lastMousePosX = x;
+        ev.mousePosEvent.y = _lastMousePosY = y;
+
+        populateCurrentKeyMods(ev.mousePosEvent.mods);
+
+        _events.trigger(ev);
+	}
+
+	///
+	private void glfwOnMouseButton(int button, int action, int mods) nothrow
+	{
+        UEEvent ev;
+        ev.eventType = UEEventType.mouseButton;
+        ev.mouseButtonEvent.button = button;
+        ev.mouseButtonEvent.action = (action == GLFW_PRESS) ? UEEvent.MouseButtonEvent.Action.down : UEEvent.MouseButtonEvent.Action.up;
+
+        //TODO: click detection here instaed of in mouseControls.d
+        ev.mouseButtonEvent.pos.x = _lastMousePosX;
+        ev.mouseButtonEvent.pos.y = _lastMousePosY;
+
+        ev.mouseButtonEvent.pos.mods.setFromBitMaskGLFW(mods);
+
+        _events.trigger(ev);
+	}
+
+	///
+    private void glfwOnMouseScroll(double xoffset, double yoffset) nothrow
+    {
+        UEEvent ev;
+        ev.eventType = UEEventType.mouseScroll;
+        ev.mouseScrollEvent.xoffset = xoffset;
+        ev.mouseScrollEvent.yoffset = yoffset;
+
+        populateCurrentKeyMods(ev.mousePosEvent.mods);
+
+        _events.trigger(ev);
+    }
+
+	///
+	private void glfwOnWndSize(int width, int height) nothrow
+	{
+		UEEvent ev;
+		ev.eventType = UEEventType.windowSize;
+		ev.windowSizeEvent.size = UESize(width,height);
+
+        _windowSize = ev.windowSizeEvent.size;
+
+		_events.trigger(ev);
+	}
+
+	///
+	private void glfwOnFramebufferSize(int width, int height) nothrow
+	{
+		UEEvent ev;
+		ev.eventType = UEEventType.framebufferSize;
+		ev.framebufferSizeEvent.size = UESize(width,height);
+
+		size = ev.framebufferSizeEvent.size;
+
+		_events.trigger(ev);
+	}
+
+	///
+	private void glfwOnWindowFocus(bool gainedFocus) nothrow
+	{
+		UEEvent ev;
+		ev.eventType = UEEventType.windowFocus;
+		ev.focusEvent.gainedFocus = gainedFocus;
+		
+		_events.trigger(ev);
+	}
+
+	///
+    private void populateCurrentKeyMods(ref EventModKeys mods) nothrow
+    {
+		mods.set(glfwGetKey(glfwWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
+            glfwGetKey(glfwWindow, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
+            glfwGetKey(glfwWindow, GLFW_KEY_LEFT_ALT) == GLFW_PRESS,
+            glfwGetKey(glfwWindow, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS);
+    }
 
 private:
 	GLFWwindow* glfwWindow;
@@ -147,49 +268,49 @@ private nothrow extern(C)
 {
 	void character_callback(GLFWwindow* window, uint codepoint)
 	{
-		try ue.application.glfwOnChar(codepoint);
-		catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnChar(codepoint);
 	}
 
 	void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 	{
-		try ue.application.glfwOnMouseMove(xpos, ypos);
-		catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnMouseMove(xpos, ypos);
 	}
 
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	{
-		try ue.application.glfwOnMouseButton(button, action, mods);
-		catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnMouseButton(button, action, mods);
 	}
 
     void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     {
-        try ue.application.glfwOnMouseScroll(xoffset, yoffset);
-        catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnMouseScroll(xoffset, yoffset);
     }
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-		try ue.application.glfwOnKey(key,scancode,action,mods);
-		catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnKey(key,scancode,action,mods);
 	}
 
 	void wnd_size_callback(GLFWwindow* window, int width, int height) nothrow
 	{
-		try ue.application.glfwOnWndSize(width,height);
-		catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnWndSize(width,height);
 	}
 
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
-		try ue.application.glfwOnFramebufferSize(width,height);
-		catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnFramebufferSize(width,height);
 	}
 
 	void window_focus_callback(GLFWwindow* window, int gainedFocus)
 	{
-		try ue.application.glfwOnWindowFocus(gainedFocus!=0);
-		catch(Throwable){}
+		GlfwWindow wnd = cast(GlfwWindow)glfwGetWindowUserPointer(window);
+		wnd.glfwOnWindowFocus(gainedFocus!=0);
 	}
 }

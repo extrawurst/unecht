@@ -5,6 +5,7 @@ import std.string:toStringz;
 import unecht.core.component;
 import unecht.core.components.sceneNode;
 import unecht.core.events;
+import unecht.core.logger;
 
 import gl3n.linalg;
 
@@ -64,6 +65,12 @@ public:
     private void OnKeyInput(UEEvent event)
     {
         auto io = igGetIO();
+
+        if(cast(uint)event.keyEvent.key >= 512)
+        {
+            log.errorf("invalid key: %s",event.keyEvent.key);
+            return;
+        }
 
         if (UEEvent.KeyEvent.Action.Down == event.keyEvent.action)
             io.KeysDown[event.keyEvent.key] = true;

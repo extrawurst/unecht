@@ -29,7 +29,7 @@ struct EventModKeys
 	private bool altDown;
 	private bool superDown;
 
-    void set(bool modShift,bool modCtrl,bool modAlt,bool modSuper)
+    void set(bool modShift,bool modCtrl,bool modAlt,bool modSuper) nothrow
     {
         shiftDown = modShift;
         ctrlDown = modCtrl;
@@ -38,11 +38,11 @@ struct EventModKeys
     }
 
     ///
-    void setFromBitMaskGLFW(int mask)
+    void setFromBitMaskGLFW(int mask) nothrow
     {
-
         import unecht.core.stdex:testBitMask;
         import derelict.glfw3.glfw3;
+
         shiftDown = testBitMask(mask,GLFW_MOD_SHIFT);
         ctrlDown = testBitMask(mask,GLFW_MOD_CONTROL);
         altDown = testBitMask(mask,GLFW_MOD_ALT);
@@ -183,7 +183,8 @@ interface UEEvents
 	///
 	void removeComponent(UEComponent);
     ///
-    void trigger(UEEvent);
+	//TODO: makes this one only schedule and trigger all events in the main loop (#145)
+    void trigger(UEEvent) nothrow;
 }
 
 ///
@@ -226,18 +227,25 @@ final class UEEventsSystem : UEEvents
 	bool dirty=false;
 
 	///
-	override void trigger(UEEvent _ev)
+	override void trigger(UEEvent _ev) nothrow
 	{
-		foreach(r; receiver)
-		{
-			//TODO: support correct recursive enabled/disabled values 
-			if(r.removed || (!r.component.enabled) || (!r.component.sceneNode.enabled))
-				continue;
-
-			if(r.eventType == _ev.eventType)
+		try{
+			foreach(r; receiver)
 			{
-				r.eventFunc(_ev);
+				//TODO: support correct recursive enabled/disabled values 
+				if(r.removed || (!r.component.enabled) || (!r.component.sceneNode.enabled))
+					continue;
+
+				if(r.eventType == _ev.eventType)
+				{
+					r.eventFunc(_ev);
+				}
 			}
+		}
+		catch(Throwable e){
+			import unecht.core.logger:log;
+			try log.errorf("%s",e);
+			catch(Throwable){}
 		}
 	}
 

@@ -37,9 +37,6 @@ final class GlfwApplication : UEApplication
 	UEEntity rootEntity;
     private GLFWJoysticks joysticks;
 
-    private double lastMousePosX = 0;
-    private double lastMousePosY = 0;
-
     version(UEProfiling)
     {
         DespikerSender sender;
@@ -69,19 +66,18 @@ final class GlfwApplication : UEApplication
 
 		if(!initGLFW())
 			return -1;
-
 		scope(exit) glfwTerminate();
 
+        events = new UEEventsSystem();
+
         _mainWindow = new GlfwWindow();
-
-		if(!_mainWindow.create(ue.windowSettings.size,ue.windowSettings.title))
+        if(!_mainWindow.create(ue.windowSettings.size,ue.windowSettings.title, events))
 			return -1;
-
 		scope(exit) _mainWindow.destroy();
-			
+        
 		DerelictGL3.reload();
 
-		startEngine();
+        startEngine();
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -242,114 +238,8 @@ final class GlfwApplication : UEApplication
     ///
     UESize framebufferSize()
     {
-        return _mainWindow.size;
+        return _mainWindow.framebufferSize;
     }
-
-public: 
-	void glfwOnKey(int key, int scancode, int action, int mods)
-	{
-		UEEvent ev;
-		ev.eventType = UEEventType.key;
-		ev.keyEvent.key = cast(UEKey)key;
-		ev.keyEvent.action = UEEvent.KeyEvent.Action.Down;
-        
-		if(action == GLFW_RELEASE)
-			ev.keyEvent.action = UEEvent.KeyEvent.Action.Up;
-		else if(action == GLFW_REPEAT)
-			ev.keyEvent.action = UEEvent.KeyEvent.Action.Repeat;
-
-        ev.keyEvent.mods.setFromBitMaskGLFW(mods);
-
-   		events.trigger(ev);
-	}
-
-	void glfwOnMouseMove(double x, double y)
-	{
-        UEEvent ev;
-        ev.eventType = UEEventType.mousePos;
-        ev.mousePosEvent.x = lastMousePosX = x;
-        ev.mousePosEvent.y = lastMousePosY = y;
-
-        populateCurrentKeyMods(ev.mousePosEvent.mods);
-
-        events.trigger(ev);
-	}
-
-	void glfwOnMouseButton(int button, int action, int mods)
-	{
-        UEEvent ev;
-        ev.eventType = UEEventType.mouseButton;
-        ev.mouseButtonEvent.button = button;
-        ev.mouseButtonEvent.action = (action == GLFW_PRESS) ? UEEvent.MouseButtonEvent.Action.down : UEEvent.MouseButtonEvent.Action.up;
-
-        //TODO: click detection here instaed of in mouseControls.d
-        ev.mouseButtonEvent.pos.x = lastMousePosX;
-        ev.mouseButtonEvent.pos.y = lastMousePosY;
-
-        ev.mouseButtonEvent.pos.mods.setFromBitMaskGLFW(mods);
-
-        events.trigger(ev);
-	}
-
-    void glfwOnMouseScroll(double xoffset, double yoffset)
-    {
-        UEEvent ev;
-        ev.eventType = UEEventType.mouseScroll;
-        ev.mouseScrollEvent.xoffset = xoffset;
-        ev.mouseScrollEvent.yoffset = yoffset;
-
-        populateCurrentKeyMods(ev.mousePosEvent.mods);
-
-        events.trigger(ev);
-    }
-
-	void glfwOnChar(uint codepoint)
-	{
-		UEEvent ev;
-		ev.eventType = UEEventType.text;
-		ev.textEvent.character = cast(dchar)codepoint;
-
-        populateCurrentKeyMods(ev.textEvent.mods);
-
-		events.trigger(ev);
-	}
-
-	void glfwOnWndSize(int width, int height)
-	{
-		UEEvent ev;
-		ev.eventType = UEEventType.windowSize;
-		ev.windowSizeEvent.size = UESize(width,height);
-
-        //import unecht.core.logger;
-        //log.infof("glfwOnWndSize: %s -> %s",ue.application.mainWindow.windowSize, ev.windowSizeEvent.size);
-
-        _mainWindow.onResize(ev.windowSizeEvent.size);
-
-		events.trigger(ev);
-	}
-
-	void glfwOnFramebufferSize(int width, int height)
-	{
-		UEEvent ev;
-		ev.eventType = UEEventType.framebufferSize;
-		ev.framebufferSizeEvent.size = UESize(width,height);
-		
-        //import unecht.core.logger;
-        //log.infof("glfwOnFramebufferSize: %s -> %s",ue.application.mainWindow.size, ev.framebufferSizeEvent.size);
-
-        _mainWindow.onFramebufferResize(ev.framebufferSizeEvent.size);
-
-		events.trigger(ev);
-	}
-
-	void glfwOnWindowFocus(bool gainedFocus)
-	{
-		UEEvent ev;
-		ev.eventType = UEEventType.windowFocus;
-		ev.focusEvent.gainedFocus = gainedFocus;
-		
-		events.trigger(ev);
-	}
 
 private:
 
@@ -364,8 +254,6 @@ private:
 	{
         import unecht.core.scenegraph:UEScenegraph;
         import unecht.core.assetDatabase:UEAssetDatabase;
-
-		events = new UEEventsSystem();
 		
 		ue.events = events;
 
@@ -417,15 +305,6 @@ private:
 				cam.render();
 		}
 	}
-
-    ///
-    void populateCurrentKeyMods(ref EventModKeys mods)
-    {
-        mods.set(glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
-            glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
-            glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS,
-            glfwGetKey(_mainWindow.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS);
-    }
 }
 
 private nothrow extern(C) void error_callback(int error, const(char)* description)
