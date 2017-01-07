@@ -27,96 +27,96 @@ import derelict.opengl3.gl3;
 ///
 final class UEEditorNodeKeyControls : UEComponent
 {
-    mixin(UERegisterObject!());
+	mixin(UERegisterObject!());
 
-    static UESceneNode target;
+	static UESceneNode target;
 
-    override void onUpdate() {
-        super.onUpdate;
+	override void onUpdate() {
+		super.onUpdate;
 
-        enum speed = 0.5f;
+		enum speed = 0.5f;
 
-        target.position = target.position + (target.up * move.y * speed);
-        target.position = target.position + (target.right * move.x * speed);
-        target.position = target.position + (target.forward * move.z * speed);
+		target.position = target.position + (target.up * move.y * speed);
+		target.position = target.position + (target.right * move.x * speed);
+		target.position = target.position + (target.forward * move.z * speed);
 
-        //target.angles = target.angles + (rotate * speed);
-    }
+		//target.angles = target.angles + (rotate * speed);
+	}
 
-    //TODO: register this by it self once recursive enable/disable works
-    ///
-    private void OnKeyEvent(UEEvent _ev)
-    {
-        if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
-        {
-            if(_ev.keyEvent.mods.isModShift)
-            {
-                if(_ev.keyEvent.key == UEKey.up)
-                    move.y = 1;
-                else if(_ev.keyEvent.key == UEKey.down)
-                    move.y = -1;
-            }
-            else
-            {
-                if(_ev.keyEvent.key == UEKey.up)
-                    move.z = 1;
-                else if(_ev.keyEvent.key == UEKey.down)
-                    move.z = -1;
-            }
-            
-            if(_ev.keyEvent.key == UEKey.left)
-                move.x = -1;
-            else if(_ev.keyEvent.key == UEKey.right)
-                move.x = 1;
-           
-            if(_ev.keyEvent.key == UEKey.w ||
-                _ev.keyEvent.key == UEKey.s)
-            {
-                bool inc = _ev.keyEvent.key == UEKey.w;
-                rotate.x = (inc?1.0f:-1.0f);
-            }
-            if(_ev.keyEvent.key == UEKey.a ||
-                _ev.keyEvent.key == UEKey.d)
-            {
-                bool inc = _ev.keyEvent.key == UEKey.a;
-                rotate.y = (inc?1.0f:-1.0f);
-            }
-            if(_ev.keyEvent.key == UEKey.q ||
-                _ev.keyEvent.key == UEKey.e)
-            {
-                bool inc = _ev.keyEvent.key == UEKey.q;
-                rotate.z = (inc?1.0f:-1.0f);
-            }
-        }
-        else if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Up)
-        {
+	//TODO: register this by it self once recursive enable/disable works
+	///
+	private void OnKeyEvent(UEEvent _ev)
+	{
+		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down)
+		{
+			if(_ev.keyEvent.mods.isModShift)
+			{
+				if(_ev.keyEvent.key == UEKey.up)
+					move.y = 1;
+				else if(_ev.keyEvent.key == UEKey.down)
+					move.y = -1;
+			}
+			else
+			{
+				if(_ev.keyEvent.key == UEKey.up)
+					move.z = 1;
+				else if(_ev.keyEvent.key == UEKey.down)
+					move.z = -1;
+			}
 
-            if(_ev.keyEvent.key == UEKey.up ||
-                _ev.keyEvent.key == UEKey.down)
-            {
-                move.y = 0;
-                move.z = 0;
-            }
+			if(_ev.keyEvent.key == UEKey.left)
+				move.x = -1;
+			else if(_ev.keyEvent.key == UEKey.right)
+				move.x = 1;
 
-            if(_ev.keyEvent.key == UEKey.left ||
-                _ev.keyEvent.key == UEKey.right)
-                move.x = 0;
+			if(_ev.keyEvent.key == UEKey.w ||
+				_ev.keyEvent.key == UEKey.s)
+			{
+				bool inc = _ev.keyEvent.key == UEKey.w;
+				rotate.x = (inc?1.0f:-1.0f);
+			}
+			if(_ev.keyEvent.key == UEKey.a ||
+				_ev.keyEvent.key == UEKey.d)
+			{
+				bool inc = _ev.keyEvent.key == UEKey.a;
+				rotate.y = (inc?1.0f:-1.0f);
+			}
+			if(_ev.keyEvent.key == UEKey.q ||
+				_ev.keyEvent.key == UEKey.e)
+			{
+				bool inc = _ev.keyEvent.key == UEKey.q;
+				rotate.z = (inc?1.0f:-1.0f);
+			}
+		}
+		else if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Up)
+		{
 
-            if(_ev.keyEvent.key == UEKey.w ||
-                _ev.keyEvent.key == UEKey.s)
-                rotate.x = 0;
-            if(_ev.keyEvent.key == UEKey.a ||
-                _ev.keyEvent.key == UEKey.d)
-                rotate.y = 0;
-            if(_ev.keyEvent.key == UEKey.q ||
-                _ev.keyEvent.key == UEKey.e)
-                rotate.z = 0;
-        }
-    }
+			if(_ev.keyEvent.key == UEKey.up ||
+				_ev.keyEvent.key == UEKey.down)
+			{
+				move.y = 0;
+				move.z = 0;
+			}
+
+			if(_ev.keyEvent.key == UEKey.left ||
+				_ev.keyEvent.key == UEKey.right)
+				move.x = 0;
+
+			if(_ev.keyEvent.key == UEKey.w ||
+				_ev.keyEvent.key == UEKey.s)
+				rotate.x = 0;
+			if(_ev.keyEvent.key == UEKey.a ||
+				_ev.keyEvent.key == UEKey.d)
+				rotate.y = 0;
+			if(_ev.keyEvent.key == UEKey.q ||
+				_ev.keyEvent.key == UEKey.e)
+				rotate.z = 0;
+		}
+	}
 
 private:
-    vec3 move = vec3(0);
-    vec3 rotate = vec3(0);
+	vec3 move = vec3(0);
+	vec3 rotate = vec3(0);
 }
 
 ///
@@ -124,17 +124,17 @@ final class UEEditorComponent : UEComponent {
 
 	mixin(UERegisterObject!());
 
-    private UEEditorNodeKeyControls keyControls;
+	private UEEditorNodeKeyControls keyControls;
 
-	override void onCreate() 
-    {
+	override void onCreate()
+	{
 		super.onCreate;
 
 		registerEvent(UEEventType.key, &OnKeyEvent);
 
 		entity.addComponent!UEEditorgridComponent;
 
-        keyControls = entity.addComponent!UEEditorNodeKeyControls;
+		keyControls = entity.addComponent!UEEditorNodeKeyControls;
 	}
 
 	///
@@ -145,24 +145,24 @@ final class UEEditorComponent : UEComponent {
 		{
 			if(_ev.keyEvent.key == UEKey.p)
 			{
-                import unecht.ue:ue;
+				import unecht.ue:ue;
 				ue.scene.playing = !ue.scene.playing;
 			}
 
-            if(EditorRootComponent._currentEntity && 
-                ((_ev.keyEvent.key == UEKey.backspace && _ev.keyEvent.mods.isModSuper) ||
-                _ev.keyEvent.key == UEKey.del))
-            {
-                UEEditorMenus.removeCurrentEntity();
-            }
+			if(EditorRootComponent._currentEntity &&
+				((_ev.keyEvent.key == UEKey.backspace && _ev.keyEvent.mods.isModSuper) ||
+				_ev.keyEvent.key == UEKey.del))
+			{
+				UEEditorMenus.removeCurrentEntity();
+			}
 
-            if(_ev.keyEvent.key == UEKey.z && _ev.keyEvent.mods.isModSuper)
-            {
-                UEEditorMenus.undo();
-            }
+			if(_ev.keyEvent.key == UEKey.z && _ev.keyEvent.mods.isModSuper)
+			{
+				UEEditorMenus.undo();
+			}
 		}
 
-        keyControls.OnKeyEvent(_ev);
+		keyControls.OnKeyEvent(_ev);
 	}
 }
 
@@ -174,34 +174,34 @@ final class EditorRootComponent : UEComponent {
 	private UEEntity editorComponent;
 
 	private static UEEntity gismo;
-    private static UEMaterial editorMaterial;
+	private static UEMaterial editorMaterial;
 
 	private static bool _editorVisible;
 	private static UECamera _editorCam;
 	private static UEEntity _currentEntity;
-    private static UEEditorGUI _editorGUI;
+	private static UEEditorGUI _editorGUI;
 
-    ///
-    static @property UECamera camera() { return _editorCam; }
-    ///
-    static @property UEEntity currentEntity() { return _currentEntity; }
-    ///
-    static @property bool visible() { return _editorVisible; }
+	///
+	static @property UECamera camera() { return _editorCam; }
+	///
+	static @property UEEntity currentEntity() { return _currentEntity; }
+	///
+	static @property bool visible() { return _editorVisible; }
 
-    ///
+	///
 	override void onCreate() {
 		super.onCreate;
 
-        sceneNode.hideFlags.set(HideFlags.hideInHirarchie);
-        sceneNode.hideFlags.set(HideFlags.dontSaveInScene);
-		
+		sceneNode.hideFlags.set(HideFlags.hideInHirarchie);
+		sceneNode.hideFlags.set(HideFlags.dontSaveInScene);
+
 		registerEvent(UEEventType.key, &OnKeyEvent);
-        registerEvent(UEEventType.updateEditMode, &onEditorUpdate);
+		registerEvent(UEEventType.updateEditMode, &onEditorUpdate);
 
-        _editorGUI = entity.addComponent!UEEditorGUI;
+		_editorGUI = entity.addComponent!UEEditorGUI;
 
-        entity.addComponent!UEEditorMenus;
-        entity.addComponent!UEEditorMouseControls;
+		entity.addComponent!UEEditorMenus;
+		entity.addComponent!UEEditorMouseControls;
 
 		_editorCam = entity.addComponent!UECamera;
 		_editorCam.clearColor = vec4(0.1,0.1,0.1,1.0);
@@ -212,54 +212,54 @@ final class EditorRootComponent : UEComponent {
 		editorComponent.addComponent!UEEditorComponent;
 		editorComponent.sceneNode.enabled = false;
 
-        import unecht.core.components.editor.gismo;
+		import unecht.core.components.editor.gismo;
 		//TODO: support recursive disabling and move it under the editor subcomponent (#41)
 		gismo = UEEntity.create("editor gismo");
 		gismo.sceneNode.parent = this.sceneNode;
 		gismo.addComponent!UEEditorGismo;
 		gismo.sceneNode.enabled = false;
 
-        editorMaterial = this.entity.addComponent!UEMaterial;
-        editorMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat, "color");
-        editorMaterial.depthTest = false;
-        editorMaterial.polygonFill = false;
-        editorMaterial.cullMode = UEMaterial.CullMode.cullBack;
+		editorMaterial = this.entity.addComponent!UEMaterial;
+		editorMaterial.setProgram(UEMaterial.vs_flat,UEMaterial.fs_flat, "color");
+		editorMaterial.depthTest = false;
+		editorMaterial.polygonFill = false;
+		editorMaterial.cullMode = UEMaterial.CullMode.cullBack;
 
-        selectEntity(null);
+		selectEntity(null);
 
-        toggleEditor();
+		toggleEditor();
 	}
 
-    ///
-    override void onUpdate() {
-        super.onUpdate;
+	///
+	override void onUpdate() {
+		super.onUpdate;
 
-        if(_currentEntity && _currentEntity.destroyed)
-            _currentEntity = null;
+		if(_currentEntity && _currentEntity.destroyed)
+			_currentEntity = null;
 
-        if(_currentEntity)
-        {
-            gismo.sceneNode.enabled = true;
-            gismo.sceneNode.position = _currentEntity.sceneNode.position;
-            gismo.sceneNode.rotation = _currentEntity.sceneNode.rotation;
-        }
-        else
-            gismo.sceneNode.enabled = false;
-    }
+		if(_currentEntity)
+		{
+			gismo.sceneNode.enabled = true;
+			gismo.sceneNode.position = _currentEntity.sceneNode.position;
+			gismo.sceneNode.rotation = _currentEntity.sceneNode.rotation;
+		}
+		else
+			gismo.sceneNode.enabled = false;
+	}
 
-    ///
-    private void onEditorUpdate(UEEvent ev)
-    {
-        onUpdate();
-    }
-    
-    ///
-    private void OnKeyEvent(UEEvent _ev)
+	///
+	private void onEditorUpdate(UEEvent ev)
+	{
+		onUpdate();
+	}
+
+	///
+	private void OnKeyEvent(UEEvent _ev)
 	{
 		if(_ev.keyEvent.action == UEEvent.KeyEvent.Action.Down &&
 			_ev.keyEvent.key == UEKey.f1)
 		{
-            toggleEditor();
+			toggleEditor();
 		}
 	}
 
@@ -272,60 +272,60 @@ final class EditorRootComponent : UEComponent {
 	}
 
 	///
-    private void toggleEditor()
-    {
-        _editorVisible = !_editorVisible;
-        editorComponent.sceneNode.enabled = _editorVisible;
-    }
+	private void toggleEditor()
+	{
+		_editorVisible = !_editorVisible;
+		editorComponent.sceneNode.enabled = _editorVisible;
+	}
 
 	///
-    //TODO: #127
+	//TODO: #127
 	static void renderEditor()
 	{
 		if(_editorVisible)
 		{
-            // render regular but from editor camera pov
+			// render regular but from editor camera pov
 			_editorCam.render();
 
-            {
-                // render gismo
-                _editorCam.visibleLayers = 1<<UELayer.editor;
-                _editorCam.clearBitColor=false;
-                _editorCam.clearBitDepth=false;
-                _editorCam.render();
-                _editorCam.clearBitDepth=true;
-                _editorCam.clearBitColor=true;
-                _editorCam.visibleLayers = UECameraDefaultLayers;
-            }
+			{
+				// render gismo
+				_editorCam.visibleLayers = 1<<UELayer.editor;
+				_editorCam.clearBitColor=false;
+				_editorCam.clearBitDepth=false;
+				_editorCam.render();
+				_editorCam.clearBitDepth=true;
+				_editorCam.clearBitColor=true;
+				_editorCam.visibleLayers = UECameraDefaultLayers;
+			}
 
-            {
-                // render wireframes
-                UERenderer.editorMaterial = editorMaterial;
-                scope(exit)UERenderer.editorMaterial = null;
-                _editorCam.clearBitColor=false;
-                scope(exit)_editorCam.clearBitColor=true;
-                _editorCam.clearBitDepth=false;
-                scope(exit)_editorCam.clearBitDepth=true;
+			{
+				// render wireframes
+				UERenderer.editorMaterial = editorMaterial;
+				scope(exit)UERenderer.editorMaterial = null;
+				_editorCam.clearBitColor=false;
+				scope(exit)_editorCam.clearBitColor=true;
+				_editorCam.clearBitDepth=false;
+				scope(exit)_editorCam.clearBitDepth=true;
 
-                _editorCam.render();
-            }
+				_editorCam.render();
+			}
 		}
 
-        _editorGUI.render();
+		_editorGUI.render();
 	}
 
-    ///
-    public static void selectEntity(UEEntity _entity)
-    {
-        if(_entity)
-        {
-            UEEditorNodeKeyControls.target = _entity.sceneNode;
-            _currentEntity = _entity;
-        }
-        else
-        {
-            _currentEntity = null;
-            UEEditorNodeKeyControls.target = _editorCam.sceneNode;
-        }
-    }
+	///
+	public static void selectEntity(UEEntity _entity)
+	{
+		if(_entity)
+		{
+			UEEditorNodeKeyControls.target = _entity.sceneNode;
+			_currentEntity = _entity;
+		}
+		else
+		{
+			_currentEntity = null;
+			UEEditorNodeKeyControls.target = _editorCam.sceneNode;
+		}
+	}
 }
