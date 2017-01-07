@@ -1,7 +1,7 @@
 name "assimptest"
 description "test project for assimp integration"
 authors "Stephan Dilly"
-copyright "Copyright © 2015, Stephan Dilly"
+copyright "Copyright © 2017, Stephan Dilly"
 dependency "unecht" path="../../"
 dependency "derelict-assimp3" version="~>1.0.1"
 versions "UEIncludeEditor" "UEProfiling"

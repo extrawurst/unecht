@@ -1,6 +1,6 @@
 name "enettest"
 authors "Stephan Dilly"
-copyright "Copyright © 2015, Stephan Dilly"
+copyright "Copyright © 2017, Stephan Dilly"
 dependency "unecht" path="../../"
 dependency "derelict-enet" path="../../submodules/DerelictENet"
 versions "UEIncludeEditor" "UEProfiling"
