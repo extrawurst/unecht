@@ -16,3 +16,4 @@ samples/*/*.exe
 samples/*/dub.selections.json
 samples/*/imgui.ini
 unecht.log
+docs.json
