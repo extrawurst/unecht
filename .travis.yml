@@ -17,7 +17,7 @@ script:
   - cd ../pong/
   - dub build --compiler=$DC
 
-aftersuccess:
+after_success:
   - openssl aes-256-cbc -K $encrypted_c40f5907e549_key -iv $encrypted_c40f5907e549_iv
     -in travisconfig/travisci_rsa.enc -out config/travisci_rsa -d
   - chmod 0600 travisconfig/travisci_rsa
