@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Function UETexture.isValid</title>
+		<link rel="stylesheet" href="../../../../css/style.min.css"/>
+		<script type="text/javascript" src="../../../../js/script.min.js"></script>
+	</head>
+	<body onload="setupDdox();">
+		<header>
+		</header>
+		<nav id="main-nav">
+				<noscript>
+					<p style="color: red">The search functionality needs JavaScript enabled</p>
+				</noscript>
+				<div id="symbolSearchPane" style="display: none">
+					<input id="symbolSearch" type="text" placeholder="Search" onchange="performSymbolSearch(24);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" autofocus="autofocus"/>
+					<ul id="symbolSearchResults" style="display: none"></ul>
+					<script type="application/javascript" src="../../../../symbols.js"></script>
+					<script type="application/javascript">
+var symbolSearchRootDir = "../../../../";
+document.getElementById('symbolSearchPane').style.display = 'block';
+					</script>
+				</div>
+						<ul>
+						<li>
+							<a href="../../../../unecht/core/assets/texture.html">unecht.core.assets.texture</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/ui/assetInspector.html">unecht.core.components.editor.ui.assetInspector</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/ui/assetView.html">unecht.core.components.editor.ui.assetView</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/ui/console.html">unecht.core.components.editor.ui.console</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/ui/dragDropEditor.html">unecht.core.components.editor.ui.dragDropEditor</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/ui/fileDialog.html">unecht.core.components.editor.ui.fileDialog</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/ui/menuSystem.html">unecht.core.components.editor.ui.menuSystem</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/ui/referenceEditor.html">unecht.core.components.editor.ui.referenceEditor</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/commands.html">unecht.core.components.editor.commands</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/editorGui.html">unecht.core.components.editor.editorGui</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/gismo.html">unecht.core.components.editor.gismo</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/grid.html">unecht.core.components.editor.grid</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/menuItems.html">unecht.core.components.editor.menuItems</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/menus.html">unecht.core.components.editor.menus</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/mouseControls.html">unecht.core.components.editor.mouseControls</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/editor/mousePicking.html">unecht.core.components.editor.mousePicking</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/internal/gui.html">unecht.core.components.internal.gui</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/physics/collider.html">unecht.core.components.physics.collider</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/physics/dynamic.html">unecht.core.components.physics.dynamic</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/physics/material.html">unecht.core.components.physics.material</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/physics/system.html">unecht.core.components.physics.system</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/camera.html">unecht.core.components.camera</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/material.html">unecht.core.components.material</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/misc.html">unecht.core.components.misc</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/physics.html">unecht.core.components.physics</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/renderer.html">unecht.core.components.renderer</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/sceneNode.html">unecht.core.components.sceneNode</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/shapes.html">unecht.core.components.shapes</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/components/_editor.html">unecht.core.components._editor</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/math/ray.html">unecht.core.math.ray</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/serialization/mixins.html">unecht.core.serialization.mixins</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/serialization/sceneSerialization.html">unecht.core.serialization.sceneSerialization</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/serialization/serializer.html">unecht.core.serialization.serializer</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/application.html">unecht.core.application</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/assetDatabase.html">unecht.core.assetDatabase</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/component.html">unecht.core.component</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/componentManager.html">unecht.core.componentManager</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/defaultInspector.html">unecht.core.defaultInspector</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/entity.html">unecht.core.entity</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/events.html">unecht.core.events</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/fibers.html">unecht.core.fibers</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/hideFlags.html">unecht.core.hideFlags</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/logger.html">unecht.core.logger</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/object.html">unecht.core.object</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/profiler.html">unecht.core.profiler</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/scenegraph.html">unecht.core.scenegraph</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/staticRingBuffer.html">unecht.core.staticRingBuffer</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/stdex.html">unecht.core.stdex</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/types.html">unecht.core.types</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/core/window.html">unecht.core.window</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/gl/program.html">unecht.gl.program</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/gl/shader.html">unecht.gl.shader</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/gl/texture.html">unecht.gl.texture</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/gl/vertexArrayObject.html">unecht.gl.vertexArrayObject</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/gl/vertexBufferObject.html">unecht.gl.vertexBufferObject</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/glfw/glfwapplication.html">unecht.glfw.glfwapplication</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/glfw/glfwwindow.html">unecht.glfw.glfwwindow</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/glfw/joysticks.html">unecht.glfw.joysticks</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/glfw/types.html">unecht.glfw.types</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/meta/misc.html">unecht.meta.misc</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/meta/uda.html">unecht.meta.uda</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/test/sceneSerialization.html">unecht.test.sceneSerialization</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/test/serializer.html">unecht.test.serializer</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/steamaccess.html">unecht.steamaccess</a>
+						</li>
+						<li>
+							<a href="../../../../unecht/ue.html">unecht.ue</a>
+						</li>
+						<li>
+							<a href="../../../../unecht.html">unecht</a>
+						</li>
+						</ul>
+			<p id="main-nav-footer">
+ Built with
+				<a href="https://github.com/MartinNowak/scod">scod</a>
+			</p>
+		</nav>
+		<div id="main-contents">
+			<h1>Function UETexture.isValid</h1>
+			<section>
+				<p></p>
+
+					<section>
+						<h3>Prototype</h3>
+						<div class="prototype">
+							<code class="lang-d">
+<span class="typ">bool</span> <span class="pln">isValid<span class="pun">()</span><span class="pln"> </span><span class="kwd">@property const</span><span class="pun">;</span>
+							</code>
+						</div>
+					</section>
+
+			</section>
+			<footer>
+				<hr/>
+				<div id="license-info">
+
+
+
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
