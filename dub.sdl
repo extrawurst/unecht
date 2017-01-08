@@ -3,20 +3,22 @@ description "Game Engine Framework for the D programming language."
 authors "Stephan Dilly"
 copyright "Copyright © 2017, Stephan Dilly"
 license "MIT"
+
 dependency "tharsis-prof" path="submodules/tharsis.prof/"
+dependency "derelict-ode" path="submodules/DerelictODE/"
 dependency "derelict-imgui" version="0.9.1"
 dependency "derelict-fi" version="~>2.0.1"
 dependency "derelict-glfw3" version="~>1.1.0"
-dependency "derelict-ode" path="submodules/DerelictODE/"
 dependency "derelict-util" version="~>2.0.0"
 dependency "gl3n" version="~>1.3.1"
 dependency "derelict-gl3" version="~>1.0.13"
 dependency "derelict-steamworks" version="~>0.0.5"
 dependency "sdlang-d" version="~>0.10"
+
+versions "DerelictODE_Single"
 targetType "library"
 targetPath "lib"
 mainSourceFile "source/unecht/appmain.d"
-versions "DerelictODE_Single"
 //x:ddoxTool "scod"
 stringImportPaths "imp" "imp/tex"
 
@@ -27,5 +29,4 @@ configuration "app" {
 configuration "ddox" {
 	versions "UEIncludeEditor"
 	dflags "-D" "-X" "-Xfdocs.json"
-	targetType "library"
 }
