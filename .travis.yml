@@ -16,6 +16,7 @@ script:
   - dub build --compiler=$DC
   - cd ../pong/
   - dub build --compiler=$DC
+  - cd ../../
 
 after_success:
   - openssl aes-256-cbc -K $encrypted_c40f5907e549_key -iv $encrypted_c40f5907e549_iv
