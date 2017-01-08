@@ -20,6 +20,9 @@ versions "DerelictODE_Single"
 //x:ddoxTool "scod"
 stringImportPaths "imp" "imp/tex"
 
+configuration "app" {
+}
+
 // solely to generate the docs.json
 configuration "ddox" {
 	versions "UEIncludeEditor" "UEProfiling"
