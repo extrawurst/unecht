@@ -17,6 +17,13 @@ script:
   - cd ../pong/
   - dub build --compiler=$DC
 
+aftersuccess:
+- openssl aes-256-cbc -K $encrypted_c40f5907e549_key -iv $encrypted_c40f5907e549_iv
+  -in travisconfig/travisci_rsa.enc -out config/travisci_rsa -d
+- chmod 0600 travisconfig/travisci_rsa
+- cp travisconfig/travisci_rsa ~/.ssh/id_rsa
+- ./createddox.sh
+
 notifications:
   webhooks:
     urls:

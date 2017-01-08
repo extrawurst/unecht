@@ -17,6 +17,12 @@ targetType "library"
 targetPath "lib"
 mainSourceFile "source/unecht/appmain.d"
 versions "DerelictODE_Single"
-//dflags "-D" "-X" "-Xfdocs.json" platform="dmd"
 //x:ddoxTool "scod"
 stringImportPaths "imp" "imp/tex"
+
+// solely to generate the docs.json
+configuration "ddox" {
+	platform "dmd"
+	dflags "-D" "-X" "-Xfdocs.json"
+	targetType "library"
+}
