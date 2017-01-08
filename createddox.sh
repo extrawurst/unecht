@@ -21,7 +21,7 @@ cd -
 dub build --config=ddox -f
 
 # copy
-cp -r ddox/ ${HTML_PATH}
+cp -r ddox/ ${HTML_PATH}/
 
 # create html
 cd subtrees/scod
