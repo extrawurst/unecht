@@ -231,7 +231,8 @@ document.getElementById('symbolSearchPane').style.display = 'block';
 		<div id="main-contents">
 			<h1>Class UECamera</h1>
 			<section>
-				<p></p>
+				<p>camera component - handles rendering the world through its perspective
+</p>
 
 					<section>
 						<h3>Inherits from</h3>
@@ -398,7 +399,8 @@ document.getElementById('symbolSearchPane').style.display = 'block';
 									<span class="tableEntryAnnotation">[get]</span>
 								</td>
 								<td class="typecol"><code class="prettyprint lang-d"><span class="pln">gl3n<wbr/></span><span class="pun">.</span><span class="pln">linalg<wbr/></span><span class="pun">.</span><span class="typ">Matrix</span>!(float,4,4)</code></td>
-								<td></td>
+								<td>return projection matrix multiplied by look matrix
+</td>
 							</tr>
 							<tr>
 								<td>
@@ -480,7 +482,8 @@ document.getElementById('symbolSearchPane').style.display = 'block';
 										<code>render</code>
 									</a>
 								</td>
-								<td></td>
+								<td>render all renderables through the perspective of this camera
+</td>
 							</tr>
 							<tr>
 								<td>
@@ -494,22 +497,6 @@ document.getElementById('symbolSearchPane').style.display = 'block';
 								<td>
 									<a href="../../../../unecht/core/components/camera/UECamera.serialize.html" class="public">
 										<code>serialize</code>
-									</a>
-								</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<a href="../../../../unecht/core/components/camera/UECamera.updateLook.html" class="public">
-										<code>updateLook</code>
-									</a>
-								</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<a href="../../../../unecht/core/components/camera/UECamera.updateProjection.html" class="public">
-										<code>updateProjection</code>
 									</a>
 								</td>
 								<td></td>
@@ -614,8 +601,16 @@ document.getElementById('symbolSearchPane').style.display = 'block';
 							</tr>
 							<tr>
 								<td>
-									<a href="../../../../unecht/core/object/UEObject.deserializeMember.html" class="private inherited">
-										<code>deserializeMember</code>
+									<a href="../../../../unecht/core/components/camera/UECamera.updateLook.html" class="private">
+										<code>updateLook</code>
+									</a>
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
+									<a href="../../../../unecht/core/components/camera/UECamera.updateProjection.html" class="private">
+										<code>updateProjection</code>
 									</a>
 								</td>
 								<td></td>
@@ -623,6 +618,14 @@ document.getElementById('symbolSearchPane').style.display = 'block';
 							<tr>
 								<td>
 									<a href="../../../../unecht/core/component/UEComponent.deserializeMember.html" class="private inherited">
+										<code>deserializeMember</code>
+									</a>
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
+									<a href="../../../../unecht/core/object/UEObject.deserializeMember.html" class="private inherited">
 										<code>deserializeMember</code>
 									</a>
 								</td>
