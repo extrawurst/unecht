@@ -1,0 +1,14 @@
+noscript
+  p(style="color: red") The search functionality needs JavaScript enabled
+
+#symbolSearchPane(style="display: none")
+  input#symbolSearch(type="text", placeholder="Search", onchange="performSymbolSearch(24);", onkeypress="this.onchange();", onpaste="this.onchange();", oninput="this.onchange();", autofocus)
+
+  ul#symbolSearchResults(style="display: none")
+
+
+  script(type="application/javascript", src="#{info.linkTo(null)}symbols.js")
+  - import vibe.data.json : Json;
+  script(type="application/javascript").
+    var symbolSearchRootDir = #{Json(info.linkTo(null)).toString()};
+    document.getElementById('symbolSearchPane').style.display = 'block';

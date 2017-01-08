@@ -1,0 +1,2 @@
+language: d
+script: ./travis-ci.sh
