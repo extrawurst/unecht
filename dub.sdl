@@ -22,6 +22,7 @@ stringImportPaths "imp" "imp/tex"
 
 // solely to generate the docs.json
 configuration "ddox" {
+	versions "UEIncludeEditor" "UEProfiling"
 	dflags "-D" "-X" "-Xfdocs.json"
 	targetType "library"
 }
