@@ -1,0 +1,144 @@
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Raleway'), url(../fonts/raleway-regular.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'fontello';
+    font-style: normal;
+    font-weight: normal;
+    src: url(../fonts/fontello.woff) format('woff');
+}
+
+a {
+    text-decoration: none;
+}
+
+ul.tree-view li {
+    list-style-type: none;
+}
+
+#main-nav {
+    background: #343131;
+}
+
+#main-nav, #main-contents {
+    padding: 2em 1em;
+    box-sizing: border-box;
+}
+
+body {
+    position: absolute;
+    display: flex;
+}
+
+@media (max-width: 750px) {
+    body {
+        min-width: 100%;
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 750px) {
+    body {
+        min-height: 100%;
+    }
+
+    #main-nav {
+        min-width: 15em;
+    }
+}
+
+#main-nav {
+    position: relative;
+}
+p#main-nav-footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 0;
+    margin-right: 0.5em;
+}
+
+section {
+    margin-top: 1em;
+}
+
+div#symbolSearchPane {
+    position: relative;
+}
+
+input#symbolSearch,
+ul#symbolSearchResults {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 15em;
+}
+
+input#symbolSearch.with_results {
+    border-radius: 0;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+ul#symbolSearchResults {
+    background-color: white;
+    border: 1px solid #aaa;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 38px; /* matches input { height: 38px; } */
+    left: 0;
+    z-index: 2;
+}
+ul#symbolSearchResults > li {
+    list-style-type: none;
+    padding-left: 10px; /* align with skeleton input padding */
+    margin-bottom: 0;
+}
+
+div#license-info,
+p#main-nav-footer {
+    font-variant: small-caps;
+    font-size: 0.75em;
+}
+div#license-info > p {
+    display: inline;
+}
+div#license-info > p:not(:first-child)::before {
+    content: "|";
+}
+div#license-info:empty {
+    border: 1px solid black;
+}
+
+nav#main-nav > ul a,
+nav#main-nav > ul li,
+p#main-nav-footer a,
+p#main-nav-footer {
+    color: #b3b3b3;
+}
+
+ul.tree-view a.package:before {
+    font-family: "fontello";
+    speak: none;
+    margin-right: 0.3em;
+}
+ul.tree-view li.collapsed > a.package:before {
+    content: '\e800'; /* fa-plus-squared-alt */
+}
+ul.tree-view li:not(.collapsed) > a.package:before {
+    content: '\e801'; /* fa-minus-squared-alt */
+}
+ul.tree-view a.selected {
+    color: white;
+}
+
+/* fixup for ddox/skeleton compatibility */
+div.prototype > code {
+    display: block;
+    padding: 1rem 1.5rem;
+}

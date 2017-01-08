@@ -1,0 +1,2894 @@
+[
+ {
+  "name" : "std.algorithm.searching",
+  "kind" : "module",
+  "file" : "/home/dawg/Code/D/DPL/phobos/std/algorithm/searching.d",
+  "members" : [
+   {
+    "name" : "std.functional",
+    "kind" : "import",
+    "line" : 91,
+    "char" : 8,
+    "protection" : "private"
+   },
+   {
+    "name" : "std.range.primitives",
+    "kind" : "import",
+    "line" : 92,
+    "char" : 8,
+    "protection" : "private"
+   },
+   {
+    "name" : "std.traits",
+    "kind" : "import",
+    "line" : 93,
+    "char" : 8,
+    "protection" : "private"
+   },
+   {
+    "name" : "std.typecons",
+    "kind" : "import",
+    "line" : 95,
+    "char" : 8,
+    "protection" : "private"
+   },
+   {
+    "kind" : "template",
+    "line" : 100,
+    "char" : 1,
+    "name" : "all",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a\""
+     }
+    ],
+    "members" : [
+     {
+      "kind" : "template",
+      "line" : 107,
+      "char" : 10,
+      "name" : "all",
+      "parameters" : [
+       {
+        "name" : "Range",
+        "kind" : "type"
+       }
+      ],
+      "constraint" : "isInputRange!Range && is(typeof(unaryFun!pred(range.front)))",
+      "members" : [
+       {
+        "name" : "all",
+        "kind" : "function",
+        "line" : 107,
+        "char" : 10,
+        "type" : "bool(Range range)",
+        "parameters" : [
+         {
+          "name" : "range",
+          "type" : "Range"
+         }
+        ],
+        "endline" : 113,
+        "endchar" : 5
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL117_1",
+    "kind" : "function",
+    "line" : 117,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 129,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL129_2",
+    "kind" : "function",
+    "line" : 129,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 135,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL135_4",
+    "kind" : "function",
+    "line" : 135,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 146,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 146,
+    "char" : 1,
+    "name" : "any",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a\""
+     }
+    ],
+    "members" : [
+     {
+      "kind" : "template",
+      "line" : 153,
+      "char" : 10,
+      "name" : "any",
+      "parameters" : [
+       {
+        "name" : "Range",
+        "kind" : "type"
+       }
+      ],
+      "constraint" : "isInputRange!Range && is(typeof(unaryFun!pred(range.front)))",
+      "members" : [
+       {
+        "name" : "any",
+        "kind" : "function",
+        "line" : 153,
+        "char" : 10,
+        "type" : "bool(Range range)",
+        "parameters" : [
+         {
+          "name" : "range",
+          "type" : "Range"
+         }
+        ],
+        "endline" : 157,
+        "endchar" : 5
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL161_5",
+    "kind" : "function",
+    "line" : 161,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 174,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL174_6",
+    "kind" : "function",
+    "line" : 174,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 188,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL188_7",
+    "kind" : "function",
+    "line" : 188,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 214,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 214,
+    "char" : 6,
+    "name" : "balancedParens",
+    "parameters" : [
+     {
+      "name" : "Range",
+      "kind" : "type"
+     },
+     {
+      "name" : "E",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!Range && is(typeof(r.front == lPar))",
+    "members" : [
+     {
+      "name" : "balancedParens",
+      "kind" : "function",
+      "line" : 214,
+      "char" : 6,
+      "type" : "bool(Range r, E lPar, E rPar, size_t maxNestingLevel = size_t.max)",
+      "parameters" : [
+       {
+        "name" : "r",
+        "type" : "Range"
+       },
+       {
+        "name" : "lPar",
+        "type" : "E"
+       },
+       {
+        "name" : "rPar",
+        "type" : "E"
+       },
+       {
+        "name" : "maxNestingLevel",
+        "type" : "size_t",
+        "default" : "size_t.max"
+       }
+      ],
+      "endline" : 233,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL236_8",
+    "kind" : "function",
+    "line" : 236,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 263,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 263,
+    "char" : 44,
+    "name" : "boyerMooreFinder",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isRandomAccessRange!Range || isSomeString!Range",
+    "members" : [
+     {
+      "name" : "boyerMooreFinder",
+      "kind" : "function",
+      "line" : 263,
+      "char" : 44,
+      "type" : "BoyerMooreFinder!(binaryFun!pred, Range)(Range needle)",
+      "parameters" : [
+       {
+        "name" : "needle",
+        "type" : "Range"
+       }
+      ],
+      "endline" : 268,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 271,
+    "char" : 1,
+    "name" : "BoyerMooreFinder",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     }
+    ],
+    "members" : [
+     {
+      "name" : "BoyerMooreFinder",
+      "kind" : "struct",
+      "line" : 271,
+      "char" : 1,
+      "members" : [
+       {
+        "name" : "skip",
+        "kind" : "variable",
+        "line" : 274,
+        "char" : 14,
+        "type" : "size_t[]"
+       },
+       {
+        "name" : "occ",
+        "kind" : "variable",
+        "line" : 275,
+        "char" : 36,
+        "type" : "ptrdiff_t[ElementType!Range]"
+       },
+       {
+        "name" : "needle",
+        "kind" : "variable",
+        "line" : 276,
+        "char" : 11,
+        "type" : "Range"
+       },
+       {
+        "name" : "occurrence",
+        "kind" : "function",
+        "line" : 278,
+        "char" : 15,
+        "type" : "ptrdiff_t(ElementType!Range c)",
+        "parameters" : [
+         {
+          "name" : "c",
+          "type" : "ElementType!Range"
+         }
+        ],
+        "endline" : 282,
+        "endchar" : 5
+       },
+       {
+        "kind" : "template",
+        "line" : 292,
+        "char" : 17,
+        "name" : "needlematch",
+        "parameters" : [
+         {
+          "name" : "R",
+          "kind" : "type"
+         }
+        ],
+        "members" : [
+         {
+          "name" : "needlematch",
+          "kind" : "function",
+          "line" : 292,
+          "char" : 17,
+          "type" : "bool(R needle, size_t portion, size_t offset)",
+          "parameters" : [
+           {
+            "name" : "needle",
+            "type" : "R"
+           },
+           {
+            "name" : "portion",
+            "type" : "size_t"
+           },
+           {
+            "name" : "offset",
+            "type" : "size_t"
+           }
+          ],
+          "endline" : 309,
+          "endchar" : 5
+         }
+        ]
+       },
+       {
+        "name" : "this",
+        "kind" : "constructor",
+        "line" : 312,
+        "char" : 5,
+        "type" : "(Range needle)",
+        "parameters" : [
+         {
+          "name" : "needle",
+          "type" : "Range"
+         }
+        ],
+        "endline" : 336,
+        "endchar" : 5
+       },
+       {
+        "name" : "beFound",
+        "kind" : "function",
+        "line" : 338,
+        "char" : 11,
+        "type" : "Range(Range haystack)",
+        "parameters" : [
+         {
+          "name" : "haystack",
+          "type" : "Range"
+         }
+        ],
+        "endline" : 357,
+        "endchar" : 5
+       },
+       {
+        "name" : "length",
+        "kind" : "function",
+        "line" : 359,
+        "char" : 22,
+        "type" : "@property size_t()",
+        "endline" : 362,
+        "endchar" : 5
+       },
+       {
+        "name" : "opDollar",
+        "kind" : "alias",
+        "line" : 364,
+        "char" : 5,
+        "type" : "length"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 389,
+    "char" : 6,
+    "name" : "commonPrefix",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && isInputRange!R2 && !isNarrowString!R1 && is(typeof(binaryFun!pred(r1.front, r2.front)))",
+    "members" : [
+     {
+      "name" : "commonPrefix",
+      "kind" : "function",
+      "line" : 389,
+      "char" : 6,
+      "storageClass" : [
+       "auto"
+      ],
+      "type" : "(R1 r1, R2 r2)",
+      "parameters" : [
+       {
+        "name" : "r1",
+        "type" : "R1"
+       },
+       {
+        "name" : "r2",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 420,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL423_9",
+    "kind" : "function",
+    "line" : 423,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 429,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 429,
+    "char" : 6,
+    "name" : "commonPrefix",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isNarrowString!R1 && isInputRange!R2 && is(typeof(binaryFun!pred(r1.front, r2.front)))",
+    "members" : [
+     {
+      "name" : "commonPrefix",
+      "kind" : "function",
+      "line" : 429,
+      "char" : 6,
+      "storageClass" : [
+       "auto"
+      ],
+      "type" : "(R1 r1, R2 r2)",
+      "parameters" : [
+       {
+        "name" : "r1",
+        "type" : "R1"
+       },
+       {
+        "name" : "r2",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 447,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 450,
+    "char" : 6,
+    "name" : "commonPrefix",
+    "parameters" : [
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isNarrowString!R1 && isInputRange!R2 && !isNarrowString!R2 && is(typeof(r1.front == r2.front))",
+    "members" : [
+     {
+      "name" : "commonPrefix",
+      "kind" : "function",
+      "line" : 450,
+      "char" : 6,
+      "storageClass" : [
+       "auto"
+      ],
+      "type" : "(R1 r1, R2 r2)",
+      "parameters" : [
+       {
+        "name" : "r1",
+        "type" : "R1"
+       },
+       {
+        "name" : "r2",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 455,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 458,
+    "char" : 6,
+    "name" : "commonPrefix",
+    "parameters" : [
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isNarrowString!R1 && isNarrowString!R2",
+    "members" : [
+     {
+      "name" : "commonPrefix",
+      "kind" : "function",
+      "line" : 458,
+      "char" : 6,
+      "storageClass" : [
+       "auto"
+      ],
+      "type" : "(R1 r1, R2 r2)",
+      "parameters" : [
+       {
+        "name" : "r1",
+        "type" : "R1"
+       },
+       {
+        "name" : "r2",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 486,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL488_10",
+    "kind" : "function",
+    "line" : 488,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 580,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 580,
+    "char" : 8,
+    "name" : "count",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     },
+     {
+      "name" : "E",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!Range && !isInfinite!Range && is(typeof(binaryFun!pred(haystack.front, needle)) : bool)",
+    "members" : [
+     {
+      "name" : "count",
+      "kind" : "function",
+      "line" : 580,
+      "char" : 8,
+      "type" : "size_t(Range haystack, E needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "Range"
+       },
+       {
+        "name" : "needle",
+        "type" : "E"
+       }
+      ],
+      "endline" : 586,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL589_13",
+    "kind" : "function",
+    "line" : 589,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 607,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL607_14",
+    "kind" : "function",
+    "line" : 607,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 628,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL628_15",
+    "kind" : "function",
+    "line" : 628,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 637,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 637,
+    "char" : 8,
+    "name" : "count",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && !isInfinite!R1 && isForwardRange!R2 && is(typeof(binaryFun!pred(haystack.front, needle.front)) : bool)",
+    "members" : [
+     {
+      "name" : "count",
+      "kind" : "function",
+      "line" : 637,
+      "char" : 8,
+      "type" : "size_t(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 658,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 661,
+    "char" : 8,
+    "name" : "count",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"true\""
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!R && !isInfinite!R && is(typeof(unaryFun!pred(haystack.front)) : bool)",
+    "members" : [
+     {
+      "name" : "count",
+      "kind" : "function",
+      "line" : 661,
+      "char" : 8,
+      "type" : "size_t(R haystack)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R"
+       }
+      ],
+      "endline" : 670,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL672_16",
+    "kind" : "function",
+    "line" : 672,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 682,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL682_17",
+    "kind" : "function",
+    "line" : 682,
+    "char" : 15,
+    "deco" : "FNbNfZv",
+    "endline" : 708,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 708,
+    "char" : 11,
+    "name" : "countUntil",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     },
+     {
+      "name" : "Rs",
+      "kind" : "tuple"
+     }
+    ],
+    "constraint" : "isForwardRange!R && Rs.length > 0 && isForwardRange!(Rs[0]) == isInputRange!(Rs[0]) && is(typeof(startsWith!pred(haystack, needles[0]))) && (Rs.length == 1 || is(typeof(countUntil!pred(haystack, needles[1..__dollar]))))",
+    "members" : [
+     {
+      "name" : "countUntil",
+      "kind" : "function",
+      "line" : 708,
+      "char" : 11,
+      "type" : "ptrdiff_t(R haystack, Rs needles)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R"
+       },
+       {
+        "name" : "needles",
+        "type" : "Rs"
+       }
+      ],
+      "endline" : 793,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 796,
+    "char" : 11,
+    "name" : "countUntil",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     },
+     {
+      "name" : "N",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!R && is(typeof(binaryFun!pred(haystack.front, needle)) : bool)",
+    "members" : [
+     {
+      "name" : "countUntil",
+      "kind" : "function",
+      "line" : 796,
+      "char" : 11,
+      "type" : "ptrdiff_t(R haystack, N needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R"
+       },
+       {
+        "name" : "needle",
+        "type" : "N"
+       }
+      ],
+      "endline" : 802,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL805_18",
+    "kind" : "function",
+    "line" : 805,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 819,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL819_19",
+    "kind" : "function",
+    "line" : 819,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 846,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL846_20",
+    "kind" : "function",
+    "line" : 846,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 866,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 866,
+    "char" : 11,
+    "name" : "countUntil",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!R && is(typeof(unaryFun!pred(haystack.front)) : bool)",
+    "members" : [
+     {
+      "name" : "countUntil",
+      "kind" : "function",
+      "line" : 866,
+      "char" : 11,
+      "type" : "ptrdiff_t(R haystack)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R"
+       }
+      ],
+      "endline" : 907,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL910_21",
+    "kind" : "function",
+    "line" : 910,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 920,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL920_22",
+    "kind" : "function",
+    "line" : 920,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 972,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 972,
+    "char" : 6,
+    "name" : "endsWith",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     },
+     {
+      "name" : "Needles",
+      "kind" : "tuple"
+     }
+    ],
+    "constraint" : "isBidirectionalRange!Range && Needles.length > 1 && is(typeof(.endsWith!pred(doesThisEnd, withOneOfThese[0])) : bool) && is(typeof(.endsWith!pred(doesThisEnd, withOneOfThese[1..__dollar])) : uint)",
+    "members" : [
+     {
+      "name" : "endsWith",
+      "kind" : "function",
+      "line" : 972,
+      "char" : 6,
+      "type" : "uint(Range doesThisEnd, Needles withOneOfThese)",
+      "parameters" : [
+       {
+        "name" : "doesThisEnd",
+        "type" : "Range"
+       },
+       {
+        "name" : "withOneOfThese",
+        "type" : "Needles"
+       }
+      ],
+      "endline" : 1036,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 1039,
+    "char" : 6,
+    "name" : "endsWith",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isBidirectionalRange!R1 && isBidirectionalRange!R2 && is(typeof(binaryFun!pred(doesThisEnd.back, withThis.back)) : bool)",
+    "members" : [
+     {
+      "name" : "endsWith",
+      "kind" : "function",
+      "line" : 1039,
+      "char" : 6,
+      "type" : "bool(R1 doesThisEnd, R2 withThis)",
+      "parameters" : [
+       {
+        "name" : "doesThisEnd",
+        "type" : "R1"
+       },
+       {
+        "name" : "withThis",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 1064,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 1067,
+    "char" : 6,
+    "name" : "endsWith",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     },
+     {
+      "name" : "E",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isBidirectionalRange!R && is(typeof(binaryFun!pred(doesThisEnd.back, withThis)) : bool)",
+    "members" : [
+     {
+      "name" : "endsWith",
+      "kind" : "function",
+      "line" : 1067,
+      "char" : 6,
+      "type" : "bool(R doesThisEnd, E withThis)",
+      "parameters" : [
+       {
+        "name" : "doesThisEnd",
+        "type" : "R"
+       },
+       {
+        "name" : "withThis",
+        "type" : "E"
+       }
+      ],
+      "endline" : 1074,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1077_23",
+    "kind" : "function",
+    "line" : 1077,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1091,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1091_24",
+    "kind" : "function",
+    "line" : 1091,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1213,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 1213,
+    "char" : 12,
+    "name" : "find",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "InputRange",
+      "kind" : "type"
+     },
+     {
+      "name" : "Element",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!InputRange && is(typeof(binaryFun!pred(haystack.front, needle)) : bool)",
+    "members" : [
+     {
+      "name" : "find",
+      "kind" : "function",
+      "line" : 1213,
+      "char" : 12,
+      "type" : "InputRange(InputRange haystack, Element needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "InputRange"
+       },
+       {
+        "name" : "needle",
+        "type" : "Element"
+       }
+      ],
+      "endline" : 1347,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1350_25",
+    "kind" : "function",
+    "line" : 1350,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1369,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1369_26",
+    "kind" : "function",
+    "line" : 1369,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1384,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1384_31",
+    "kind" : "function",
+    "line" : 1384,
+    "char" : 20,
+    "deco" : "FNaNbNfZv",
+    "endline" : 1395,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1395_38",
+    "kind" : "function",
+    "line" : 1395,
+    "char" : 12,
+    "deco" : "FNaNfZv",
+    "endline" : 1421,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1421_43",
+    "kind" : "function",
+    "line" : 1421,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1438,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1438_44",
+    "kind" : "function",
+    "line" : 1438,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1461,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1461_45",
+    "kind" : "function",
+    "line" : 1461,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1498,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 1498,
+    "char" : 12,
+    "name" : "find",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "InputRange",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!InputRange",
+    "members" : [
+     {
+      "name" : "find",
+      "kind" : "function",
+      "line" : 1498,
+      "char" : 12,
+      "type" : "InputRange(InputRange haystack)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "InputRange"
+       }
+      ],
+      "endline" : 1538,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1541_46",
+    "kind" : "function",
+    "line" : 1541,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1551,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1551_50",
+    "kind" : "function",
+    "line" : 1551,
+    "char" : 12,
+    "deco" : "FNaNfZv",
+    "endline" : 1587,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 1587,
+    "char" : 4,
+    "name" : "find",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && isForwardRange!R2 && is(typeof(binaryFun!pred(haystack.front, needle.front)) : bool) && !isRandomAccessRange!R1",
+    "members" : [
+     {
+      "name" : "find",
+      "kind" : "function",
+      "line" : 1587,
+      "char" : 4,
+      "type" : "R1(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 1609,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1612_51",
+    "kind" : "function",
+    "line" : 1612,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1625,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1625_52",
+    "kind" : "function",
+    "line" : 1625,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1632,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1632_53",
+    "kind" : "function",
+    "line" : 1632,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1648,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 1648,
+    "char" : 4,
+    "name" : "find",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isRandomAccessRange!R1 && isBidirectionalRange!R2 && is(typeof(binaryFun!pred(haystack.front, needle.front)) : bool)",
+    "members" : [
+     {
+      "name" : "find",
+      "kind" : "function",
+      "line" : 1648,
+      "char" : 4,
+      "type" : "R1(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 1693,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1695_54",
+    "kind" : "function",
+    "line" : 1695,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1720,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 1720,
+    "char" : 4,
+    "name" : "find",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isRandomAccessRange!R1 && isForwardRange!R2 && !isBidirectionalRange!R2 && is(typeof(binaryFun!pred(haystack.front, needle.front)) : bool)",
+    "members" : [
+     {
+      "name" : "find",
+      "kind" : "function",
+      "line" : 1720,
+      "char" : 4,
+      "type" : "R1(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 1780,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1782_55",
+    "kind" : "function",
+    "line" : 1782,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1791,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1791_56",
+    "kind" : "function",
+    "line" : 1791,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1808,
+    "endchar" : 13
+   },
+   {
+    "kind" : "template",
+    "line" : 1808,
+    "char" : 16,
+    "name" : "simpleMindedFind",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "members" : [
+     {
+      "name" : "simpleMindedFind",
+      "kind" : "function",
+      "line" : 1808,
+      "char" : 16,
+      "type" : "R1(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 1874,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1876_57",
+    "kind" : "function",
+    "line" : 1876,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1952,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 1952,
+    "char" : 23,
+    "name" : "find",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     },
+     {
+      "name" : "Ranges",
+      "kind" : "tuple"
+     }
+    ],
+    "constraint" : "Ranges.length > 1 && is(typeof(startsWith!pred(haystack, needles)))",
+    "members" : [
+     {
+      "name" : "find",
+      "kind" : "function",
+      "line" : 1952,
+      "char" : 23,
+      "type" : "Tuple!(Range, size_t)(Range haystack, Ranges needles)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "Range"
+       },
+       {
+        "name" : "needles",
+        "type" : "Ranges"
+       }
+      ],
+      "endline" : 1964,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL1967_58",
+    "kind" : "function",
+    "line" : 1967,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1977,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1977_59",
+    "kind" : "function",
+    "line" : 1977,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 1989,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL1989_60",
+    "kind" : "function",
+    "line" : 1989,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2020,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2020_61",
+    "kind" : "function",
+    "line" : 2020,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2045,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2045_62",
+    "kind" : "function",
+    "line" : 2045,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2076,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2076,
+    "char" : 8,
+    "name" : "find",
+    "parameters" : [
+     {
+      "name" : "Range1",
+      "kind" : "type"
+     },
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "Range2",
+      "kind" : "type"
+     }
+    ],
+    "members" : [
+     {
+      "name" : "find",
+      "kind" : "function",
+      "line" : 2076,
+      "char" : 8,
+      "type" : "Range1(Range1 haystack, BoyerMooreFinder!(pred, Range2) needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "Range1"
+       },
+       {
+        "name" : "needle",
+        "type" : "BoyerMooreFinder!(pred, Range2)"
+       }
+      ],
+      "endline" : 2080,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2082_63",
+    "kind" : "function",
+    "line" : 2082,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2097,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2097_64",
+    "kind" : "function",
+    "line" : 2097,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2106,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2106_65",
+    "kind" : "function",
+    "line" : 2106,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2121,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2121,
+    "char" : 1,
+    "name" : "canFind",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     }
+    ],
+    "members" : [
+     {
+      "name" : "std.typetuple",
+      "kind" : "import",
+      "line" : 2123,
+      "char" : 12,
+      "protection" : "private",
+      "selective" : [
+       "allSatisfy"
+      ]
+     },
+     {
+      "kind" : "template",
+      "line" : 2130,
+      "char" : 10,
+      "name" : "canFind",
+      "parameters" : [
+       {
+        "name" : "Range",
+        "kind" : "type"
+       }
+      ],
+      "constraint" : "is(typeof(find!pred(haystack)))",
+      "members" : [
+       {
+        "name" : "canFind",
+        "kind" : "function",
+        "line" : 2130,
+        "char" : 10,
+        "type" : "bool(Range haystack)",
+        "parameters" : [
+         {
+          "name" : "haystack",
+          "type" : "Range"
+         }
+        ],
+        "endline" : 2134,
+        "endchar" : 5
+       }
+      ]
+     },
+     {
+      "kind" : "template",
+      "line" : 2140,
+      "char" : 10,
+      "name" : "canFind",
+      "parameters" : [
+       {
+        "name" : "Range",
+        "kind" : "type"
+       },
+       {
+        "name" : "Element",
+        "kind" : "type"
+       }
+      ],
+      "constraint" : "is(typeof(find!pred(haystack, needle)))",
+      "members" : [
+       {
+        "name" : "canFind",
+        "kind" : "function",
+        "line" : 2140,
+        "char" : 10,
+        "type" : "bool(Range haystack, Element needle)",
+        "parameters" : [
+         {
+          "name" : "haystack",
+          "type" : "Range"
+         },
+         {
+          "name" : "needle",
+          "type" : "Element"
+         }
+        ],
+        "endline" : 2144,
+        "endchar" : 5
+       }
+      ]
+     },
+     {
+      "kind" : "template",
+      "line" : 2157,
+      "char" : 12,
+      "name" : "canFind",
+      "parameters" : [
+       {
+        "name" : "Range",
+        "kind" : "type"
+       },
+       {
+        "name" : "Ranges",
+        "kind" : "tuple"
+       }
+      ],
+      "constraint" : "Ranges.length > 1 && allSatisfy!(isForwardRange, Ranges) && is(typeof(find!pred(haystack, needles)))",
+      "members" : [
+       {
+        "name" : "canFind",
+        "kind" : "function",
+        "line" : 2157,
+        "char" : 12,
+        "type" : "size_t(Range haystack, Ranges needles)",
+        "parameters" : [
+         {
+          "name" : "haystack",
+          "type" : "Range"
+         },
+         {
+          "name" : "needles",
+          "type" : "Ranges"
+         }
+        ],
+        "endline" : 2163,
+        "endchar" : 5
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2167_66",
+    "kind" : "function",
+    "line" : 2167,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2180,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2180_67",
+    "kind" : "function",
+    "line" : 2180,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2193,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2193_68",
+    "kind" : "function",
+    "line" : 2193,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2218,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2218,
+    "char" : 7,
+    "name" : "findAdjacent",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!Range",
+    "members" : [
+     {
+      "name" : "findAdjacent",
+      "kind" : "function",
+      "line" : 2218,
+      "char" : 7,
+      "type" : "Range(Range r)",
+      "parameters" : [
+       {
+        "name" : "r",
+        "type" : "Range"
+       }
+      ],
+      "endline" : 2231,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2234_69",
+    "kind" : "function",
+    "line" : 2234,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2244,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2244_70",
+    "kind" : "function",
+    "line" : 2244,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2295,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2295,
+    "char" : 8,
+    "name" : "findAmong",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range1",
+      "kind" : "type"
+     },
+     {
+      "name" : "Range2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!Range1 && isForwardRange!Range2",
+    "members" : [
+     {
+      "name" : "findAmong",
+      "kind" : "function",
+      "line" : 2295,
+      "char" : 8,
+      "type" : "Range1(Range1 seq, Range2 choices)",
+      "parameters" : [
+       {
+        "name" : "seq",
+        "type" : "Range1"
+       },
+       {
+        "name" : "choices",
+        "type" : "Range2"
+       }
+      ],
+      "endline" : 2303,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2306_71",
+    "kind" : "function",
+    "line" : 2306,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2313,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2313_72",
+    "kind" : "function",
+    "line" : 2313,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2341,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2341,
+    "char" : 6,
+    "name" : "findSkip",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && isForwardRange!R2 && is(typeof(binaryFun!pred(haystack.front, needle.front)))",
+    "members" : [
+     {
+      "name" : "findSkip",
+      "kind" : "function",
+      "line" : 2341,
+      "char" : 6,
+      "type" : "bool(ref R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1",
+        "storageClass" : [
+         "ref"
+        ]
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 2350,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2353_73",
+    "kind" : "function",
+    "line" : 2353,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2409,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2409,
+    "char" : 6,
+    "name" : "findSplit",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && isForwardRange!R2",
+    "members" : [
+     {
+      "name" : "findSplit",
+      "kind" : "function",
+      "line" : 2409,
+      "char" : 6,
+      "storageClass" : [
+       "auto"
+      ],
+      "type" : "(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 2449,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 2452,
+    "char" : 6,
+    "name" : "findSplitBefore",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && isForwardRange!R2",
+    "members" : [
+     {
+      "name" : "findSplitBefore",
+      "kind" : "function",
+      "line" : 2452,
+      "char" : 6,
+      "storageClass" : [
+       "auto"
+      ],
+      "type" : "(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 2486,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 2489,
+    "char" : 6,
+    "name" : "findSplitAfter",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && isForwardRange!R2",
+    "members" : [
+     {
+      "name" : "findSplitAfter",
+      "kind" : "function",
+      "line" : 2489,
+      "char" : 6,
+      "storageClass" : [
+       "auto"
+      ],
+      "type" : "(R1 haystack, R2 needle)",
+      "parameters" : [
+       {
+        "name" : "haystack",
+        "type" : "R1"
+       },
+       {
+        "name" : "needle",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 2529,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2532_74",
+    "kind" : "function",
+    "line" : 2532,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2551,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2551_75",
+    "kind" : "function",
+    "line" : 2551,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2578,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2578_76",
+    "kind" : "function",
+    "line" : 2578,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2619,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2620,
+    "char" : 1,
+    "name" : "minCount",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a < b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!Range && !isInfinite!Range && is(typeof(binaryFun!pred(range.front, range.front)))",
+    "members" : [
+     {
+      "name" : "minCount",
+      "kind" : "function",
+      "line" : 2620,
+      "char" : 1,
+      "type" : "Tuple!(ElementType!Range, size_t)(Range range)",
+      "parameters" : [
+       {
+        "name" : "range",
+        "type" : "Range"
+       }
+      ],
+      "endline" : 2698,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2701_77",
+    "kind" : "function",
+    "line" : 2701,
+    "char" : 1,
+    "deco" : "FZv",
+    "endline" : 2715,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2715_78",
+    "kind" : "function",
+    "line" : 2715,
+    "char" : 1,
+    "deco" : "FZv",
+    "endline" : 2736,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2736_79",
+    "kind" : "function",
+    "line" : 2736,
+    "char" : 1,
+    "deco" : "FZv",
+    "endline" : 2814,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2814,
+    "char" : 7,
+    "name" : "minPos",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a < b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!Range && !isInfinite!Range && is(typeof(binaryFun!pred(range.front, range.front)))",
+    "members" : [
+     {
+      "name" : "minPos",
+      "kind" : "function",
+      "line" : 2814,
+      "char" : 7,
+      "type" : "Range(Range range)",
+      "parameters" : [
+       {
+        "name" : "range",
+        "type" : "Range"
+       }
+      ],
+      "endline" : 2831,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2834_80",
+    "kind" : "function",
+    "line" : 2834,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2843,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2843_81",
+    "kind" : "function",
+    "line" : 2843,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2859,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2859_82",
+    "kind" : "function",
+    "line" : 2859,
+    "char" : 1,
+    "deco" : "FZv",
+    "endline" : 2874,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL2874_83",
+    "kind" : "function",
+    "line" : 2874,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2906,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2906,
+    "char" : 6,
+    "name" : "skipOver",
+    "parameters" : [
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isForwardRange!R1 && isInputRange!R2 && is(typeof(r1.front == r2.front))",
+    "members" : [
+     {
+      "name" : "skipOver",
+      "kind" : "function",
+      "line" : 2906,
+      "char" : 6,
+      "type" : "bool(ref R1 r1, R2 r2)",
+      "parameters" : [
+       {
+        "name" : "r1",
+        "type" : "R1",
+        "storageClass" : [
+         "ref"
+        ]
+       },
+       {
+        "name" : "r2",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 2925,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 2928,
+    "char" : 6,
+    "name" : "skipOver",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "is(typeof(binaryFun!pred(r1.front, r2.front))) && isForwardRange!R1 && isInputRange!R2",
+    "members" : [
+     {
+      "name" : "skipOver",
+      "kind" : "function",
+      "line" : 2928,
+      "char" : 6,
+      "type" : "bool(ref R1 r1, R2 r2)",
+      "parameters" : [
+       {
+        "name" : "r1",
+        "type" : "R1",
+        "storageClass" : [
+         "ref"
+        ]
+       },
+       {
+        "name" : "r2",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 2948,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL2951_90",
+    "kind" : "function",
+    "line" : 2951,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 2986,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 2986,
+    "char" : 6,
+    "name" : "skipOver",
+    "parameters" : [
+     {
+      "name" : "R",
+      "kind" : "type"
+     },
+     {
+      "name" : "E",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!R && is(typeof(r.front == e) : bool)",
+    "members" : [
+     {
+      "name" : "skipOver",
+      "kind" : "function",
+      "line" : 2986,
+      "char" : 6,
+      "type" : "bool(ref R r, E e)",
+      "parameters" : [
+       {
+        "name" : "r",
+        "type" : "R",
+        "storageClass" : [
+         "ref"
+        ]
+       },
+       {
+        "name" : "e",
+        "type" : "E"
+       }
+      ],
+      "endline" : 2990,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 2993,
+    "char" : 6,
+    "name" : "skipOver",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     },
+     {
+      "name" : "E",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "is(typeof(binaryFun!pred(r.front, e))) && isInputRange!R",
+    "members" : [
+     {
+      "name" : "skipOver",
+      "kind" : "function",
+      "line" : 2993,
+      "char" : 6,
+      "type" : "bool(ref R r, E e)",
+      "parameters" : [
+       {
+        "name" : "r",
+        "type" : "R",
+        "storageClass" : [
+         "ref"
+        ]
+       },
+       {
+        "name" : "e",
+        "type" : "E"
+       }
+      ],
+      "endline" : 3000,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL3003_97",
+    "kind" : "function",
+    "line" : 3003,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 3054,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 3054,
+    "char" : 6,
+    "name" : "startsWith",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     },
+     {
+      "name" : "Needles",
+      "kind" : "tuple"
+     }
+    ],
+    "constraint" : "isInputRange!Range && Needles.length > 1 && is(typeof(.startsWith!pred(doesThisStart, withOneOfThese[0])) : bool) && is(typeof(.startsWith!pred(doesThisStart, withOneOfThese[1..__dollar])) : uint)",
+    "members" : [
+     {
+      "name" : "startsWith",
+      "kind" : "function",
+      "line" : 3054,
+      "char" : 6,
+      "type" : "uint(Range doesThisStart, Needles withOneOfThese)",
+      "parameters" : [
+       {
+        "name" : "doesThisStart",
+        "type" : "Range"
+       },
+       {
+        "name" : "withOneOfThese",
+        "type" : "Needles"
+       }
+      ],
+      "endline" : 3124,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 3127,
+    "char" : 6,
+    "name" : "startsWith",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R1",
+      "kind" : "type"
+     },
+     {
+      "name" : "R2",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!R1 && isInputRange!R2 && is(typeof(binaryFun!pred(doesThisStart.front, withThis.front)) : bool)",
+    "members" : [
+     {
+      "name" : "startsWith",
+      "kind" : "function",
+      "line" : 3127,
+      "char" : 6,
+      "type" : "bool(R1 doesThisStart, R2 withThis)",
+      "parameters" : [
+       {
+        "name" : "doesThisStart",
+        "type" : "R1"
+       },
+       {
+        "name" : "withThis",
+        "type" : "R2"
+       }
+      ],
+      "endline" : 3193,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 3196,
+    "char" : 6,
+    "name" : "startsWith",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     },
+     {
+      "name" : "E",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!R && is(typeof(binaryFun!pred(doesThisStart.front, withThis)) : bool)",
+    "members" : [
+     {
+      "name" : "startsWith",
+      "kind" : "function",
+      "line" : 3196,
+      "char" : 6,
+      "type" : "bool(R doesThisStart, E withThis)",
+      "parameters" : [
+       {
+        "name" : "doesThisStart",
+        "type" : "R"
+       },
+       {
+        "name" : "withThis",
+        "type" : "E"
+       }
+      ],
+      "endline" : 3203,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL3206_98",
+    "kind" : "function",
+    "line" : 3206,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 3224,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL3224_99",
+    "kind" : "function",
+    "line" : 3224,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 3323,
+    "endchar" : 1
+   },
+   {
+    "kind" : "template",
+    "line" : 3323,
+    "char" : 6,
+    "name" : "skipAll",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "R",
+      "kind" : "type"
+     },
+     {
+      "name" : "Es",
+      "kind" : "tuple"
+     }
+    ],
+    "members" : [
+     {
+      "name" : "skipAll",
+      "kind" : "function",
+      "line" : 3323,
+      "char" : 6,
+      "type" : "void(ref R r, Es es)",
+      "parameters" : [
+       {
+        "name" : "r",
+        "type" : "R",
+        "storageClass" : [
+         "ref"
+        ]
+       },
+       {
+        "name" : "es",
+        "type" : "Es"
+       }
+      ],
+      "endline" : 3338,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL3340_100",
+    "kind" : "function",
+    "line" : 3340,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 3351,
+    "endchar" : 1
+   },
+   {
+    "name" : "OpenRight",
+    "kind" : "enum",
+    "line" : 3351,
+    "char" : 1,
+    "baseDeco" : "i",
+    "members" : [
+     {
+      "name" : "no",
+      "kind" : "enum member",
+      "value" : "0",
+      "line" : 3353,
+      "char" : 5
+     },
+     {
+      "name" : "yes",
+      "kind" : "enum member",
+      "value" : "1",
+      "line" : 3354,
+      "char" : 5
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 3357,
+    "char" : 1,
+    "name" : "Until",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     },
+     {
+      "name" : "Sentinel",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "isInputRange!Range",
+    "members" : [
+     {
+      "name" : "Until",
+      "kind" : "struct",
+      "line" : 3357,
+      "char" : 1,
+      "members" : [
+       {
+        "name" : "_input",
+        "kind" : "variable",
+        "line" : 3359,
+        "char" : 19,
+        "type" : "Range"
+       },
+       {
+        "name" : "_openRight",
+        "kind" : "variable",
+        "line" : 3368,
+        "char" : 15,
+        "type" : "OpenRight"
+       },
+       {
+        "name" : "_done",
+        "kind" : "variable",
+        "line" : 3369,
+        "char" : 10,
+        "deco" : "b"
+       },
+       {
+        "name" : "empty",
+        "kind" : "function",
+        "line" : 3388,
+        "char" : 20,
+        "type" : "@property bool()",
+        "endline" : 3391,
+        "endchar" : 5
+       },
+       {
+        "name" : "front",
+        "kind" : "function",
+        "line" : 3393,
+        "char" : 24,
+        "storageClass" : [
+         "auto"
+        ],
+        "type" : "@property ref ()",
+        "endline" : 3397,
+        "endchar" : 5
+       },
+       {
+        "name" : "predSatisfied",
+        "kind" : "function",
+        "line" : 3399,
+        "char" : 18,
+        "type" : "bool()",
+        "endline" : 3405,
+        "endchar" : 5
+       },
+       {
+        "name" : "popFront",
+        "kind" : "function",
+        "line" : 3407,
+        "char" : 10,
+        "type" : "void()",
+        "endline" : 3421,
+        "endchar" : 5
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 3468,
+    "char" : 1,
+    "name" : "until",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias",
+      "defaultAlias" : "\"a == b\""
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     },
+     {
+      "name" : "Sentinel",
+      "kind" : "type"
+     }
+    ],
+    "constraint" : "!is(Sentinel == OpenRight)",
+    "members" : [
+     {
+      "name" : "until",
+      "kind" : "function",
+      "line" : 3468,
+      "char" : 1,
+      "type" : "Until!(pred, Range, Sentinel)(Range range, Sentinel sentinel, OpenRight openRight = OpenRight.yes)",
+      "parameters" : [
+       {
+        "name" : "range",
+        "type" : "Range"
+       },
+       {
+        "name" : "sentinel",
+        "type" : "Sentinel"
+       },
+       {
+        "name" : "openRight",
+        "type" : "OpenRight",
+        "default" : "OpenRight.yes"
+       }
+      ],
+      "endline" : 3473,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "kind" : "template",
+    "line" : 3477,
+    "char" : 1,
+    "name" : "until",
+    "parameters" : [
+     {
+      "name" : "pred",
+      "kind" : "alias"
+     },
+     {
+      "name" : "Range",
+      "kind" : "type"
+     }
+    ],
+    "members" : [
+     {
+      "name" : "until",
+      "kind" : "function",
+      "line" : 3477,
+      "char" : 1,
+      "type" : "Until!(pred, Range, void)(Range range, OpenRight openRight = OpenRight.yes)",
+      "parameters" : [
+       {
+        "name" : "range",
+        "type" : "Range"
+       },
+       {
+        "name" : "openRight",
+        "type" : "OpenRight",
+        "default" : "OpenRight.yes"
+       }
+      ],
+      "endline" : 3481,
+      "endchar" : 1
+     }
+    ]
+   },
+   {
+    "name" : "__unittestL3484_101",
+    "kind" : "function",
+    "line" : 3484,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 3492,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL3492_102",
+    "kind" : "function",
+    "line" : 3492,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 3507,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL3507_103",
+    "kind" : "function",
+    "line" : 3507,
+    "char" : 1,
+    "deco" : "FZv",
+    "endline" : 3516,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL3516_104",
+    "kind" : "function",
+    "line" : 3516,
+    "char" : 7,
+    "deco" : "FNfZv",
+    "endline" : 3525,
+    "endchar" : 1
+   },
+   {
+    "name" : "__unittestL3525_106",
+    "kind" : "function",
+    "line" : 3525,
+    "char" : 1,
+    "deco" : "FZv",
+    "endline" : 3532,
+    "endchar" : 1
+   }
+  ]
+ }
+]

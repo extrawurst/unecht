@@ -1,0 +1,8 @@
+name "scod"
+description "A nice documentation generator based on ddox."
+copyright "Copyright © 2015, Martin Nowak"
+license "MIT"
+authors "Martin Nowak"
+dependency "ddox" version="~>0.15"
+versions "VibeCustomMain"
+x:ddoxTool "scod"

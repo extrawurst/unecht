@@ -1,0 +1,34 @@
+!!! 5
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    - string title;
+    block title
+    title= title
+    - debug(CompileCSS)
+      link(rel="stylesheet", href="#{info.linkTo(null)}css/normalize.css")
+      link(rel="stylesheet", href="#{info.linkTo(null)}css/skeleton.css")
+      link(rel="stylesheet", href="#{info.linkTo(null)}css/scod.css")
+      link(rel="stylesheet", href="#{info.linkTo(null)}css/tomorrow.css")
+      script(type="text/javascript", src="#{info.linkTo(null)}js/prettify.js")
+      script(type="text/javascript", src="#{info.linkTo(null)}js/scod.js")
+    - else
+      link(rel="stylesheet", href="#{info.linkTo(null)}css/style.min.css")
+      script(type="text/javascript", src="#{info.linkTo(null)}js/script.min.js")
+  body(onload="setupDdox();")
+    header
+      block header
+
+    nav#main-nav
+      block navigation
+      p#main-nav-footer
+        | Built with
+        a(href="https://github.com/MartinNowak/scod") scod
+
+    #main-contents
+      h1= title
+      block body
+
+      footer
+        block footer

@@ -1,0 +1,32 @@
+extends layout
+
+block title
+  block ddox.defs
+  block ddox.title
+
+block navigation
+  include ddox.inc.symbol-search
+  - final switch( info.settings.navigationType )
+    - case NavigationType.moduleTree:
+      include ddox.inc.module-tree
+      - break;
+    - case NavigationType.moduleList:
+      include ddox.inc.module-list
+      - break;
+    - case NavigationType.declarationTree:
+      include ddox.inc.decl-tree
+    - break;
+
+block body
+  block ddox.description
+
+  block ddox.sections
+
+  block ddox.members
+
+block footer
+  hr
+  #license-info
+    block ddox.authors
+    block ddox.copyright
+    block ddox.license

@@ -1,0 +1,10 @@
+.dub
+docs.json
+docs
+__dummy.html
+*.o
+*.obj
+scod
+node_modules
+test/screenshots/*.diff.png
+test/screenshots/*.fail.png
