@@ -333,7 +333,7 @@ $('#symbolSearchPane').show();
 								<code>UEFiber</code>
 							</a>
 						</td>
-						<td>acts like a std.thread:.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+						<td>acts like a std.thread.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
 </td>
 					</tr>
 				</table>
@@ -352,7 +352,10 @@ $('#symbolSearchPane').show();
 								<code>UEFibers</code>
 							</a>
 						</td>
-						<td></td>
+						<td>UEFibers acts as a container for fibers.
+ It manages reusing <code class="lang-d"><a href="../../unecht/core/fibers/UEFiber.html"><span class="typ">UEFiber</span></a></code> objects after they are finished.
+ <code class="lang-d"><a href="../../unecht/core/fibers/UEFibers.startFiber.html"><span class="pln">startFiber</span></a></code> first tries to find a finished <code class="lang-d"><a href="../../unecht/core/fibers/UEFiber.html"><span class="typ">UEFiber</span></a></code> and only otherwise allocates
+</td>
 					</tr>
 				</table>
 			</section>

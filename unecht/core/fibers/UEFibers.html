@@ -298,7 +298,11 @@ $('#symbolSearchPane').show();
 		<div id="main-contents">
 			<h1>Struct UEFibers</h1>
 			<section>
-				<p></p>
+				<p>UEFibers acts as a container for fibers.
+ It manages reusing <code class="lang-d"><a href="../../unecht/core/fibers/UEFiber.html"><span class="typ"><a href="../../../unecht/core/fibers/UEFiber.html"><span class="typ">UEFiber</span></a></span></a></code> objects after they are finished.
+ <code class="lang-d"><a href="../../unecht/core/fibers/UEFibers.startFiber.html"><span class="pln"><a href="../../../unecht/core/fibers/UEFibers.startFiber.html"><span class="pln">startFiber</span></a></span></a></code> first tries to find a finished <code class="lang-d"><a href="../../unecht/core/fibers/UEFiber.html"><span class="typ"><a href="../../../unecht/core/fibers/UEFiber.html"><span class="typ">UEFiber</span></a></span></a></code> and only otherwise allocates
+</p>
+<section></section>
 
 					<section>
 						<h3>Methods</h3>
@@ -314,7 +318,7 @@ $('#symbolSearchPane').show();
 										<code>runFibers</code>
 									</a>
 								</td>
-								<td>calls all running fibers that do not wait for a child to finish
+								<td>Calls all running fibers that do not wait for a child to finish
 </td>
 							</tr>
 							<tr>
@@ -323,7 +327,8 @@ $('#symbolSearchPane').show();
 										<code>startFiber</code>
 									</a>
 								</td>
-								<td></td>
+								<td>start a function as a fiber
+</td>
 							</tr>
 							<tr>
 								<td>
@@ -336,6 +341,10 @@ $('#symbolSearchPane').show();
 							</tr>
 						</table>
 					</section>
+<section><h3>See Also</h3>
+<p><code class="lang-d"><a href="../../../unecht/core/fibers/UEFiber.html"><span class="typ">UEFiber</span></a></code>
+</p>
+</section>
 <section><h3>Example</h3>
 <p>unittest example: basic
 </p>
