@@ -1,4 +1,4 @@
-unecht [![Stories in Ready](https://badge.waffle.io/Extrawurst/unecht.png?label=ready&title=Ready)](https://waffle.io/Extrawurst/unecht) [![Build Status](https://travis-ci.org/Extrawurst/unecht.svg)](https://travis-ci.org/Extrawurst/unecht)
+unecht [![Stories in Ready](https://badge.waffle.io/Extrawurst/unecht.png?label=ready&title=Ready)](https://waffle.io/Extrawurst/unecht) [![Build Status](https://travis-ci.org/Extrawurst/unecht.svg)](https://travis-ci.org/Extrawurst/unecht) [![Docs](https://img.shields.io/badge/docs-ok-blue.svg)](https://extrawurst.github.io/unecht)
 ===
 
 Game Engine Framework written in #dlang
