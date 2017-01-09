@@ -230,7 +230,7 @@ struct UEFibers
 	}
 }
 
-/// unittest example: basic yield
+/// basic yield
 unittest
 {
 	int i=0;
@@ -243,15 +243,12 @@ unittest
 		i++;
 	});
 
-	assert(UEFibers.fibers.length == 1);
 	assert(i==1);
-
 	UEFibers.runFibers();
-
 	assert(i==2);
 }
 
-/// unittest example: fiber object reuse
+/// fiber object reuse
 unittest
 {
 	int i=0;
@@ -259,10 +256,6 @@ unittest
 	UEFibers.fibers.length=0;
 
 	UEFibers.startFiber({i++;});
-
-	assert(UEFibers.fibers.length == 1);
-	assert(i == 1);
-
 	UEFibers.startFiber({i++;});
 
 	assert(UEFibers.fibers.length == 1);
