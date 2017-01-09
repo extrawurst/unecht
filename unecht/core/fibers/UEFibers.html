@@ -346,7 +346,7 @@ $('#symbolSearchPane').show();
 </p>
 </section>
 <section><h3>Example</h3>
-<p>unittest example: basic yield
+<p>basic yield
 </p>
 <pre class="code"><code class="lang-d"><span class="typ">int </span><span class="pln">i</span><span class="pun">=</span><span class="lit">0</span><span class="pun">;
 </span><span class="com">// reset
@@ -358,26 +358,19 @@ $('#symbolSearchPane').show();
 	</span><span class="pln">i</span><span class="pun">++;
 });
 
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">fibers<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
 </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">i</span><span class="pun">==</span><span class="lit">1</span><span class="pun">);
-
 <a href="../../../unecht/core/fibers/UEFibers.runFibers.html"></span><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">runFibers</span></a><span class="pun">();
-
 </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">i</span><span class="pun">==</span><span class="lit">2</span><span class="pun">);
 </span></code></pre>
 </section>
 <section><h3>Example</h3>
-<p>unittest example: fiber object reuse
+<p>fiber object reuse
 </p>
 <pre class="code"><code class="lang-d"><span class="typ">int </span><span class="pln">i</span><span class="pun">=</span><span class="lit">0</span><span class="pun">;
 </span><span class="com">// reset
 </span><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">fibers<wbr/></span><span class="pun">.</span><span class="pln">length</span><span class="pun">=</span><span class="lit">0</span><span class="pun">;
 
 <a href="../../../unecht/core/fibers/UEFibers.startFiber.html"></span><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">startFiber</span></a><span class="pun">({</span><span class="pln">i</span><span class="pun">++;});
-
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">fibers<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">i </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-
 <a href="../../../unecht/core/fibers/UEFibers.startFiber.html"></span><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">startFiber</span></a><span class="pun">({</span><span class="pln">i</span><span class="pun">++;});
 
 </span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">fibers<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
