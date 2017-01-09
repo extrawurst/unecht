@@ -20,14 +20,14 @@ cd -
 # build docs.json
 dub build --config=ddox -f
 
-# copy
-cp -r ddox/* ${HTML_PATH}/
-
 # create html
-cd subtrees/scod
+cd subtrees/
+git clone https://github.com/rejectedsoftware/ddox.git
+cd ddox/
+cp -r ddox/public/* ${HTML_PATH}/
 dub build
-./scod generate-html --navigation-type=ModuleTree ../../docs.json ${HTML_PATH}
-cd -
+./ddox generate-html --navigation-type=ModuleTree ../../docs.json ${HTML_PATH}
+cd ../../
 
 # Create and commit the documentation repo.
 cd ${HTML_PATH}
