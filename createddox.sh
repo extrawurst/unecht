@@ -26,7 +26,7 @@ cp -r ddox/* ${HTML_PATH}/
 # create html
 cd subtrees/scod
 dub build
-./scod generate-html ../../docs.json ${HTML_PATH}
+./scod generate-html --navigation-type=ModuleTree ../../docs.json ${HTML_PATH}
 cd -
 
 # Create and commit the documentation repo.
