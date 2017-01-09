@@ -357,6 +357,22 @@ $('#symbolSearchPane').show();
 							</tr>
 						</table>
 					</section>
+<section><h3>Example</h3>
+
+<pre class="code"><code class="lang-d"><span class="typ">int </span><span class="pln">i</span><span class="pun">=</span><span class="lit">0</span><span class="pun">;
+</span><span class="kwd">auto </span><span class="pln">fiber </span><span class="pun">= </span><span class="kwd">new </span><span class="typ">UEFiber</span><span class="pun">(</span><span class="kwd">cast</span><span class="pun">(<a href="../../../unecht/core/fibers/UEFiberDelegate.html"></span><span class="typ">UEFiberDelegate</span></a><span class="pun">){
+		</span><span class="pln">i</span><span class="pun">++;
+		</span><span class="typ">Fiber<wbr/></span><span class="pun">.</span><span class="pln">yield</span><span class="pun">;
+		</span><span class="pln">i</span><span class="pun">++;
+	});
+
+</span><span class="pln">fiber<wbr/></span><span class="pun">.</span><span class="pln">call</span><span class="pun">(); </span><span class="com">// executes until yield
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">i </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+</span><span class="pln">fiber<wbr/></span><span class="pun">.</span><span class="pln">call</span><span class="pun">(); </span><span class="com">// finishes
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">i </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+</span></code></pre>
+</section>
 
 			</section>
 			<section>
