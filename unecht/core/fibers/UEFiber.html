@@ -298,8 +298,11 @@ $('#symbolSearchPane').show();
 		<div id="main-contents">
 			<h1>Class UEFiber</h1>
 			<section>
-				<p>add child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+				<p>acts like a std.thread:.Fiber -
 </p>
+<section><p>adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+</p>
+</section>
 
 					<section>
 						<h3>Inherits from</h3>
@@ -324,7 +327,8 @@ $('#symbolSearchPane').show();
 										<code>this</code>
 									</a>
 								</td>
-								<td></td>
+								<td>c'tor
+</td>
 							</tr>
 						</table>
 					</section>
@@ -360,7 +364,8 @@ $('#symbolSearchPane').show();
 										<code>reset</code>
 									</a>
 								</td>
-								<td></td>
+								<td>resets the Fiber to be reused with another method
+</td>
 							</tr>
 							<tr>
 								<td>
@@ -368,7 +373,8 @@ $('#symbolSearchPane').show();
 										<code>safeCall</code>
 									</a>
 								</td>
-								<td></td>
+								<td>will call the Fiber in a nothrow way, so it will return any thrown exception inside without automatic rethrow
+</td>
 							</tr>
 							<tr>
 								<td>
