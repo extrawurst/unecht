@@ -24,7 +24,7 @@ dub build --config=ddox -f
 cd subtrees/
 git clone https://github.com/rejectedsoftware/ddox.git
 cd ddox/
-cp -r ddox/public/* ${HTML_PATH}/
+cp -r public/* ${HTML_PATH}/
 dub build
 ./ddox generate-html --navigation-type=ModuleTree ../../docs.json ${HTML_PATH}
 cd ../../
