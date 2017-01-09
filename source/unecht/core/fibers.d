@@ -16,7 +16,10 @@ alias UEFiberFunc = void function();
 alias UEFiberDelegate = void delegate();
 
 /++
- + acts like a std.thread:.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+ + acts like a std.thread.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+ +
+ + See_Also:
+ +	`UEFibers`
  +/
 final class UEFiber : Fiber
 {
@@ -131,12 +134,19 @@ UEFiberFunc waitFiber(string d)()
 	};
 }
 
-///
+/++
+ + UEFibers acts as a container for fibers.
+ + It manages reusing `UEFiber` objects after they are finished.
+ + `startFiber` first tries to find a finished `UEFiber` and only otherwise allocates
+ +
+ + See_Also:
+ +	`UEFiber`
+ +/
 struct UEFibers
 {
 	private static UEFiber[] fibers;
 
-	///
+	/// start a function as a fiber
 	public static void startFiber(UEFiberFunc func)
 	{
 		import std.functional:toDelegate;
@@ -144,7 +154,7 @@ struct UEFibers
 		startFiber(func.toDelegate());
 	}
 
-	///
+	/// ditto
 	public static void startFiber(UEFiberDelegate func)
 	{
 		UEFiber newFiber = findFreeFiber();
@@ -162,7 +172,7 @@ struct UEFibers
 		newFiber.safeCall();
 	}
 
-	//TODO: use free list instead of linear search
+	//TODO: when runFibers moves TERM'd fibers to end then iterate over array in reverse
 	private static UEFiber findFreeFiber()
 	{
 		foreach(f; fibers)
@@ -191,7 +201,12 @@ struct UEFibers
 		yield(func.toDelegate());
 	}
 
-	/// calls all running fibers that do not wait for a child to finish
+	//TODO: move Fibers in TERM state to the end of array
+	/++
+	 + Calls all running fibers that do not wait for a child to finish
+	 +
+	 + Note: Do not count on the order of execution of fibers, they could be reordered
+	 +/
 	public static void runFibers()
 	{
 		foreach(f; fibers)
