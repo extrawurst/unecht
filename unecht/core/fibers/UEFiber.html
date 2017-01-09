@@ -298,11 +298,8 @@ $('#symbolSearchPane').show();
 		<div id="main-contents">
 			<h1>Class UEFiber</h1>
 			<section>
-				<p>acts like a std.thread:.Fiber -
+				<p>acts like a std.thread:.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
 </p>
-<section><p>adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
-</p>
-</section>
 
 					<section>
 						<h3>Inherits from</h3>
@@ -333,24 +330,6 @@ $('#symbolSearchPane').show();
 						</table>
 					</section>
 					<section>
-						<h3>Fields</h3>
-						<table>
-							<col class="caption"/>
-							<tr>
-								<th>Name</th>
-								<th>Type</th>
-								<th>Description</th>
-							</tr>
-							<tr>
-								<td>
-									<a href="../../../unecht/core/fibers/UEFiber.child.html" class="private"><code>child</code></a>
-								</td>
-								<td class="typecol"><code class="prettyprint lang-d"><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">thread<wbr/></span><span class="pun">.</span><span class="typ">Fiber</span></code></td>
-								<td></td>
-							</tr>
-						</table>
-					</section>
-					<section>
 						<h3>Methods</h3>
 						<table>
 							<col class="caption"/>
@@ -376,14 +355,6 @@ $('#symbolSearchPane').show();
 								<td>will call the Fiber in a nothrow way, so it will return any thrown exception inside without automatic rethrow
 </td>
 							</tr>
-							<tr>
-								<td>
-									<a href="../../../unecht/core/fibers/UEFiber.initParent.html" class="private">
-										<code>initParent</code>
-									</a>
-								</td>
-								<td></td>
-							</tr>
 						</table>
 					</section>
 
@@ -394,6 +365,8 @@ $('#symbolSearchPane').show();
 			</section>
 			<section>
 				<h2>Copyright</h2>
+<p>MIT
+</p>
 
 			</section>
 			<section>

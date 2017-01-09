@@ -298,7 +298,9 @@ $('#symbolSearchPane').show();
 		<div id="main-contents">
 			<h1>Function waitFiber</h1>
 			<section>
-				<p></p>
+				<p>returns a function object that can be used to wait in a <code class="lang-d"><a href="../../unecht/core/fibers/UEFiber.html"><span class="typ"><a href="../../../unecht/core/fibers/UEFiber.html"><span class="typ">UEFiber</span></a></span></a></code> for a certain amount of time
+</p>
+<section></section>
 
 					<section>
 						<h3>Prototype</h3>
@@ -308,9 +310,21 @@ $('#symbolSearchPane').show();
 							</code>
 						</div>
 					</section>
-<section><h3>example</h3>
-<p>UEFibers.yield(waitFiber!"2.seconds");
+<section><h3>Parameters</h3>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="d">d</td><td>	a string that will be mixed in and has to evaluate to a <code class="lang-d"><span class="typ">DateTime</span></code></td></tr>
+</table>
+</section>
+<section><h3>Returns</h3>
+<p>A function object
 </p>
+</section>
+<section><h3>See Also</h3>
+<p>UEFiber, UEFiberFunc
+</p>
+</section>
+<section><h3>Examples</h3>
+<pre class="code"><code class="lang-d"><a href="../../../unecht/core/fibers/UEFibers.yield.html"><span class="typ">UEFibers<wbr/></span><span class="pun">.</span><span class="pln">yield</span></a><span class="pun">(</span><span class="pln">waitFiber</span><span class="pun">!</span><span class="str">"2.seconds"</span><span class="pun">);</span></code></pre>
 </section>
 
 			</section>
@@ -320,6 +334,8 @@ $('#symbolSearchPane').show();
 			</section>
 			<section>
 				<h2>Copyright</h2>
+<p>MIT
+</p>
 
 			</section>
 			<section>
