@@ -1,5 +1,5 @@
 ﻿/++
- * Authors: Stephan Dilly, lastname dot firstname at gmail dot com
+ + Authors: Stephan Dilly, lastname dot firstname at gmail dot com
  + Copyright: MIT
  +/
 module unecht.core.fibers;
@@ -15,7 +15,9 @@ alias UEFiberFunc = void function();
 /// delegate type that can be used as a fiber
 alias UEFiberDelegate = void delegate();
 
-/// acts like a std.thread:.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+/++
+ + acts like a std.thread:.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+ +/
 final class UEFiber : Fiber
 {
 	/// pointer to child Fiber
@@ -38,6 +40,16 @@ final class UEFiber : Fiber
 		super.reset(fn);
 
 		initParent();
+	}
+
+	/// usage of `reset`
+	unittest
+	{
+		bool res;
+		auto fiber = new UEFiber(cast(UEFiberDelegate){res = false;});
+		fiber.reset(cast(UEFiberDelegate){res = true;});
+		fiber.call();
+		assert(res);
 	}
 
 	/// initializes parents child property to point to this
@@ -75,6 +87,23 @@ final class UEFiber : Fiber
 	}
 }
 
+///
+unittest
+{
+	int i=0;
+	auto fiber = new UEFiber(cast(UEFiberDelegate){
+			i++;
+			Fiber.yield;
+			i++;
+		});
+
+	fiber.call(); // executes until yield
+	assert(i == 1);
+
+	fiber.call(); // finishes
+	assert(i == 2);
+}
+
 /++
  + returns a function object that can be used to wait in a `UEFiber` for a certain amount of time
  +
@@ -84,12 +113,12 @@ final class UEFiber : Fiber
  + Returns: A function object
  +
  + See_Also:
- +	UEFiber, UEFiberFunc
+ +	`UEFiber`, `UEFiberFunc`
  +
  + Examples:
- + --------------------
+ + ---
  + UEFibers.yield(waitFiber!"2.seconds");
- + --------------------
+ + ---
  +/
 UEFiberFunc waitFiber(string d)()
 {
@@ -186,10 +215,9 @@ struct UEFibers
 	}
 }
 
+/// unittest example: basic
 unittest
 {
-	// basic testing
-
 	int i=0;
 
 	UEFibers.fibers.length=0;
