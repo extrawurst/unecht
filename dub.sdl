@@ -20,6 +20,7 @@ targetType "library"
 targetPath "lib"
 mainSourceFile "source/unecht/appmain.d"
 //x:ddoxTool "scod"
+//x:ddoxFilterArgs "--unittest-examples" "--min-protection=Protected"
 stringImportPaths "imp" "imp/tex"
 
 configuration "app" {
