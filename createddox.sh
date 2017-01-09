@@ -26,6 +26,7 @@ git clone https://github.com/rejectedsoftware/ddox.git
 cd ddox/
 cp -r public/* ${HTML_PATH}/
 dub build
+./ddox filter ../../docs.json --min-protection=Protected
 ./ddox generate-html --navigation-type=ModuleTree ../../docs.json ${HTML_PATH}
 cd ../../
 

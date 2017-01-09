@@ -1,4 +1,8 @@
-﻿module unecht.core.fibers;
+﻿/++
+ * Authors: Stephan Dilly, lastname dot firstname at gmail dot com
+ + Copyright: MIT
+ +/
+module unecht.core.fibers;
 
 public import core.thread:Fiber;
 import core.thread:Thread;
@@ -11,10 +15,10 @@ alias UEFiberFunc = void function();
 /// delegate type that can be used as a fiber
 alias UEFiberDelegate = void delegate();
 
-/// acts like a std.thread:.Fiber -
-/// adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
+/// acts like a std.thread:.Fiber - adds child Fiber member to enable yield on child fibers (=wait for child fiber to finish)
 final class UEFiber : Fiber
 {
+	/// pointer to child Fiber
 	private Fiber child;
 
 	//TODO: make nothrow once we loose the dmd<2067 compat
@@ -36,6 +40,7 @@ final class UEFiber : Fiber
 		initParent();
 	}
 
+	/// initializes parents child property to point to this
 	private void initParent()
 	{
 		UEFiber parent = cast(UEFiber)Fiber.getThis();
@@ -58,12 +63,12 @@ final class UEFiber : Fiber
 		{
 			static if(__VERSION__ < 2067)
 			{
-				import std.stdio;
+				import std.stdio:writefln;
 				writefln("error: %s",e);
 			}
 			else
 			{
-				import std.experimental.logger;
+				import std.experimental.logger:errorf;
 				errorf("error: %s",e.toString());
 			}
 		}
@@ -71,9 +76,20 @@ final class UEFiber : Fiber
 }
 
 /++
+ + returns a function object that can be used to wait in a `UEFiber` for a certain amount of time
  +
- + example:
+ + Params:
+ +	d =	a string that will be mixed in and has to evaluate to a `DateTime`
+ +
+ + Returns: A function object
+ +
+ + See_Also:
+ +	UEFiber, UEFiberFunc
+ +
+ + Examples:
+ + --------------------
  + UEFibers.yield(waitFiber!"2.seconds");
+ + --------------------
  +/
 UEFiberFunc waitFiber(string d)()
 {
