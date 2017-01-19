@@ -4,6 +4,8 @@
  +/
 module unecht.core.staticRingBuffer;
 
+@safe:
+
 ///
 struct StaticRingBuffer(size_t size,T)
 {
@@ -16,7 +18,7 @@ struct StaticRingBuffer(size_t size,T)
 	private size_t spaceUsed;
 
 	///
-	ref ThisType opOpAssign(string op)(T v) @trusted
+	ref ThisType opOpAssign(string op)(T v) @trusted nothrow
 		if(op == "~")
 	{
 		if(spaceUsed < StaticSize)
@@ -43,7 +45,7 @@ struct StaticRingBuffer(size_t size,T)
 	}
 
 	///
-	@property size_t length() const { return spaceUsed; }
+	@property size_t length() const nothrow { return spaceUsed; }
 
 	///
 	@property T* ptr() { return data.ptr; }
