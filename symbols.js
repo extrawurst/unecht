@@ -768,7 +768,6 @@ var symbols = [
 {name: 'unecht.core.profiler', kind: "module", path: './unecht/core/profiler.html', attributes: []},
 {name: 'unecht.core.profiler.UEProfiling', kind: "structdeclaration", path: './unecht/core/profiler/UEProfiling.html', attributes: []},
 {name: 'unecht.core.profiler.UEProfiling.addFrametime', kind: "functiondeclaration", path: './unecht/core/profiler/UEProfiling.addFrametime.html', attributes: ["nothrow", "nogc", "safe", "static"]},
-{name: 'unecht.core.profiler.UEProfiling.frameIdx', kind: "variabledeclaration", path: './unecht/core/profiler/UEProfiling.frameIdx.html', attributes: []},
 {name: 'unecht.core.profiler.UEProfiling.framerates', kind: "variabledeclaration", path: './unecht/core/profiler/UEProfiling.framerates.html', attributes: []},
 {name: 'unecht.core.profiler.UEProfiling.frameTimes', kind: "variabledeclaration", path: './unecht/core/profiler/UEProfiling.frameTimes.html', attributes: []},
 {name: 'unecht.core.scenegraph', kind: "module", path: './unecht/core/scenegraph.html', attributes: []},
