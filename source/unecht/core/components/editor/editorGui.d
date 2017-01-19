@@ -1,4 +1,8 @@
-﻿module unecht.core.components.editor.editorGui;
+﻿/++
+ + Authors: Stephan Dilly, lastname dot firstname at gmail dot com
+ + Copyright: MIT
+ +/
+ module unecht.core.components.editor.editorGui;
 
 version(UEIncludeEditor):
 
@@ -17,366 +21,367 @@ import unecht.core.components.internal.gui:UEGui;
 import derelict.imgui.imgui;
 
 ///
-final class UEEditorGUI : UEComponent 
+final class UEEditorGUI : UEComponent
 {
-    mixin(UERegisterObject!());
+	mixin(UERegisterObject!());
 
-    UEEditorMenuBar menuBar;
-    UEEditorAssetView assetView;
-    UEEditorConsole console;
-    UEReferenceEditor referenceEditor;
-    UEDragDropEditor dragDropEditor;
-    UEFileDialog fileDialog;
+	UEEditorMenuBar menuBar;
+	UEEditorAssetView assetView;
+	UEEditorConsole console;
+	UEReferenceEditor referenceEditor;
+	UEDragDropEditor dragDropEditor;
+	UEFileDialog fileDialog;
 
-    override void onCreate() {
-        super.onCreate;
+	override void onCreate() {
+		super.onCreate;
 
-        assetView = entity.addComponent!UEEditorAssetView;
-        menuBar = entity.addComponent!UEEditorMenuBar;
-        console = entity.addComponent!UEEditorConsole;
-        referenceEditor = entity.addComponent!UEReferenceEditor;
-        dragDropEditor = entity.addComponent!UEDragDropEditor;
-        fileDialog = entity.addComponent!UEFileDialog;
-    }
+		assetView = entity.addComponent!UEEditorAssetView;
+		menuBar = entity.addComponent!UEEditorMenuBar;
+		console = entity.addComponent!UEEditorConsole;
+		referenceEditor = entity.addComponent!UEReferenceEditor;
+		dragDropEditor = entity.addComponent!UEDragDropEditor;
+		fileDialog = entity.addComponent!UEFileDialog;
+	}
 
-    //TODO: #127
-    void render() 
-    {
-        import unecht.ue:ue;
+	//TODO: #127
+	void render()
+	{
+		import unecht.ue:ue;
 
-        {
-            const height = igGetItemsLineHeightWithSpacing();
-            igSetNextWindowPos(ImVec2(0,ue.application.framebufferSize.height-height),ImGuiSetCond_Always);
-            
-            igPushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
-            igBegin("editor",null,
-                ImGuiWindowFlags_AlwaysAutoResize|
-                ImGuiWindowFlags_NoTitleBar|
-                ImGuiWindowFlags_NoMove);
-            
-            scope(exit) 
-            { 
-                igEnd();
-                igPopStyleColor();
-            }
-            
-            import std.format:format;
-            UEGui.Text(format("EditorMode (%s with F1) [%0.1f fps]",EditorRootComponent.visible?"hide":"show",igGetIO().Framerate));
-        }
-        
-        if(EditorRootComponent.visible)
-        {
-            menuBar.render();
-            if(showHirarchie)
-            {
-                renderScene();
-                renderInspector();
-            }
-            if(showDebug)
-                renderDebug();
+		{
+			const height = igGetItemsLineHeightWithSpacing();
+			igSetNextWindowPos(ImVec2(0,ue.application.framebufferSize.height-height),ImGuiSetCond_Always);
 
-            assetView.render(sceneWindowHeight);
+			igPushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0));
+			igBegin("editor",null,
+				ImGuiWindowFlags_AlwaysAutoResize|
+				ImGuiWindowFlags_NoTitleBar|
+				ImGuiWindowFlags_NoMove);
 
-            if(console.enabled)
-                console.render();
+			scope(exit)
+			{
+				igEnd();
+				igPopStyleColor();
+			}
 
-            referenceEditor.render();
+			import std.format:format;
+			UEGui.Text(format("EditorMode (%s with F1) [%0.1f fps]",EditorRootComponent.visible?"hide":"show",igGetIO().Framerate));
+		}
 
-            dragDropEditor.render();
+		if(EditorRootComponent.visible)
+		{
+			menuBar.render();
+			if(showHirarchie)
+			{
+				renderScene();
+				renderInspector();
+			}
+			if(showDebug)
+				renderDebug();
 
-            fileDialog.render();
-        }
-    }
+			assetView.render(sceneWindowHeight);
 
-    private static void renderDebug()
-    {
-        igBegin("debug", &showDebug);
-        scope(exit) igEnd();
+			if(console.enabled)
+				console.render();
 
-        import unecht.core.profiler;
-        igPlotLines("framestimes",UEProfiling.frameTimes.ptr,cast(int)UEProfiling.frameTimes.length,0,null,float.max,float.max,ImVec2(0,100));
-        igPlotLines("fps",UEProfiling.framerates.ptr,cast(int)UEProfiling.framerates.length,0,null,float.max,float.max,ImVec2(0,100));
-    }
+			referenceEditor.render();
 
-    ///
-    package static bool showHirarchie = true;
-    package static bool showDebug = false;
+			dragDropEditor.render();
 
-    private static float sceneWindowWidth;
-    private static float sceneWindowHeight;
-    ///
-    private static void renderScene()
-    {
-        import unecht.ue:ue;
+			fileDialog.render();
+		}
+	}
+
+	private static void renderDebug()
+	{
+		igBegin("debug", &showDebug);
+		scope(exit) igEnd();
+
+		import unecht.core.profiler:UEProfiling;
+
+		igPlotLines("framestimes",UEProfiling.frameTimes.ptr,cast(int)UEProfiling.frameTimes.length,0,null,float.max,float.max,ImVec2(0,100));
+		igPlotLines("fps",UEProfiling.framerates.ptr,cast(int)UEProfiling.framerates.length,0,null,float.max,float.max,ImVec2(0,100));
+	}
+
+	///
+	package static bool showHirarchie = true;
+	package static bool showDebug = false;
+
+	private static float sceneWindowWidth;
+	private static float sceneWindowHeight;
+	///
+	private static void renderScene()
+	{
+		import unecht.ue:ue;
 
 		const top = igGetItemsLineHeightWithSpacing();
-        igSetNextWindowPos(ImVec2(0,top), ImGuiSetCond_Always);
-        
-        igBegin("scene",null,ImGuiWindowFlags_NoMove);
-        scope(exit){igEnd();}
+		igSetNextWindowPos(ImVec2(0,top), ImGuiSetCond_Always);
 
-        foreach(n; ue.scene.root.children)
-        {
-            renderSceneNode(n);
-        }
-        
-        sceneWindowWidth = igGetWindowWidth();
-        sceneWindowHeight = igGetWindowHeight();
-    }
+		igBegin("scene",null,ImGuiWindowFlags_NoMove);
+		scope(exit){igEnd();}
 
-    ///
-    private static void renderSceneNode(UESceneNode _node)
-    {
-        if(_node.hideInHirarchie && !showHiddenNodes)
-            return;
-        
-        const canExpand = _node.children.length>0;
-        
-        if(canExpand)
-        {
-            if(_node.hideInHirarchie)
-                igPushStyleColor(ImGuiCol_Text, ImVec4(0.9f,0.9f,0.9f,0.5f));
+		foreach(n; ue.scene.root.children)
+		{
+			renderSceneNode(n);
+		}
 
-            const expanded = UEGui.TreeNode(cast(void*)(_node.entity), _node.entity.name);
+		sceneWindowWidth = igGetWindowWidth();
+		sceneWindowHeight = igGetWindowHeight();
+	}
 
-            if(_node.hideInHirarchie)
-                igPopStyleColor();
-            
-            if(igIsItemActive())
-            {
-                if(EditorRootComponent.currentEntity !is _node.entity)
-                    EditorRootComponent.selectEntity(_node.entity);
-            }
-            if(igIsItemHovered() && igIsMouseDoubleClicked(0))
-                EditorRootComponent.lookAtNode(_node);
-            
-            if(!expanded)
-                return;
-            
-            foreach(n; _node.children)
-            {
-                renderSceneNode(n);
-            }
-            
-            igTreePop();
-        }
-        else
-        {
-            if(_node.hideInHirarchie)
-                igPushStyleColor(ImGuiCol_Text, ImVec4(0.9f,0.9f,0.9f,0.5f));
+	///
+	private static void renderSceneNode(UESceneNode _node)
+	{
+		if(_node.hideInHirarchie && !showHiddenNodes)
+			return;
 
-            igBullet();
-            igPushIdPtr(cast(void*)(_node.entity));
-            auto isSelected = EditorRootComponent.currentEntity is _node.entity;
-            if(UEGui.Selectable(_node.entity.name,isSelected))
-            {
-                if(isSelected)
-                    EditorRootComponent.selectEntity(null);
-                else
-                    EditorRootComponent.selectEntity(_node.entity);
-            }
-            igPopId();
+		const canExpand = _node.children.length>0;
 
-            if(_node.hideInHirarchie)
-                igPopStyleColor();
+		if(canExpand)
+		{
+			if(_node.hideInHirarchie)
+				igPushStyleColor(ImGuiCol_Text, ImVec4(0.9f,0.9f,0.9f,0.5f));
 
-            if(igIsItemHovered() && igIsMouseDoubleClicked(0))
-                EditorRootComponent.lookAtNode(_node);
-        }
-    }
+			const expanded = UEGui.TreeNode(cast(void*)(_node.entity), _node.entity.name);
 
-    ///
-    private static void renderInspector()
-    {
-        if(!EditorRootComponent.currentEntity)
-            return;
+			if(_node.hideInHirarchie)
+				igPopStyleColor();
 
-        const top = igGetItemsLineHeightWithSpacing();
-        igSetNextWindowPos(ImVec2(sceneWindowWidth+1,top),ImGuiSetCond_Always);
-        bool closed;
-        igBegin("inspector",&closed,
-            ImGuiWindowFlags_AlwaysAutoResize|
-            ImGuiWindowFlags_NoCollapse|
-            ImGuiWindowFlags_NoMove|
-            ImGuiWindowFlags_NoResize);
-        
-        scope(exit)igEnd();
-        
-        if(closed)
-        {
-            EditorRootComponent.selectEntity(null);
-            return;
-        }
-        
-        string name = EditorRootComponent.currentEntity.name;
-        UEGui.InputText("name",name);
-        EditorRootComponent.currentEntity.name = name;
-        
-        foreach(int i, c; EditorRootComponent.currentEntity.components)
-        {                
-            const isSceneNode = i == 0;
-            renderInspectorComponent(c,isSceneNode);
-        }
-        
-        renderInspectorFooter();
+			if(igIsItemActive())
+			{
+				if(EditorRootComponent.currentEntity !is _node.entity)
+					EditorRootComponent.selectEntity(_node.entity);
+			}
+			if(igIsItemHovered() && igIsMouseDoubleClicked(0))
+				EditorRootComponent.lookAtNode(_node);
+
+			if(!expanded)
+				return;
+
+			foreach(n; _node.children)
+			{
+				renderSceneNode(n);
+			}
+
+			igTreePop();
+		}
+		else
+		{
+			if(_node.hideInHirarchie)
+				igPushStyleColor(ImGuiCol_Text, ImVec4(0.9f,0.9f,0.9f,0.5f));
+
+			igBullet();
+			igPushIdPtr(cast(void*)(_node.entity));
+			auto isSelected = EditorRootComponent.currentEntity is _node.entity;
+			if(UEGui.Selectable(_node.entity.name,isSelected))
+			{
+				if(isSelected)
+					EditorRootComponent.selectEntity(null);
+				else
+					EditorRootComponent.selectEntity(_node.entity);
+			}
+			igPopId();
+
+			if(_node.hideInHirarchie)
+				igPopStyleColor();
+
+			if(igIsItemHovered() && igIsMouseDoubleClicked(0))
+				EditorRootComponent.lookAtNode(_node);
+		}
+	}
+
+	///
+	private static void renderInspector()
+	{
+		if(!EditorRootComponent.currentEntity)
+			return;
+
+		const top = igGetItemsLineHeightWithSpacing();
+		igSetNextWindowPos(ImVec2(sceneWindowWidth+1,top),ImGuiSetCond_Always);
+		bool closed;
+		igBegin("inspector",&closed,
+			ImGuiWindowFlags_AlwaysAutoResize|
+			ImGuiWindowFlags_NoCollapse|
+			ImGuiWindowFlags_NoMove|
+			ImGuiWindowFlags_NoResize);
+
+		scope(exit)igEnd();
+
+		if(closed)
+		{
+			EditorRootComponent.selectEntity(null);
+			return;
+		}
+
+		string name = EditorRootComponent.currentEntity.name;
+		UEGui.InputText("name",name);
+		EditorRootComponent.currentEntity.name = name;
+
+		foreach(int i, c; EditorRootComponent.currentEntity.components)
+		{
+			const isSceneNode = i == 0;
+			renderInspectorComponent(c,isSceneNode);
+		}
+
+		renderInspectorFooter();
 
 		if(component2Remove)
 		{
-            //TODO: broken ?
+			//TODO: broken ?
 			component2Remove.entity.removeComponent(component2Remove);
 			component2Remove = null;
 		}
-        if(componentToAdd.length>0)
-        {
-            EditorRootComponent.currentEntity.addComponent(componentToAdd);
-            componentToAdd.length = 0;
-        }
-    }
+		if(componentToAdd.length>0)
+		{
+			EditorRootComponent.currentEntity.addComponent(componentToAdd);
+			componentToAdd.length = 0;
+		}
+	}
 
-    ///
-    private static void renderInspectorComponent(UEComponent c, bool isSceneNode)
-    {
-        auto openNode = false;
+	///
+	private static void renderInspectorComponent(UEComponent c, bool isSceneNode)
+	{
+		auto openNode = false;
 
-        if(!isSceneNode)
-        {
-            igPushIdPtr(cast(void*)c);
-            openNode = UEGui.TreeNode(c.typename);
-        }
-        else
-        {
-            UEGui.Text("UESceneNode");
-        }
+		if(!isSceneNode)
+		{
+			igPushIdPtr(cast(void*)c);
+			openNode = UEGui.TreeNode(c.typename);
+		}
+		else
+		{
+			UEGui.Text("UESceneNode");
+		}
 
-        if(openNode || isSceneNode)
-        {
-            if(!openNode)
-                igIndent();
-            
-            renderInspectorSameline(c,!isSceneNode);
-            
-            import unecht.core.componentManager;
-            if(auto renderer = c.typename in UEComponentsManager.editors)
-            {
-                renderer.render(c);
-            }
-            
-            if(openNode)
-                igTreePop();
-            else
-                igUnindent();
-        }
-        else
-        {
-            renderInspectorSameline(c, !isSceneNode);
-        }
-        
-        if(isSceneNode)
-            igSeparator();
-        else
-            igPopId();
-    }
+		if(openNode || isSceneNode)
+		{
+			if(!openNode)
+				igIndent();
 
-    static bool showHiddenNodes=false;
-    @MenuItem("view/show hidden nodes")
-    static private void toggleShowHiddenNodes()
-    {
-        showHiddenNodes = !showHiddenNodes;
-    }
-    
+			renderInspectorSameline(c,!isSceneNode);
+
+			import unecht.core.componentManager;
+			if(auto renderer = c.typename in UEComponentsManager.editors)
+			{
+				renderer.render(c);
+			}
+
+			if(openNode)
+				igTreePop();
+			else
+				igUnindent();
+		}
+		else
+		{
+			renderInspectorSameline(c, !isSceneNode);
+		}
+
+		if(isSceneNode)
+			igSeparator();
+		else
+			igPopId();
+	}
+
+	static bool showHiddenNodes=false;
+	@MenuItem("view/show hidden nodes")
+	static private void toggleShowHiddenNodes()
+	{
+		showHiddenNodes = !showHiddenNodes;
+	}
+
 	static UEComponent componentEdit;
-    private static void renderInspectorSameline(UEComponent c, bool allowEdit)
-    {
-        auto subtext = " ";
-        if(c.enabled)
-            subtext = "X";
+	private static void renderInspectorSameline(UEComponent c, bool allowEdit)
+	{
+		auto subtext = " ";
+		if(c.enabled)
+			subtext = "X";
 
-        ImVec2 size;
-        igGetWindowContentRegionMax(&size);
-        const wndWidth = cast(int)size.x;
+		ImVec2 size;
+		igGetWindowContentRegionMax(&size);
+		const wndWidth = cast(int)size.x;
 
-        igCalcTextSize(&size,"#");
-        const charWidth = 2 + cast(int)size.x*2;
+		igCalcTextSize(&size,"#");
+		const charWidth = 2 + cast(int)size.x*2;
 
-        if(allowEdit)
-        {
-            igSameLine(wndWidth-charWidth*2);
-            if(UEGui.SmallButton("#"))
-            {
-    			componentEdit = c;
-                igOpenPopup("compedit");
-            }
+		if(allowEdit)
+		{
+			igSameLine(wndWidth-charWidth*2);
+			if(UEGui.SmallButton("#"))
+			{
+				componentEdit = c;
+				igOpenPopup("compedit");
+			}
 
-    		renderComponentEdit();
-        }
+			renderComponentEdit();
+		}
 
-        igSameLine(wndWidth - charWidth);
-        if(UEGui.SmallButton(subtext))
-            c.enabled = !c.enabled;
-    }
+		igSameLine(wndWidth - charWidth);
+		if(UEGui.SmallButton(subtext))
+			c.enabled = !c.enabled;
+	}
 
 	static UEComponent component2Remove;
 
 	private static void renderComponentEdit()
 	{
-        bool menuOpen = igBeginPopup("compedit");
-        scope(exit){ if(menuOpen) igEndPopup(); }
+		bool menuOpen = igBeginPopup("compedit");
+		scope(exit){ if(menuOpen) igEndPopup(); }
 
-        if(!menuOpen && !componentEdit)
+		if(!menuOpen && !componentEdit)
 		{
-            igCloseCurrentPopup();
+			igCloseCurrentPopup();
 			componentEdit = null;
 			return;
 		}
-        if(menuOpen)
-        {
-            UEGui.Text("edit");
-    		igSeparator();
+		if(menuOpen)
+		{
+			UEGui.Text("edit");
+			igSeparator();
 
-    		if(UEGui.Button("remove"))
-    		{
-    			component2Remove = componentEdit;
-    			componentEdit = null;
-                igCloseCurrentPopup();
-    		}
-        }
+			if(UEGui.Button("remove"))
+			{
+				component2Remove = componentEdit;
+				componentEdit = null;
+				igCloseCurrentPopup();
+			}
+		}
 	}
 
-    static string componentToAdd;
+	static string componentToAdd;
 
-    private static void renderInspectorFooter()
-    {
-        igSeparator();
-        if(UEGui.Button("add  component..."))
-            igOpenPopup("addcomp");
-            
-        static string filterString;
+	private static void renderInspectorFooter()
+	{
+		igSeparator();
+		if(UEGui.Button("add  component..."))
+			igOpenPopup("addcomp");
 
-        bool menuOpen=igBeginPopup("addcomp");
-        scope(exit){if(menuOpen) igEndPopup();}
-        if(!menuOpen)
-        {
-            filterString.length=0;
-            return;
-        }
-        else
-        {
-            UEGui.InputText("filter",filterString);
-            igSeparator();
+		static string filterString;
 
-            import unecht.core.componentManager;
-            foreach(c; UEComponentsManager.componentNames)
-            {
-                import std.string;
-                if(c.indexOf(filterString,CaseSensitive.no)==-1)
-                    continue;
+		bool menuOpen=igBeginPopup("addcomp");
+		scope(exit){if(menuOpen) igEndPopup();}
+		if(!menuOpen)
+		{
+			filterString.length=0;
+			return;
+		}
+		else
+		{
+			UEGui.InputText("filter",filterString);
+			igSeparator();
 
-                if(UEGui.Selectable(c,false))
-                {
-                    componentToAdd = c;
-                    filterString.length=0;
-                }
-            }
-        }
-    }
+			import unecht.core.componentManager;
+			foreach(c; UEComponentsManager.componentNames)
+			{
+				import std.string;
+				if(c.indexOf(filterString,CaseSensitive.no)==-1)
+					continue;
+
+				if(UEGui.Selectable(c,false))
+				{
+					componentToAdd = c;
+					filterString.length=0;
+				}
+			}
+		}
+	}
 }
