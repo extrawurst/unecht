@@ -6,9 +6,10 @@ module unecht.core.fibers;
 
 public import core.thread : Fiber;
 import core.thread : Thread;
-import std.datetime : Duration;
 
 import derelict.util.system;
+
+import std.datetime : Duration;
 
 /// function type that can be used as a fiber
 alias UEFiberFunc = void function();
@@ -44,7 +45,7 @@ final class UEFiber : Fiber
 	}
 
 	/// usage of `reset`
-	@safe unittest
+	@system unittest
 	{
 		bool res;
 		auto fiber = new UEFiber(cast(UEFiberDelegate) { res = false; });
@@ -91,7 +92,7 @@ final class UEFiber : Fiber
 }
 
 ///
-@safe unittest
+@system unittest
 {
 	int i = 0;
 	auto fiber = new UEFiber(cast(UEFiberDelegate) { i++; Fiber.yield; i++; });
@@ -121,7 +122,7 @@ final class UEFiber : Fiber
  +/
 UEFiberFunc waitFiber(string d)()
 {
-	import std.datetime : minutes, msecs, nsecs, seconds;
+	import std.datetime : Clock, minutes, msecs, nsecs, seconds;
 
 	return {
 		auto targetTime = Clock.currTime + mixin(d);
@@ -228,7 +229,7 @@ struct UEFibers
 }
 
 /// basic yield
-@safe unittest
+@system unittest
 {
 	int i = 0;
 	// reset
@@ -242,7 +243,7 @@ struct UEFibers
 }
 
 /// fiber object reuse
-@safe unittest
+@system unittest
 {
 	int i = 0;
 	// reset
@@ -255,7 +256,7 @@ struct UEFibers
 	assert(i == 2);
 }
 
-@safe unittest
+@system unittest
 {
 	// test yield on other fibers
 
@@ -285,7 +286,7 @@ struct UEFibers
 	assert(UEFibers.fibers.length == 2);
 }
 
-@safe unittest
+@system unittest
 {
 	// test reusing fibers
 
@@ -318,11 +319,11 @@ struct UEFibers
 	assert(UEFibers.fibers.length == 5);
 }
 
-@safe unittest
+@system unittest
 {
 	// test wait fiber
 
-	import std.datetime : msecs;
+	import std.datetime : Clock, msecs;
 
 	UEFibers.fibers.length = 0;
 	bool run = false;
@@ -341,11 +342,11 @@ struct UEFibers
 	assert(cycles > 10, "this should at least take 10 cylces");
 }
 
-@safe unittest
+@system unittest
 {
 	// test bug about resetting existing fibers
 
-	import std.datetime : msecs;
+	import std.datetime : Clock, msecs;
 
 	UEFibers.fibers.length = 0;
 	auto run = 0;
