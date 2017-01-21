@@ -1,10 +1,9 @@
 ﻿module unecht.core.components.editor.commands;
 
-version (UEIncludeEditor)  : import unecht.core.components._editor;
-import unecht.core.fibers;
+version (UEIncludeEditor)  : import core.thread : Fiber;
 import unecht.core.components.sceneNode;
-
-import core.thread : Fiber;
+import unecht.core.components._editor;
+import unecht.core.fibers;
 
 ///
 abstract class UEEditorCommand
@@ -50,7 +49,7 @@ private:
 		import unecht.core.serialization.serializer : UEDeserializer;
 		import unecht.ue : ue;
 
-		immutable d = UEDeserializer(itemData);
+		const d = UEDeserializer(itemData);
 		auto node = d.deserializeFirst!UESceneNode;
 
 		auto obj = cast(UESceneNode) ue.scene.findObject(parentId);
