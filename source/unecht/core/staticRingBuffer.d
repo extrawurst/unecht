@@ -48,7 +48,7 @@ struct StaticRingBuffer(size_t size,T)
 	@property size_t length() const nothrow { return spaceUsed; }
 
 	///
-	@property T* ptr() { return data.ptr; }
+	@property T* ptr() { return &data[0]; }
 }
 
 ///
