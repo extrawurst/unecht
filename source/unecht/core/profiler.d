@@ -1,6 +1,6 @@
 ﻿module unecht.core.profiler;
 
-version(UEProfiling)
+version (UEProfiling)
 {
 	public import tharsis.prof;
 
@@ -14,13 +14,13 @@ version(UEProfiling)
 ///
 static struct UEProfiling
 {
-	import std.datetime:TickDuration;
-	import unecht.core.staticRingBuffer:StaticRingBuffer;
+	import std.datetime : TickDuration;
+	import unecht.core.staticRingBuffer : StaticRingBuffer;
 
 	///
-	static StaticRingBuffer!(128,float) frameTimes;
+	static StaticRingBuffer!(128, float) frameTimes;
 	///
-	static StaticRingBuffer!(128,float) framerates;
+	static StaticRingBuffer!(128, float) framerates;
 
 	///
 	static addFrametime(TickDuration d, float framerate)

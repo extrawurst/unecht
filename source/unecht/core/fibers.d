@@ -4,9 +4,9 @@
  +/
 module unecht.core.fibers;
 
-public import core.thread:Fiber;
-import core.thread:Thread;
-import std.datetime:Duration;
+public import core.thread : Fiber;
+import core.thread : Thread;
+import std.datetime : Duration;
 
 import derelict.util.system;
 
@@ -28,8 +28,7 @@ final class UEFiber : Fiber
 
 	//TODO: make nothrow once we loose the dmd<2067 compat
 	/// c'tor
-	public this(T)( T fn )
-		if(is(T == UEFiberFunc) || is(T == UEFiberDelegate))
+	public this(T)(T fn) if (is(T == UEFiberFunc) || is(T == UEFiberDelegate))
 	{
 		super(fn);
 
@@ -37,8 +36,7 @@ final class UEFiber : Fiber
 	}
 
 	/// resets the Fiber to be reused with another method
-	public void reset(T)( T fn )
-		if(is(T == UEFiberFunc) || is(T == UEFiberDelegate))
+	public void reset(T)(T fn) if (is(T == UEFiberFunc) || is(T == UEFiberDelegate))
 	{
 		super.reset(fn);
 
@@ -46,11 +44,11 @@ final class UEFiber : Fiber
 	}
 
 	/// usage of `reset`
-	unittest
+	@safe unittest
 	{
 		bool res;
-		auto fiber = new UEFiber(cast(UEFiberDelegate){res = false;});
-		fiber.reset(cast(UEFiberDelegate){res = true;});
+		auto fiber = new UEFiber(cast(UEFiberDelegate) { res = false; });
+		fiber.reset(cast(UEFiberDelegate) { res = true; });
 		fiber.call();
 		assert(res);
 	}
@@ -58,8 +56,8 @@ final class UEFiber : Fiber
 	/// initializes parents child property to point to this
 	private void initParent()
 	{
-		UEFiber parent = cast(UEFiber)Fiber.getThis();
-		if(parent)
+		UEFiber parent = cast(UEFiber) Fiber.getThis();
+		if (parent)
 		{
 			assert(parent.child is null);
 			parent.child = this;
@@ -69,36 +67,34 @@ final class UEFiber : Fiber
 	/// will call the Fiber in a nothrow way, so it will return any thrown exception inside without automatic rethrow
 	public void safeCall()
 	{
-		static if(__VERSION__ >= 2067)
+		static if (__VERSION__ >= 2067)
 			auto e = call(Fiber.Rethrow.no);
 		else
 			auto e = call(false);
 
-		if(e)
+		if (e)
 		{
-			static if(__VERSION__ < 2067)
+			static if (__VERSION__ < 2067)
 			{
-				import std.stdio:writefln;
-				writefln("error: %s",e);
+				import std.stdio : writefln;
+
+				writefln("error: %s", e);
 			}
 			else
 			{
-				import std.experimental.logger:errorf;
-				errorf("error: %s",e.toString());
+				import std.experimental.logger : errorf;
+
+				errorf("error: %s", e.toString());
 			}
 		}
 	}
 }
 
 ///
-unittest
+@safe unittest
 {
-	int i=0;
-	auto fiber = new UEFiber(cast(UEFiberDelegate){
-			i++;
-			Fiber.yield;
-			i++;
-		});
+	int i = 0;
+	auto fiber = new UEFiber(cast(UEFiberDelegate) { i++; Fiber.yield; i++; });
 
 	fiber.call(); // executes until yield
 	assert(i == 1);
@@ -125,11 +121,11 @@ unittest
  +/
 UEFiberFunc waitFiber(string d)()
 {
-	import std.datetime;
+	import std.datetime : minutes, msecs, nsecs, seconds;
 
 	return {
 		auto targetTime = Clock.currTime + mixin(d);
-		while(Clock.currTime < targetTime)
+		while (Clock.currTime < targetTime)
 			Fiber.yield;
 	};
 }
@@ -149,7 +145,7 @@ struct UEFibers
 	/// start a function as a fiber
 	public static void startFiber(UEFiberFunc func)
 	{
-		import std.functional:toDelegate;
+		import std.functional : toDelegate;
 
 		startFiber(func.toDelegate());
 	}
@@ -159,7 +155,7 @@ struct UEFibers
 	{
 		UEFiber newFiber = findFreeFiber();
 
-		if(newFiber)
+		if (newFiber)
 		{
 			newFiber.reset(func);
 		}
@@ -175,9 +171,9 @@ struct UEFibers
 	//TODO: when runFibers moves TERM'd fibers to end then iterate over array in reverse
 	private static UEFiber findFreeFiber()
 	{
-		foreach(f; fibers)
+		foreach (f; fibers)
 		{
-			if(f.state == Fiber.State.TERM)
+			if (f.state == Fiber.State.TERM)
 				return f;
 		}
 
@@ -197,7 +193,8 @@ struct UEFibers
 	/// ditto
 	public static yield(UEFiberFunc func)
 	{
-		import std.functional:toDelegate;
+		import std.functional : toDelegate;
+
 		yield(func.toDelegate());
 	}
 
@@ -209,17 +206,17 @@ struct UEFibers
 	 +/
 	public static void runFibers()
 	{
-		foreach(f; fibers)
+		foreach (f; fibers)
 		{
-			if(f.state != Fiber.State.TERM)
+			if (f.state != Fiber.State.TERM)
 			{
-				if(!f.child)
+				if (!f.child)
 				{
 					f.safeCall();
 				}
 				else
 				{
-					if(f.child.state == Fiber.State.TERM)
+					if (f.child.state == Fiber.State.TERM)
 					{
 						f.child = null;
 						f.safeCall();
@@ -231,93 +228,74 @@ struct UEFibers
 }
 
 /// basic yield
-unittest
+@safe unittest
 {
-	int i=0;
+	int i = 0;
 	// reset
-	UEFibers.fibers.length=0;
+	UEFibers.fibers.length = 0;
 
-	UEFibers.startFiber({
-		i++;
-		Fiber.yield();
-		i++;
-	});
+	UEFibers.startFiber({ i++; Fiber.yield(); i++; });
 
-	assert(i==1);
+	assert(i == 1);
 	UEFibers.runFibers();
-	assert(i==2);
+	assert(i == 2);
 }
 
 /// fiber object reuse
-unittest
+@safe unittest
 {
-	int i=0;
+	int i = 0;
 	// reset
-	UEFibers.fibers.length=0;
+	UEFibers.fibers.length = 0;
 
-	UEFibers.startFiber({i++;});
-	UEFibers.startFiber({i++;});
+	UEFibers.startFiber({ i++; });
+	UEFibers.startFiber({ i++; });
 
 	assert(UEFibers.fibers.length == 1);
 	assert(i == 2);
 }
 
-unittest
+@safe unittest
 {
 	// test yield on other fibers
 
 	string log;
 
-	UEFibers.fibers.length=0;
+	UEFibers.fibers.length = 0;
 
-	auto f1 = {
-		log ~= 'b';
-		Fiber.yield();
-		log ~= 'c';
-	};
+	auto f1 = { log ~= 'b'; Fiber.yield(); log ~= 'c'; };
 
-	UEFibers.startFiber(
-		{
-			log ~= 'a';
-			UEFibers.yield(f1);
-			log ~= 'd';
-		});
+	UEFibers.startFiber({ log ~= 'a'; UEFibers.yield(f1); log ~= 'd'; });
 
 	assert(UEFibers.fibers.length == 2);
-	assert(log=="ab", log);
+	assert(log == "ab", log);
 
 	UEFibers.runFibers();
 
-	assert(log=="abc");
+	assert(log == "abc");
 
 	UEFibers.runFibers();
 
-	assert(log=="abcd");
+	assert(log == "abcd");
 
-	UEFibers.startFiber(
-		{
-			log ~= 'e';
-		});
+	UEFibers.startFiber({ log ~= 'e'; });
 
-	assert(log=="abcde");
+	assert(log == "abcde");
 
 	assert(UEFibers.fibers.length == 2);
 }
 
-unittest
+@safe unittest
 {
 	// test reusing fibers
 
 	int i;
 
-	UEFibers.fibers.length=0;
+	UEFibers.fibers.length = 0;
 
-	auto f1 = {
-		Fiber.yield();
-		i++;
-	};
+	auto f1 = { Fiber.yield(); i++; };
 
-	foreach(j; 0..5)
+	foreach (j; 0 .. 5)
 		UEFibers.startFiber(f1);
 
 	assert(UEFibers.fibers.length == 5);
@@ -327,7 +305,7 @@ unittest
 
 	assert(i == 5);
 
-	foreach(j; 0..5)
+	foreach (j; 0 .. 5)
 		UEFibers.startFiber(f1);
 
 	assert(UEFibers.fibers.length == 5);
@@ -340,25 +318,20 @@ unittest
 	assert(UEFibers.fibers.length == 5);
 }
 
-unittest
+@safe unittest
 {
 	// test wait fiber
 
-	import std.datetime;
+	import std.datetime : msecs;
 
 	UEFibers.fibers.length = 0;
-	bool run=false;
+	bool run = false;
 
-	auto now = Clock.currTime;
-	UEFibers.startFiber(
-		{
-			UEFibers.yield(waitFiber!"1.msecs");
+	immutable now = Clock.currTime;
+	UEFibers.startFiber({ UEFibers.yield(waitFiber!"1.msecs"); run = true; });
 
-			run = true;
-		});
-
-	int cycles=0;
-	while(!run)
+	int cycles = 0;
+	while (!run)
 	{
 		UEFibers.runFibers();
 		cycles++;
@@ -368,27 +341,26 @@ unittest
 	assert(cycles > 10, "this should at least take 10 cylces");
 }
 
-unittest
+@safe unittest
 {
 	// test bug about resetting existing fibers
 
-	import std.datetime;
+	import std.datetime : msecs;
 
 	UEFibers.fibers.length = 0;
-	auto run=0;
+	auto run = 0;
 
-	auto now = Clock.currTime;
-	UEFibers.startFiber(
+	immutable now = Clock.currTime;
+	UEFibers.startFiber({
+		foreach (i; 0 .. 5)
 		{
-			foreach(i; 0..5)
-			{
-				UEFibers.yield(waitFiber!"1.msecs");
+			UEFibers.yield(waitFiber!"1.msecs");
 
-				run++;
-			}
-		});
+			run++;
+		}
+	});
 
-	while(run<5)
+	while (run < 5)
 	{
 		UEFibers.runFibers();
 	}
