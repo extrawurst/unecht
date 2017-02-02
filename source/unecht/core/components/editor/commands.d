@@ -49,7 +49,7 @@ private:
 		import unecht.core.serialization.serializer : UEDeserializer;
 		import unecht.ue : ue;
 
-		const d = UEDeserializer(itemData);
+		auto d = UEDeserializer(itemData);
 		auto node = d.deserializeFirst!UESceneNode;
 
 		auto obj = cast(UESceneNode) ue.scene.findObject(parentId);
