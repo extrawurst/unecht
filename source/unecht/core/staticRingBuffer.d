@@ -74,7 +74,7 @@ struct StaticRingBuffer(size_t size, T)
 		assert(foo[0] == 2);
 	}
 
-	/// current amount of elements usd in the buffer
+	/// current amount of elements used in the buffer
 	@property size_t length() const nothrow
 	{
 		return spaceUsed;
