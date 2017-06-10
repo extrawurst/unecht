@@ -1,5 +1,6 @@
 ﻿/++
  + Authors: Stephan Dilly (@extrawurst), lastname dot firstname at gmail dot com
+ + Copyright: Stephan Dilly
  + License: MIT
  +/
 module unecht.core.staticRingBuffer;
@@ -17,7 +18,7 @@ struct StaticRingBuffer(size_t size, T)
 	private T[size] data;
 	private size_t spaceUsed;
 
-	///
+	/// append operator
 	ref ThisType opOpAssign(string op)(T v) @trusted nothrow if (op == "~")
 	{
 		if (spaceUsed < StaticSize)
@@ -35,8 +36,21 @@ struct StaticRingBuffer(size_t size, T)
 		return this;
 	}
 
+	///
+	unittest
+	{
+		StaticRingBuffer!(2, int) foo;
+
+		// append operator
+		foo ~= 1;
+		foo ~= 2;
+
+		assert(foo[0] == 1);
+		assert(foo[1] == 2);
+	}
+
 	/// random access operator
-	T opIndex(size_t idx)
+	auto ref opIndex(size_t idx)
 	{
 		static immutable exc = new Exception("idx out of range");
 
@@ -52,16 +66,39 @@ struct StaticRingBuffer(size_t size, T)
 		StaticRingBuffer!(2, int) foo;
 
 		foo ~= 1;
-		foo ~= 2;
 
 		assert(foo[0] == 1);
-		assert(foo[1] == 2);
+
+		foo[0] = 2;
+
+		assert(foo[0] == 2);
 	}
 
-	///
+	/// current amount of elements usd in the buffer
 	@property size_t length() const nothrow
 	{
 		return spaceUsed;
+	}
+
+	///
+	unittest
+	{
+		StaticRingBuffer!(2, int) foo;
+
+		assert(foo.length == 0);
+
+		foo ~= 1;
+
+		assert(foo.length == 1);
+
+		foo ~= 1;
+
+		assert(foo.length == 2);
+
+		// append but let first element drop out
+		foo ~= 1;
+
+		assert(foo.length == 2);
 	}
 
 	///
