@@ -785,7 +785,7 @@ var symbols = [
 {name: 'unecht.core.staticRingBuffer.StaticRingBuffer.length', kind: "functiondeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.length.html', attributes: ["const", "nothrow", "property"]},
 {name: 'unecht.core.staticRingBuffer.StaticRingBuffer.opIndex', kind: "functiondeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.opIndex.html', attributes: []},
 {name: 'unecht.core.staticRingBuffer.StaticRingBuffer.opOpAssign', kind: "functiondeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.opOpAssign.html', attributes: ["nothrow", "ref", "trusted"]},
-{name: 'unecht.core.staticRingBuffer.StaticRingBuffer.ptr', kind: "functiondeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.ptr.html', attributes: ["property"]},
+{name: 'unecht.core.staticRingBuffer.StaticRingBuffer.ptr', kind: "functiondeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.ptr.html', attributes: ["nothrow", "property"]},
 {name: 'unecht.core.staticRingBuffer.StaticRingBuffer.spaceUsed', kind: "variabledeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.spaceUsed.html', attributes: []},
 {name: 'unecht.core.staticRingBuffer.StaticRingBuffer.StaticSize', kind: "enummemberdeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.StaticSize.html', attributes: []},
 {name: 'unecht.core.staticRingBuffer.StaticRingBuffer.ThisType', kind: "aliasdeclaration", path: './unecht/core/staticRingBuffer/StaticRingBuffer.ThisType.html', attributes: []},
