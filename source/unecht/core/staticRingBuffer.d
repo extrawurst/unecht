@@ -1,10 +1,10 @@
 ﻿/++
- + Authors: Stephan Dilly, lastname dot firstname at gmail dot com
+ + Authors: Stephan Dilly, lastname dot firstname at gmail dot com, @extrawurst
  + Copyright: MIT
  +/
 module unecht.core.staticRingBuffer;
 
-@safe:
+@safe @nogc:
 
 ///
 struct StaticRingBuffer(size_t size,T)
@@ -38,8 +38,10 @@ struct StaticRingBuffer(size_t size,T)
 	///
 	T opIndex(size_t idx)
 	{
+		static immutable exc = new Exception("idx out of range");
+
 		if(idx >= spaceUsed)
-			throw new Exception("idx out of range");
+			throw exc;
 
 		return data[idx];
 	}
