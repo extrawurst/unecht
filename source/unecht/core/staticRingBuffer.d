@@ -7,29 +7,29 @@ module unecht.core.staticRingBuffer;
 @safe @nogc:
 
 ///
-struct StaticRingBuffer(size_t size,T)
+struct StaticRingBuffer(size_t size, T)
 {
 	///
 	enum StaticSize = size;
 
-	alias ThisType = StaticRingBuffer!(StaticSize,T);
+	alias ThisType = StaticRingBuffer!(StaticSize, T);
 
 	private T[size] data;
 	private size_t spaceUsed;
 
 	///
-	ref ThisType opOpAssign(string op)(T v) @trusted nothrow
-		if(op == "~")
+	ref ThisType opOpAssign(string op)(T v) @trusted nothrow if (op == "~")
 	{
-		if(spaceUsed < StaticSize)
+		if (spaceUsed < StaticSize)
 		{
 			data[spaceUsed++] = v;
 		}
 		else
 		{
-			import core.stdc.string:memmove;
-			memmove(data.ptr, data.ptr+1, (StaticSize-1) * T.sizeof);
-			data[StaticSize-1] = v;
+			import core.stdc.string : memmove;
+
+			memmove(data.ptr, data.ptr + 1, (StaticSize - 1) * T.sizeof);
+			data[StaticSize - 1] = v;
 		}
 
 		return this;
@@ -40,23 +40,29 @@ struct StaticRingBuffer(size_t size,T)
 	{
 		static immutable exc = new Exception("idx out of range");
 
-		if(idx >= spaceUsed)
+		if (idx >= spaceUsed)
 			throw exc;
 
 		return data[idx];
 	}
 
 	///
-	@property size_t length() const nothrow { return spaceUsed; }
+	@property size_t length() const nothrow
+	{
+		return spaceUsed;
+	}
 
 	///
-	@property T* ptr() { return &data[0]; }
+	@property T* ptr()
+	{
+		return &data[0];
+	}
 }
 
 ///
 unittest
 {
-	StaticRingBuffer!(2,int) foo;
+	StaticRingBuffer!(2, int) foo;
 	assert(foo.length == 0);
 
 	foo ~= 1;
