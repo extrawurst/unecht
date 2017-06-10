@@ -24,12 +24,6 @@
 <url><loc>http://127.0.0.1/unecht/core/object/UEObject.instanceId.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/object/UEObject.instantiate.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/object/UEObject.newInstanceId.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture.setFilter.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._filtering.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._glTex.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._height.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._repeat.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._width.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture2D.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture2D.createEditor.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture2D.deserialize.html</loc></url>
@@ -54,12 +48,6 @@
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture.repeat.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture.unbind.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture.width.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture.setFilter.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._filtering.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._glTex.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._height.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._repeat.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/assets/texture/UETexture._width.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETextureFiltering.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETextureFiltering.linear.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/assets/texture/UETextureFiltering.point.html</loc></url>
@@ -501,7 +489,6 @@
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry.onDestroy.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.registerEvent.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.sceneNode.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry._geom.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsColliderPlane.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsColliderPlane.createEditor.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsColliderPlane.deserialize.html</loc></url>
@@ -524,7 +511,6 @@
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.onUpdate.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.registerEvent.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.sceneNode.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry._geom.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsColliderSphere.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsColliderSphere.createEditor.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsColliderSphere.deserialize.html</loc></url>
@@ -548,7 +534,6 @@
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.onUpdate.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.registerEvent.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.sceneNode.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry._geom.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry.createEditor.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry.deserialize.html</loc></url>
@@ -571,7 +556,6 @@
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.onUpdate.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.registerEvent.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/component/UEComponent.sceneNode.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/components/physics/collider/UEPhysicsGeometry._geom.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/dynamic.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/dynamic/UEPhysicsBody.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/physics/dynamic/UEPhysicsBody.addForce.html</loc></url>
@@ -700,11 +684,11 @@
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.attribLocation.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.createEditor.html</loc></url>
+<url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.cullMode.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.cullBack.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.cullFront.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.cullNone.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.cullMode.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.depthTest.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.deserialize.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.fs_flat.html</loc></url>
