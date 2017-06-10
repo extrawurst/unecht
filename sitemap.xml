@@ -684,11 +684,11 @@
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.attribLocation.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.createEditor.html</loc></url>
-<url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.cullMode.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.cullBack.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.cullFront.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.CullMode.cullNone.html</loc></url>
+<url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.cullMode.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.depthTest.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.deserialize.html</loc></url>
 <url><loc>http://127.0.0.1/unecht/core/components/material/UEMaterial.fs_flat.html</loc></url>
