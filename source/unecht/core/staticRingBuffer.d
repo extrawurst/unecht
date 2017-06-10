@@ -1,12 +1,12 @@
 ﻿/++
- + Authors: Stephan Dilly, lastname dot firstname at gmail dot com, @extrawurst
- + Copyright: MIT
+ + Authors: Stephan Dilly (@extrawurst), lastname dot firstname at gmail dot com
+ + License: MIT
  +/
 module unecht.core.staticRingBuffer;
 
 @safe @nogc:
 
-///
+/// @nogc @safe ringbuffer using static memory block
 struct StaticRingBuffer(size_t size, T)
 {
 	///
@@ -35,7 +35,7 @@ struct StaticRingBuffer(size_t size, T)
 		return this;
 	}
 
-	///
+	/// random access operator
 	T opIndex(size_t idx)
 	{
 		static immutable exc = new Exception("idx out of range");
@@ -47,13 +47,25 @@ struct StaticRingBuffer(size_t size, T)
 	}
 
 	///
+	unittest
+	{
+		StaticRingBuffer!(2, int) foo;
+
+		foo ~= 1;
+		foo ~= 2;
+
+		assert(foo[0] == 1);
+		assert(foo[1] == 2);
+	}
+
+	///
 	@property size_t length() const nothrow
 	{
 		return spaceUsed;
 	}
 
 	///
-	@property T* ptr()
+	@property T* ptr() nothrow
 	{
 		return &data[0];
 	}
