@@ -3,10 +3,10 @@ unecht [![Stories in Ready](https://badge.waffle.io/Extrawurst/unecht.png?label=
 
 Game Engine Framework written in #dlang
 
-![menus](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-05-27 menus.gif)
-![dragdrop](https://raw.github.com/extrawurst/unecht/master/screenshots/2016-02-13 dragdrop.gif)
+![menus](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-05-27-menus.gif)
+![dragdrop](https://raw.github.com/extrawurst/unecht/master/screenshots/2016-02-13-dragdrop.gif)
 ![openassimp](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-05-01.png)
-![enet based networking](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-05-02 enet chat.png)
+![enet based networking](https://raw.github.com/extrawurst/unecht/master/screenshots/2015-05-02-enet-chat.png)
 
 # features
 
