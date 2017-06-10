@@ -27,7 +27,7 @@ cd ddox/
 cp -r public/* ${HTML_PATH}/
 dub build
 cd ../../
-./subtrees/ddox/ddox filter docs.json --min-protection=Protected --unittest-examples
+./subtrees/ddox/ddox filter docs.json --min-protection=public --unittest-examples
 ./subtrees/ddox/ddox generate-html --navigation-type=ModuleTree docs.json ${HTML_PATH}
 
 # Create and commit the documentation repo.
