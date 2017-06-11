@@ -13,13 +13,11 @@ struct StaticRingBuffer(size_t size, T)
 	///
 	enum StaticSize = size;
 
-	alias ThisType = StaticRingBuffer!(StaticSize, T);
-
 	private T[size] data;
 	private size_t spaceUsed;
 
 	/// append operator
-	ref ThisType opOpAssign(string op)(T v) @trusted nothrow if (op == "~")
+	ref auto opOpAssign(string op)(T v) @trusted nothrow if (op == "~")
 	{
 		if (spaceUsed < StaticSize)
 		{
